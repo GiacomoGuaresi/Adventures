@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Download, Map, MountainSnow, Plus, Tent, X, type LucideIcon } from 'lucide-react'
+import type { Tipo } from '../dominio/tipi'
+import { EtichettaNuovo, NUOVO } from './EtichettaNuovo'
 import { indirizzi, type Rotta } from './rotta'
 
 /** Da questa larghezza il menu è sempre aperto: la stessa soglia di `lg:`. */
@@ -15,8 +17,8 @@ interface Props {
   aperto: boolean
   corrente: Rotta
   onChiudi: () => void
-  /** L'azione "Nuovo trekking" o "Nuova avventura", staccata dalle sezioni: il testo segue la pagina. */
-  etichettaNuovo: string
+  /** L'azione "Nuovo trekking" o "Nuova avventura", staccata dalle sezioni: le due scritte si alternano. */
+  tipoNuovo: Tipo
   onNuovo: () => void
   /** In fondo al menu "Installa l'app", finché l'app non è installata. Se manca, la voce non c'è. */
   onInstalla?: () => void
@@ -29,7 +31,7 @@ interface Props {
  * la pagina sotto non scorre, e alla chiusura il fuoco torna dov'era. Da
  * desktop è una colonna fissa, sempre visibile.
  */
-export function MenuLaterale({ aperto, corrente, onChiudi, etichettaNuovo, onNuovo, onInstalla }: Props) {
+export function MenuLaterale({ aperto, corrente, onChiudi, tipoNuovo, onNuovo, onInstalla }: Props) {
   const pannello = useRef<HTMLElement>(null)
 
   // Se la finestra si allarga col menu aperto lo si chiude, così la pagina
@@ -111,11 +113,12 @@ export function MenuLaterale({ aperto, corrente, onChiudi, etichettaNuovo, onNuo
         <hr className="mx-1 my-2 border-bordo" />
         <button
           type="button"
+          aria-label={NUOVO}
           onClick={onNuovo}
           className="flex min-h-11 w-full items-center gap-3 rounded-lg px-3 text-left font-semibold text-montagna-scura hover:bg-fondo active:bg-bordo"
         >
           <Plus className="size-[18px]" aria-hidden="true" />
-          {etichettaNuovo}
+          <EtichettaNuovo tipo={tipoNuovo} />
         </button>
         {/* Le voci di servizio stanno in fondo, lontane dall'uso di tutti i giorni. */}
         {onInstalla && (

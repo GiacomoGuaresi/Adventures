@@ -22,6 +22,10 @@
   --animate-entra: entra 200ms ease-out;
   --animate-compari: compari 180ms ease-out;
   --animate-dissolvi: dissolvi 180ms ease-out;
+  /* La scritta del pulsante "+" che si alterna: una sale ed esce sfumando
+     mentre l'altra entra da sotto, con una frenata morbida in fondo. */
+  --animate-sale: sale 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-esce: esce 450ms cubic-bezier(0.4, 0, 0.6, 1) both;
 
   @keyframes entra {
     from {
@@ -33,6 +37,20 @@
     from {
       opacity: 0;
       transform: scale(0.97);
+    }
+  }
+  @keyframes sale {
+    from {
+      opacity: 0;
+      filter: blur(3px);
+      transform: translateY(70%);
+    }
+  }
+  @keyframes esce {
+    to {
+      opacity: 0;
+      filter: blur(3px);
+      transform: translateY(-70%);
     }
   }
   @keyframes dissolvi {

@@ -3,7 +3,7 @@
 ## Coerenza con le altre app
 
 Stessa struttura di Grocery e Projects, con un colore diverso:
-- **intestazione piena** nel colore dell'app, con ☰ a sinistra e **+** (inserimento rapido) a destra;
+- **intestazione piena** nel colore dell'app, con ☰ a sinistra e **+** (inserimento rapido) a destra. Accanto al **+**, e nel menu, la scritta si alterna ogni 5 secondi fra "Nuovo trekking" e "Nuova avventura", con quella nuova che sale dal basso: toccando si apre il form sul tipo che si legge in quel momento;
 - **menu laterale** a scomparsa, sempre aperto su schermi larghi: **Mappa**, **Trekking**, **Avventure**, **Installa l'app**;
 - stesso font e stesse icone Lucide;
 - solo **italiano** e solo **tema chiaro**.

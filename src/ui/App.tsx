@@ -21,6 +21,7 @@ import { BarraMappa } from './BarraMappa'
 import { Conferma } from './Conferma'
 import { ModaleDettagli } from './ModaleDettagli'
 import { Elenco } from './Elenco'
+import { EtichettaNuovo, NUOVO, useTipoAlterno } from './EtichettaNuovo'
 import { Installa } from './Installa'
 import { BarraElenco } from './Filtri'
 import { MenuLaterale } from './MenuLaterale'
@@ -48,10 +49,13 @@ export function App() {
   /** Il tipo dell'elenco che si guarda: `null` sulla Mappa e su Installa. */
   const tipoPagina = tipoDellaRotta(rotta)
   const [menuAperto, setMenuAperto] = useState(false)
-  /** Il form di un'attività nuova, aperto sul tipo della pagina: dalla Mappa un trekking. */
+  /** Il form di un'attività nuova, aperto su un tipo: poi nel form si può cambiare. */
   const [nuovo, setNuovo] = useState<Tipo | null>(null)
+  /** "Aggiungi la prima" in un elenco vuoto apre il tipo di quell'elenco. */
   const apriNuovo = () => setNuovo(tipoPagina ?? 'trekking')
-  const etichettaNuovo = tipoPagina ? TESTI[tipoPagina].nuovo : 'Nuovo'
+  /** Il "+" alterna le due scritte e apre il form su quella che si legge in quel momento. */
+  const tipoProposto = useTipoAlterno(tipoPagina ?? 'trekking')
+  const apriProposto = () => setNuovo(tipoProposto)
   /** Sulla Mappa trekking e avventure stanno insieme: qui si sceglie se vederne uno solo. */
   const [tipoMappa, setTipoMappa] = useState<Tipo | null>(null)
   /** L'attività che si sta modificando, e quella che si sta eliminando. */
@@ -165,21 +169,21 @@ export function App() {
         <button
           className="ml-auto flex min-h-9 items-center gap-1.5 rounded-[11px] px-2.5 font-semibold hover:bg-montagna-scura active:bg-montagna-scura"
           type="button"
-          aria-label={etichettaNuovo}
-          onClick={apriNuovo}
+          aria-label={NUOVO}
+          onClick={apriProposto}
         >
-          <Plus className="size-[22px]" aria-hidden="true" />
-          <span className="hidden lg:inline">{etichettaNuovo}</span>
+          <Plus className="size-[22px] shrink-0" aria-hidden="true" />
+          <EtichettaNuovo tipo={tipoProposto} className="max-[359px]:hidden" />
         </button>
       </header>
       <MenuLaterale
         aperto={menuAperto}
         corrente={rotta}
         onChiudi={chiudiMenu}
-        etichettaNuovo={etichettaNuovo}
+        tipoNuovo={tipoProposto}
         onNuovo={() => {
           setMenuAperto(false)
-          apriNuovo()
+          apriProposto()
         }}
         onInstalla={
           statoInstallazione === 'installata'
