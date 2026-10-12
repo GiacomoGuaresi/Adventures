@@ -4,12 +4,12 @@ import { Info } from 'lucide-react'
 import type { Coordinate } from '../dominio/coordinate'
 import { distanzaDaCasa, formattaDistanza } from '../dominio/distanza'
 import { formattaDurata } from '../dominio/durata'
-import type { Attivita } from '../dominio/tipi'
+import type { Attivita, Tipo } from '../dominio/tipi'
 import { formattaViaggio } from '../dominio/viaggio'
 import 'leaflet/dist/leaflet.css'
 
 interface Props {
-  /** Gli stessi trekking dell'elenco: quelli senza coordinate non compaiono. */
+  /** Trekking e avventure già filtrati: chi non ha le coordinate non compare. */
   attivita: readonly Attivita[]
   casa: Coordinate | null
   /** Il pulsante "Dettagli" del popup apre la scheda in sola lettura. */
@@ -27,6 +27,15 @@ const ICONA_CASA = divIcon({
 })
 
 /**
+ * I colori dei puntini: blu montagna per i trekking, terracotta per le
+ * avventure, così sulla mappa comune si distinguono; i completati sono chiari.
+ */
+const COLORI: Record<Tipo, { bordo: string; pieno: string; completato: string }> = {
+  trekking: { bordo: '#32516c', pieno: '#5b87ad', completato: '#dbe7f1' },
+  avventura: { bordo: '#8a4a22', pieno: '#c9793f', completato: '#f1ddcc' },
+}
+
+/**
  * L'inquadratura all'apertura: il nord Italia e il sud della Svizzera, dal
  * Monviso al Friuli e dall'Appennino al Vallese. Resta fissa anche quando i
  * filtri cambiano i puntini.
@@ -40,8 +49,8 @@ const NORD_ITALIA: LatLngBoundsExpression = [
 const SOTTO_LA_BARRA = 80
 
 /**
- * La mappa (docs/02-funzionalita.md): un puntino per ogni trekking con le
- * coordinate, con un popup riassuntivo e il pulsante per aprire i dettagli. Chi non ha
+ * La mappa (docs/02-funzionalita.md): un puntino per ogni trekking e per ogni
+ * avventura con le coordinate, di colore diverso, con un popup riassuntivo e il pulsante per aprire i dettagli. Chi non ha
  * il luogo resta nell'elenco ma non compare qui. Casa ha la sua icona, e si può
  * passare a OpenTopoMap per vedere curve di livello e sentieri.
  *
@@ -87,9 +96,9 @@ export function Mappa({ attivita, casa, onDettagli }: Props) {
             center={[t.lat as number, t.lon as number]}
             radius={8}
             pathOptions={{
-              color: '#32516c',
+              color: COLORI[t.tipo].bordo,
               weight: 2,
-              fillColor: t.completato ? '#dbe7f1' : '#5b87ad',
+              fillColor: t.completato ? COLORI[t.tipo].completato : COLORI[t.tipo].pieno,
               fillOpacity: 1,
             }}
           >
@@ -101,7 +110,7 @@ export function Mappa({ attivita, casa, onDettagli }: Props) {
       </MapContainer>
       {conLuogo.length === 0 && (
         <p className="sr-only" role="status">
-          Nessun trekking con le coordinate.
+          Niente con le coordinate.
         </p>
       )}
     </div>
@@ -111,8 +120,12 @@ export function Mappa({ attivita, casa, onDettagli }: Props) {
 /** Il popup: nome e numeri, con il pulsante che apre i dettagli. */
 function Anteprima({ attivita: t, casa, onDettagli }: { attivita: Attivita; casa: Coordinate | null; onDettagli: (t: Attivita) => void }) {
   const righe = [
-    ['Dislivello', t.dislivello === null ? '—' : `${t.dislivello} m`],
-    ['Durata', formattaDurata(t.durata_ore)],
+    ...(t.tipo === 'trekking'
+      ? [
+          ['Dislivello', t.dislivello === null ? '—' : `${t.dislivello} m`],
+          ['Durata', formattaDurata(t.durata_ore)],
+        ]
+      : []),
     ['Viaggio', formattaViaggio(t.viaggio_minuti)],
     ...(casa === null ? [] : [['Da casa', formattaDistanza(distanzaDaCasa(t, casa))]]),
   ]

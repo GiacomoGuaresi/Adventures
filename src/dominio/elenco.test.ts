@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { quantiCompletati, rimuovi, sostituisci, visibili } from './elenco'
+import { delTipo, quantiCompletati, rimuovi, sostituisci, visibili } from './elenco'
 import { esempio } from './esempi'
 import type { Attivita } from './tipi'
 
@@ -46,5 +46,18 @@ describe('quantiCompletati', () => {
   it('conta i completati', () => {
     expect(quantiCompletati(conCompletati)).toBe(1)
     expect(quantiCompletati(elenco)).toBe(0)
+  })
+})
+
+describe('delTipo', () => {
+  const misti = [
+    attivita('1', 'Cima Tosa'),
+    esempio({ id: '2', nome: 'Fare rafting', tipo: 'avventura' }),
+    attivita('3', 'Città Morta'),
+  ]
+
+  it('tiene solo i trekking o solo le avventure, nello stesso ordine', () => {
+    expect(delTipo(misti, 'trekking').map((t) => t.id)).toEqual(['1', '3'])
+    expect(delTipo(misti, 'avventura').map((t) => t.id)).toEqual(['2'])
   })
 })

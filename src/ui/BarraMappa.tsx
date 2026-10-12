@@ -1,6 +1,8 @@
 import { X } from 'lucide-react'
 import { useEffect, useId, useState } from 'react'
-import { FILTRI_VUOTI, type Filtri as Valori, quantiFiltri } from '../dominio/filtri'
+import { FILTRI_VUOTI, type ChiaveFiltro, type Filtri as Valori, quantiFiltri } from '../dominio/filtri'
+import { TESTI, TIPI } from '../dominio/tipo'
+import type { Tipo } from '../dominio/tipi'
 import { PannelloFiltri, PulsanteFiltri } from './Filtri'
 import { MostraCompletati } from './MostraCompletati'
 import { Ricerca } from './Ricerca'
@@ -15,12 +17,21 @@ interface Props {
   mostraCompletati: boolean
   quantiCompletati: number
   onMostraCompletati: (acceso: boolean) => void
+  /** Quali puntini si vedono: tutti, solo i trekking o solo le avventure. */
+  tipo: Tipo | null
+  onTipo: (tipo: Tipo | null) => void
+  /** I filtri che hanno senso per il tipo scelto. */
+  chiavi: readonly ChiaveFiltro[]
 }
+
+const SCELTA_TIPO =
+  'min-h-11 rounded-full border border-bordo px-3 text-sm font-semibold aria-pressed:border-montagna aria-pressed:bg-montagna aria-pressed:text-panna'
 
 /**
  * La barra che galleggia sopra la mappa (docs/09-interfaccia.md): la ricerca e
  * un pulsante Filtri che apre, sotto la barra, lo stesso pannello dell'elenco
- * con in più "Mostra completati". Così la mappa prende tutta la pagina.
+ * con in più "Mostra completati" e la scelta fra trekking e avventure, che
+ * sulla mappa stanno insieme. Così la mappa prende tutta la pagina.
  */
 export function BarraMappa({
   ricerca,
@@ -31,10 +42,13 @@ export function BarraMappa({
   mostraCompletati,
   quantiCompletati,
   onMostraCompletati,
+  tipo,
+  onTipo,
+  chiavi,
 }: Props) {
   const [aperto, setAperto] = useState(false)
   const id = useId()
-  const quanti = quantiFiltri(filtri) + (mostraCompletati && quantiCompletati > 0 ? 1 : 0)
+  const quanti = quantiFiltri(filtri) + (mostraCompletati && quantiCompletati > 0 ? 1 : 0) + (tipo === null ? 0 : 1)
 
   useEffect(() => {
     if (!aperto) return
@@ -69,7 +83,23 @@ export function BarraMappa({
               <X className="size-[18px]" aria-hidden="true" />
             </button>
           </div>
-          <PannelloFiltri valori={filtri} onCambia={onFiltri} conDistanza={conDistanza} />
+          <div className="mb-4 flex flex-wrap gap-1.5" role="group" aria-label="Tipo">
+            <button type="button" className={SCELTA_TIPO} aria-pressed={tipo === null} onClick={() => onTipo(null)}>
+              Tutti
+            </button>
+            {TIPI.map((scelta) => (
+              <button
+                key={scelta}
+                type="button"
+                className={SCELTA_TIPO}
+                aria-pressed={scelta === tipo}
+                onClick={() => onTipo(scelta)}
+              >
+                {TESTI[scelta].elenco}
+              </button>
+            ))}
+          </div>
+          <PannelloFiltri valori={filtri} onCambia={onFiltri} conDistanza={conDistanza} chiavi={chiavi} />
           {quantiFiltri(filtri) > 0 && (
             <button
               type="button"

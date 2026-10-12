@@ -10,10 +10,10 @@ export type StatoElenco =
   | { fase: 'errore'; messaggio: string }
   | { fase: 'pronto'; attivita: Attivita[] }
 
-/** I trekking, letti all'apertura e ogni volta che l'app torna in primo piano. */
+/** Trekking e avventure, letti all'apertura e ogni volta che l'app torna in primo piano. */
 export function useAttivita() {
   const [stato, setStato] = useState<StatoElenco>({ fase: 'caricamento' })
-  /** I trekking a cui il ricalcolo ha tolto il luogo, da segnalare. */
+  /** Le attività a cui il ricalcolo ha tolto il luogo, da segnalare. */
   const [luoghiTolti, setLuoghiTolti] = useState<string[]>([])
   /** L'ultimo elenco, per il ricalcolo che gira in sottofondo. */
   const ultimo = useRef<Attivita[]>([])
@@ -41,7 +41,7 @@ export function useAttivita() {
     return () => document.removeEventListener('visibilitychange', visibile)
   }, [ricarica])
 
-  /** Crea il trekking; se non riesce lancia l'errore, e il modale lo mostra. */
+  /** Crea l'attività; se non riesce lancia l'errore, e il modale lo mostra. */
   const crea = useCallback(async (campi: CampiAttivita) => {
     const creato = await attivita().crea(campi)
     setStato((prima) => (prima.fase === 'pronto' ? { ...prima, attivita: [creato, ...prima.attivita] } : prima))
@@ -75,7 +75,7 @@ export function useAttivita() {
    * uno alla volta per stare nella quota di openrouteservice. Se il servizio non
    * risponde si ferma: i mancanti si riprovano al prossimo salvataggio o alla
    * prossima apertura. Se parte mentre ne gira già uno, riparte alla fine, così
-   * prende anche il trekking appena salvato.
+   * prende anche l'attività appena salvata.
    */
   const calcolaViaggi = useCallback(async (casa: Coordinate) => {
     const servizio = percorsi()

@@ -1,16 +1,17 @@
 # Adventures
 
-Piccolo database dei trekking da fare: si salvano al volo, con i dettagli disponibili, quando se ne trova uno interessante sui social, su un sito o su Komoot, e si sceglie dove andare dall'elenco o dalla mappa. Terza app di casa dopo **Grocery** e **Projects**; fino a ottobre 2026 si chiamava Trekking. Si usa da smartphone e da PC.
+Piccolo database delle cose da fare fuori casa, **trekking** e **avventure** (rafting, ferrate, kayak…): si salvano al volo, con i dettagli disponibili, quando se ne trova uno interessante sui social, su un sito o su Komoot, e si sceglie dove andare dall'elenco o dalla mappa. Terza app di casa dopo **Grocery** e **Projects**; fino a ottobre 2026 si chiamava Trekking. Si usa da smartphone e da PC.
 
 > **Stato: completa e in uso.** In corso la [fase 6](docs/06-roadmap.md): il nuovo nome e le avventure accanto ai trekking. Online su [giacomoguaresi.github.io/Adventures](https://giacomoguaresi.github.io/Adventures/).
 
 ## Cosa fa
 
+- **Due tipi**: trekking, con dislivello e durata, e avventure, con solo nome, luogo, link e note; un elenco ciascuno e la mappa in comune
 - **Inserimento rapido**: nome (unico obbligatorio), luogo, link, dislivello, durata, tempo di viaggio, note; avviso se il nome esiste già
 - **Luogo** per nome, con i suggerimenti di Photon, oppure per coordinate
 - **Tempo di viaggio in auto da casa** calcolato con openrouteservice al salvataggio, oppure scritto a mano; i mancanti si ricalcolano dal popup all'apertura. **Distanza in linea d'aria** da casa, calcolata nel browser
 - **Elenco** con ricerca per nome e filtri su dislivello, durata, distanza e tempo di viaggio; i completati si nascondono
-- **Mappa** con un puntino per trekking, casa, le tessere di OpenStreetMap o OpenTopoMap e i dettagli in un popup; stessa ricerca e stessi filtri dell'elenco
+- **Mappa** con un puntino per trekking (blu) e per avventura (terracotta), casa, le tessere di OpenStreetMap o OpenTopoMap e i dettagli in un popup; stessa ricerca e stessi filtri dell'elenco
 - **Installabile** sulla schermata Home, come Grocery e Projects
 
 ## Per iniziare

@@ -7,10 +7,13 @@ import { formattaDurata } from '../dominio/durata'
 import { etichettaLink, perApertura } from '../dominio/link'
 import { formattaViaggio } from '../dominio/viaggio'
 import type { Colonna, Ordinamento } from '../dominio/ordinamento'
-import type { Attivita } from '../dominio/tipi'
+import { TESTI } from '../dominio/tipo'
+import type { Attivita, Tipo } from '../dominio/tipi'
 import { Markdown } from './Markdown'
 
 interface Props {
+  /** Trekking o avventure: cambia le colonne e i messaggi. */
+  tipo: Tipo
   /** Solo quelli da mostrare: completati, ricerca e ordinamento sono già stati applicati. */
   attivita: readonly Attivita[]
   ordinamento: Ordinamento
@@ -34,14 +37,16 @@ interface Props {
 const data = new Intl.DateTimeFormat('it-IT', { day: '2-digit', month: 'short', year: 'numeric' })
 
 /**
- * L'elenco dei trekking (docs/09-interfaccia.md): il segno del completato, il
- * nome con il suo luogo e i suoi link, il dislivello, la durata, la distanza e
+ * L'elenco dei trekking o delle avventure (docs/09-interfaccia.md): il segno
+ * del completato, il nome con il suo luogo e i suoi link, il dislivello e la
+ * durata (solo per i trekking), la distanza e
  * il tempo di viaggio da casa, la data di aggiunta e i pulsanti per modificare o
  * eliminare. Chi ha delle note ha anche una freccia che le apre sotto la riga.
  * Toccando un'intestazione si ordina per quella colonna, un secondo tocco
  * inverte. Le altre colonne e i filtri arrivano con gli step successivi.
  */
 export function Elenco({
+  tipo,
   attivita,
   ordinamento,
   onOrdina,
@@ -60,21 +65,30 @@ export function Elenco({
   const apriChiudi = (id: string) =>
     setAperte((prima) => (prima.includes(id) ? prima.filter((x) => x !== id) : [...prima, id]))
 
+  const conNumeri = tipo === 'trekking'
+  /** Le colonne dopo il nome, per la riga delle note che le attraversa tutte. */
+  const colonneDopoNome = (conNumeri ? 2 : 0) + (casa === null ? 0 : 1) + 3
+
   if (attivita.length === 0) {
+    const nessuno = TESTI[tipo].nessuno
     if (ricerca.trim() !== '') {
-      return <p className="mt-8 text-center text-testo-tenue">Nessun trekking con questo nome.</p>
+      return <p className="mt-8 text-center text-testo-tenue">{nessuno} con questo nome.</p>
     }
     if (conFiltri) {
-      return <p className="mt-8 text-center text-testo-tenue">Nessun trekking con questi filtri.</p>
+      return <p className="mt-8 text-center text-testo-tenue">{nessuno} con questi filtri.</p>
     }
     if (nascosti > 0) {
-      return <p className="mt-8 text-center text-testo-tenue">Sono tutti completati.</p>
+      return (
+        <p className="mt-8 text-center text-testo-tenue">
+          {tipo === 'trekking' ? 'Sono tutti completati.' : 'Sono tutte completate.'}
+        </p>
+      )
     }
     return (
       <p className="mt-8 text-center text-testo-tenue">
-        Nessun trekking.{' '}
+        {nessuno}.{' '}
         <button type="button" className="font-semibold text-montagna-scura underline" onClick={onNuovo}>
-          Aggiungi il primo
+          {tipo === 'trekking' ? 'Aggiungi il primo' : 'Aggiungi la prima'}
         </button>
         .
       </p>
@@ -83,27 +97,31 @@ export function Elenco({
 
   return (
     <div className="overflow-x-auto rounded-[11px] border border-bordo bg-white">
-      <table className="w-full min-w-[780px] border-collapse text-left">
+      <table className={`w-full border-collapse text-left ${conNumeri ? 'min-w-[780px]' : 'min-w-[560px]'}`}>
         <thead>
           <tr className="border-b border-bordo">
             <th className="w-11">
               <span className="sr-only">Completato</span>
             </th>
             <Intestazione colonna="nome" etichetta="Nome" ordinamento={ordinamento} onOrdina={onOrdina} />
-            <Intestazione
-              colonna="dislivello"
-              etichetta="Dislivello"
-              ordinamento={ordinamento}
-              onOrdina={onOrdina}
-              stretta
-            />
-            <Intestazione
-              colonna="durata_ore"
-              etichetta="Durata"
-              ordinamento={ordinamento}
-              onOrdina={onOrdina}
-              stretta
-            />
+            {conNumeri && (
+              <>
+                <Intestazione
+                  colonna="dislivello"
+                  etichetta="Dislivello"
+                  ordinamento={ordinamento}
+                  onOrdina={onOrdina}
+                  stretta
+                />
+                <Intestazione
+                  colonna="durata_ore"
+                  etichetta="Durata"
+                  ordinamento={ordinamento}
+                  onOrdina={onOrdina}
+                  stretta
+                />
+              </>
+            )}
             {casa !== null && (
               <Intestazione
                 colonna="distanza"
@@ -203,10 +221,14 @@ export function Elenco({
                     </span>
                   )}
                 </td>
-                <td className="px-3 py-2 whitespace-nowrap text-testo-tenue">
-                  {t.dislivello === null ? '—' : `${t.dislivello} m`}
-                </td>
-                <td className="px-3 py-2 whitespace-nowrap text-testo-tenue">{formattaDurata(t.durata_ore)}</td>
+                {conNumeri && (
+                  <>
+                    <td className="px-3 py-2 whitespace-nowrap text-testo-tenue">
+                      {t.dislivello === null ? '—' : `${t.dislivello} m`}
+                    </td>
+                    <td className="px-3 py-2 whitespace-nowrap text-testo-tenue">{formattaDurata(t.durata_ore)}</td>
+                  </>
+                )}
                 {casa !== null && (
                   <td className="px-3 py-2 whitespace-nowrap text-testo-tenue">
                     {formattaDistanza(distanzaDaCasa(t, casa))}
@@ -238,7 +260,7 @@ export function Elenco({
               {t.note && aperte.includes(t.id) && (
                 <tr className="border-b border-bordo last:border-0">
                   <td />
-                  <td className="px-3 pt-0 pb-3" colSpan={casa === null ? 6 : 7}>
+                  <td className="px-3 pt-0 pb-3" colSpan={1 + colonneDopoNome}>
                     <div className="animate-entra">
                       <Markdown testo={t.note} />
                     </div>
@@ -283,7 +305,7 @@ function Intestazione({ colonna, etichetta, ordinamento, onOrdina, stretta = fal
   )
 }
 
-/** Un link del trekking, apribile dall'elenco (docs/02-funzionalita.md). */
+/** Un link dell'attività, apribile dall'elenco (docs/02-funzionalita.md). */
 function Link({ indirizzo }: { indirizzo: string }) {
   const apribile = perApertura(indirizzo)
   const etichetta = etichettaLink(indirizzo)

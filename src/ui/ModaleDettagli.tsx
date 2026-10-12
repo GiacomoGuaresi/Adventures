@@ -5,6 +5,7 @@ import { mappaEsterna } from '../dominio/coordinate'
 import { distanzaDaCasa, formattaDistanza } from '../dominio/distanza'
 import { formattaDurata } from '../dominio/durata'
 import { etichettaLink, perApertura } from '../dominio/link'
+import { TESTI } from '../dominio/tipo'
 import type { Attivita } from '../dominio/tipi'
 import { formattaViaggio } from '../dominio/viaggio'
 import { Markdown } from './Markdown'
@@ -22,8 +23,9 @@ interface Props {
 const data = new Intl.DateTimeFormat('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })
 
 /**
- * I dettagli di un trekking in sola lettura (docs/02-funzionalita.md): luogo,
- * numeri, link e note, pensati per il telefono. Sul telefono è un foglio che
+ * I dettagli di un trekking o di un'avventura in sola lettura
+ * (docs/02-funzionalita.md): luogo, numeri (per l'avventura solo quelli del
+ * viaggio), link e note, pensati per il telefono. Sul telefono è un foglio che
  * sale dal basso. In fondo "Modifica" apre il form, e si può segnare il
  * completato senza passare dal form.
  */
@@ -44,8 +46,12 @@ export function ModaleDettagli({ attivita: t, casa, onModifica, onCompletato, on
   }
 
   const numeri: [LucideIcon, string, string][] = [
-    [Mountain, 'Dislivello', t.dislivello === null ? '—' : `${t.dislivello} m`],
-    [Clock, 'Durata', formattaDurata(t.durata_ore)],
+    ...(t.tipo === 'trekking'
+      ? ([
+          [Mountain, 'Dislivello', t.dislivello === null ? '—' : `${t.dislivello} m`],
+          [Clock, 'Durata', formattaDurata(t.durata_ore)],
+        ] as [LucideIcon, string, string][])
+      : []),
     [Car, 'Viaggio', formattaViaggio(t.viaggio_minuti)],
     ...(casa === null ? [] : [[House, 'Da casa', formattaDistanza(distanzaDaCasa(t, casa))] as [LucideIcon, string, string]]),
   ]
@@ -65,7 +71,7 @@ export function ModaleDettagli({ attivita: t, casa, onModifica, onCompletato, on
             onClick={() => void cambiaCompletato()}
           >
             <Check className="size-[18px]" aria-hidden="true" />
-            {t.completato ? 'Togli completato' : 'Trekking completato'}
+            {t.completato ? 'Togli completato' : TESTI[t.tipo].completato}
           </button>
           <button
             type="button"

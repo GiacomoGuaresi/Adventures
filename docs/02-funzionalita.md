@@ -8,21 +8,32 @@
 
 Poi, quando si decide dove andare, si apre l'**elenco** o la **mappa** e si filtra.
 
+## Trekking e avventure
+
+Ogni voce ha un **tipo**:
+
+- **Trekking**: una camminata, con dislivello e durata.
+- **Avventura**: qualunque altra cosa da fare fuori casa in coppia ("fare rafting", una ferrata, un giro in kayak). Niente data e niente numeri: nome, luogo se c'è, link e note.
+
+I due tipi hanno **un elenco ciascuno** nel menu e stanno **insieme sulla mappa**. Tutto il resto (luogo, link, note, tempo di viaggio, completato, ricerca) funziona allo stesso modo; dove qui sotto si legge "trekking" vale anche per le avventure, salvo dislivello e durata.
+
+Il tipo si sceglie in cima al form, già impostato sull'elenco da cui lo si apre (dalla mappa: trekking), e si può cambiare anche dopo: un trekking che diventa avventura perde dislivello e durata.
+
 ## Inserimento rapido
 
-Un wizard in quattro passi, pensato per il telefono: **Dove** (nome e luogo), **Quanto** (dislivello, durata, viaggio), **Link**, **Note**. Solo il nome è obbligatorio. Un trekking nuovo si salva all'ultimo passo; in modifica lo stesso wizard ha "Salva" a ogni passo e dall'indicatore in alto si salta al passo che serve.
+Un wizard in quattro passi, pensato per il telefono: **Dove** (tipo, nome e luogo), **Quanto** (dislivello, durata, viaggio), **Link**, **Note**. Per un'avventura i passi sono tre: **Quanto** non c'è, e il tempo di viaggio si calcola da solo. Solo il nome è obbligatorio. Un trekking nuovo si salva all'ultimo passo; in modifica lo stesso wizard ha "Salva" a ogni passo e dall'indicatore in alto si salta al passo che serve.
 
 | Campo | Obbligatorio | Formato |
 |---|---|---|
 | **Nome** | sì | testo libero |
 | **Luogo** | no | nome del luogo **oppure** coordinate, vedi [Luogo](#luogo) |
 | **Link** | no | uno o più indirizzi (post, articolo, Komoot…), salvati così come sono |
-| **Dislivello** | no | metri, intero positivo |
-| **Durata** | no | ore di andata e ritorno, a passi di mezz'ora, in due campi collegati [ore \| minuti] |
+| **Dislivello** | no | solo trekking: metri, intero positivo |
+| **Durata** | no | solo trekking: ore di andata e ritorno, a passi di mezz'ora, in due campi collegati [ore \| minuti] |
 | **Tempo di viaggio** | no | calcolato in automatico da casa; si può anche scrivere a mano in ore e minuti, vedi [Tempo di viaggio](#tempo-di-viaggio-e-distanza-da-casa) |
 | **Note** | no | Markdown con la formattazione di base: grassetto, corsivo, elenchi, link |
 
-- **Doppioni**: mentre si scrive il nome, se esiste già un trekking con un nome simile (senza distinguere maiuscole, minuscole e accenti) compare un avviso con il nome trovato. L'avviso non blocca il salvataggio.
+- **Doppioni**: mentre si scrive il nome, se esiste già un trekking o un'avventura con un nome simile (senza distinguere maiuscole, minuscole e accenti) compare un avviso con il nome trovato. L'avviso non blocca il salvataggio.
 - **Komoot e altri siti**: i dati non si leggono dal link. Dislivello e durata si scrivono a mano.
 
 ## Luogo
@@ -72,13 +83,15 @@ La posizione di **casa** è un punto fisso salvato nel database ([04](04-sicurez
 - Un trekking a cui **manca il dato** su cui si filtra (niente luogo, niente tempo di viaggio, niente dislivello…) **resta visibile**: i filtri nascondono solo i trekking con un valore fuori dall'intervallo.
 - **Completato**: si segna e si toglie con un tocco. I completati spariscono dall'elenco; l'interruttore **Mostra completati** li fa ricomparire.
 - **Modifica** di tutti i campi ed **eliminazione** con conferma.
-- Niente raggruppamenti per zona, tipo o tag.
+- Nell'elenco delle **avventure** non ci sono le colonne e i filtri di dislivello e durata; quelli accesi sui trekking restano accesi per quando ci si torna.
+- Niente raggruppamenti per zona o tag.
 
 ## Mappa
 
 - **Pagina principale** dell'app: la mappa occupa tutta la pagina, con la **stessa ricerca e gli stessi filtri** dell'elenco in una barra flottante sopra la mappa.
 - Mappa base **OpenStreetMap**, con **OpenTopoMap** (curve di livello e sentieri) come alternativa selezionabile.
-- Un **puntino** per ogni trekking con le coordinate. Quelli senza luogo non compaiono sulla mappa, ma restano nell'elenco.
+- Un **puntino** per ogni trekking e per ogni avventura con le coordinate: **blu** i trekking, **terracotta** le avventure, più chiari i completati. Chi non ha il luogo non compare sulla mappa, ma resta nel suo elenco.
+- Nel pannello dei filtri la scelta **Tutti / Trekking / Avventure**: serve perché i filtri numerici lasciano passare chi non ha il dato.
 - Toccando un puntino si apre un **popup riassuntivo** (nome, luogo, dislivello, durata, tempo di viaggio, distanza) con il pulsante **Dettagli**.
 - **Dettagli** apre la scheda in **sola lettura** (sul telefono un foglio che sale dal basso): luogo apribile in Google Maps, numeri, link, note, data di aggiunta. Da lì **Modifica** apre il form e **Trekking completato / Togli completato** cambia il completato; chiuso il form si torna ai dettagli aggiornati. La stessa scheda si apre toccando il nome nell'elenco.
 - **Casa** è segnata con un'icona propria.

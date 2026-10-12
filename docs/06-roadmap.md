@@ -217,6 +217,12 @@ L'app smette di essere solo trekking: prima cambia nome senza cambiare cosa fa, 
   - [ ] Repository rinominato in `Adventures`, deploy su `giacomoguaresi.github.io/Adventures/`
   - [ ] App reinstallata sui telefoni dal nuovo indirizzo
 - [ ] **31 · Avventure**: colonna `tipo` (`trekking` · `avventura`), due elenchi nel menu, form senza "Quanto" per le avventure, tipo sulla mappa
+  - [x] `tipo` nei tipi, `delTipo` e filtri per tipo con i loro test (`src/dominio/tipi.ts`, `tipo.ts`, `elenco.ts`, `filtri.ts`)
+  - [x] Rotte `#/trekking` e `#/avventure` (il vecchio `#/elenco` porta ai trekking), menu con le due voci (`rotta.ts`, `MenuLaterale.tsx`)
+  - [x] Form con la scelta del tipo e senza "Quanto" per le avventure (`ModaleAttivita.tsx`); elenco, dettagli e popup senza dislivello e durata
+  - [x] Mappa comune con i puntini terracotta per le avventure e la scelta Tutti / Trekking / Avventure (`Mappa.tsx`, `BarraMappa.tsx`)
+  - [ ] `013_tipo.sql` applicato in produzione
+  - [ ] Provato sull'app online: una "Fare rafting" creata, vista sul suo elenco e sulla mappa, completata
 
 ## Più avanti, se servirà
 - [ ] Posizione GPS: distanza dalla posizione attuale e puntino sulla mappa

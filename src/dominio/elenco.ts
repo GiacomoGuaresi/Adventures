@@ -3,7 +3,7 @@
  * database: l'app resta reattiva anche con la rete lenta.
  */
 
-import type { Attivita } from './tipi'
+import type { Attivita, Tipo } from './tipi'
 
 /** Rimette al suo posto il trekking cambiato, lasciando l'ordine com'è. */
 export function sostituisci(elenco: readonly Attivita[], cambiato: Attivita): Attivita[] {
@@ -26,4 +26,9 @@ export function visibili(elenco: readonly Attivita[], mostraCompletati: boolean)
 /** Quanti sono nascosti perché completati: l'interruttore lo dice. */
 export function quantiCompletati(elenco: readonly Attivita[]): number {
   return elenco.filter((t) => t.completato).length
+}
+
+/** Solo i trekking o solo le avventure: ognuno ha il suo elenco (docs/09-interfaccia.md). */
+export function delTipo(elenco: readonly Attivita[], tipo: Tipo): Attivita[] {
+  return elenco.filter((t) => t.tipo === tipo)
 }

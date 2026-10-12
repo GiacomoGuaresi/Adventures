@@ -1,6 +1,18 @@
 import { describe, expect, it } from 'vitest'
 import { esempio } from './esempi'
-import { FILTRI_VUOTI, dentro, filtra, limite, personalizzato, quantiFiltri, testoIntervallo, testoLimite } from './filtri'
+import {
+  CHIAVI_PER_TIPO,
+  FILTRI_VUOTI,
+  conChiavi,
+  dentro,
+  filtra,
+  limite,
+  personalizzato,
+  quantiFiltri,
+  soloChiavi,
+  testoIntervallo,
+  testoLimite,
+} from './filtri'
 
 const elenco = [
   esempio({ id: '1', nome: 'Passeggiata', dislivello: 200, durata_ore: 1.5 }),
@@ -111,5 +123,26 @@ describe('personalizzato', () => {
     expect(personalizzato('dislivello', { min: 500, max: 1000 })).toBe(false)
     expect(personalizzato('dislivello', { min: 600, max: 1000 })).toBe(true)
     expect(personalizzato('viaggio', { min: null, max: null })).toBe(false)
+  })
+})
+
+describe('i filtri per tipo', () => {
+  const accesi = { ...FILTRI_VUOTI, dislivello: { min: 500, max: null }, viaggio: { min: null, max: 60 } }
+
+  it('per le avventure contano solo distanza e viaggio', () => {
+    const solo = soloChiavi(accesi, CHIAVI_PER_TIPO.avventura)
+    expect(solo.dislivello).toEqual(FILTRI_VUOTI.dislivello)
+    expect(solo.viaggio).toEqual({ min: null, max: 60 })
+    expect(quantiFiltri(solo)).toBe(1)
+  })
+
+  it('per i trekking contano tutti', () => {
+    expect(soloChiavi(accesi, CHIAVI_PER_TIPO.trekking)).toEqual(accesi)
+  })
+
+  it('azzerare i filtri delle avventure lascia quelli dei soli trekking', () => {
+    const dopo = conChiavi(accesi, FILTRI_VUOTI, CHIAVI_PER_TIPO.avventura)
+    expect(dopo.dislivello).toEqual({ min: 500, max: null })
+    expect(dopo.viaggio).toEqual(FILTRI_VUOTI.viaggio)
   })
 })

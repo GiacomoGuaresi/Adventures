@@ -38,6 +38,11 @@ describe('doppione', () => {
     expect(doppione(elenco, ' cima  TOSA ')?.id).toBe('3')
   })
 
+  it('guarda anche fra le avventure: il nome è uno solo per tutti', () => {
+    const misti = [...elenco, esempio({ id: '4', nome: 'Fare rafting', tipo: 'avventura' })]
+    expect(doppione(misti, 'fare rafting')?.id).toBe('4')
+  })
+
   it('non segnala il trekking che si sta modificando', () => {
     expect(doppione(elenco, 'Cima Tosa', '3')).toBeNull()
   })

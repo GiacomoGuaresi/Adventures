@@ -8,6 +8,7 @@ export function esempio(campi: Partial<Attivita> = {}): Attivita {
   const id = String(prossimo++)
   return {
     id,
+    tipo: 'trekking',
     nome: `Trekking ${id}`,
     link: [],
     note: null,

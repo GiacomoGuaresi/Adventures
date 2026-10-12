@@ -1,4 +1,4 @@
-// Le query sui trekking, tabella `adventures.attivita` (docs/08-modello-dati.md).
+// Le query su trekking e avventure, tabella `adventures.attivita` (docs/08-modello-dati.md).
 // Le colonne arrivano con gli step della roadmap: ricerca, ordinamento e filtri
 // stanno nel browser, qui si leggono e si scrivono le righe.
 
@@ -9,16 +9,16 @@ import { fallita } from './errore'
 export class AttivitaSupabase {
   constructor(private readonly client: SupabaseClient) {}
 
-  /** Tutti i trekking, dal più recente: ricerca, ordinamento e filtri li fa il browser. */
+  /** Tutte le attività, dalla più recente: ricerca, ordinamento e filtri li fa il browser. */
   async elenco(): Promise<Attivita[]> {
     const { data, error } = await this.client.from('attivita').select('*').order('creato_il', { ascending: false })
-    if (error) throw fallita('Trekking non caricati', error)
+    if (error) throw fallita('Elenco non caricato', error)
     return data as Attivita[]
   }
 
   async crea(campi: CampiAttivita): Promise<Attivita> {
     const { data, error } = await this.client.from('attivita').insert(campi).select().single()
-    if (error) throw fallita('Trekking non salvato', error)
+    if (error) throw fallita('Salvataggio non riuscito', error)
     return data as Attivita
   }
 
@@ -73,6 +73,6 @@ export class AttivitaSupabase {
 
   async elimina(id: string): Promise<void> {
     const { error } = await this.client.from('attivita').delete().eq('id', id)
-    if (error) throw fallita('Trekking non eliminato', error)
+    if (error) throw fallita('Eliminazione non riuscita', error)
   }
 }

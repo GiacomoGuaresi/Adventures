@@ -1,15 +1,20 @@
+/** Cosa si salva (docs/02-funzionalita.md): un trekking, con i suoi numeri, o
+ *  un'avventura, qualunque altra cosa da fare fuori casa. */
+export type Tipo = 'trekking' | 'avventura'
+
 /** Le righe di `adventures.attivita` (docs/08-modello-dati.md). Le colonne
- *  arrivano con gli step della roadmap che le usano: per ora il nome, i link,
- *  le note, il dislivello, la durata, il luogo, il tempo di viaggio e il segno
- *  "completato". */
+ *  arrivano con gli step della roadmap che le usano: per ora il tipo, il nome,
+ *  i link, le note, il dislivello, la durata, il luogo, il tempo di viaggio e
+ *  il segno "completato". */
 export interface Attivita {
   id: string
+  tipo: Tipo
   nome: string
   link: string[]
   note: string | null
-  /** Metri di salita, intero positivo; `null` quando non si sa. */
+  /** Metri di salita, intero positivo; `null` quando non si sa, e sempre per le avventure. */
   dislivello: number | null
-  /** Ore di andata e ritorno, a passi di mezz'ora; `null` quando non si sa. */
+  /** Ore di andata e ritorno, a passi di mezz'ora; `null` quando non si sa, e sempre per le avventure. */
   durata_ore: number | null
   /** Il nome del luogo; vuoto quando il luogo è stato messo come coordinate. */
   luogo_nome: string | null
@@ -27,6 +32,7 @@ export interface Attivita {
 
 /** Quello che si scrive nel form: le colonne che l'app salva (docs/02-funzionalita.md). */
 export interface CampiAttivita {
+  tipo: Tipo
   nome: string
   link: string[]
   /** Markdown; vuoto vuol dire `null`. */

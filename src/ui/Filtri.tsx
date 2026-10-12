@@ -30,16 +30,18 @@ interface PropsBarra {
   mostraCompletati: boolean
   quantiCompletati: number
   onMostraCompletati: (acceso: boolean) => void
-  /** Quanti trekking si vedono e quanti sono in tutto, per "12 di 40". */
+  /** Quanti se ne vedono e quanti sono in tutto, per "12 di 40". */
   mostrati: number
   totali: number
+  /** I filtri che hanno senso in questo elenco: gli altri non compaiono. */
+  chiavi: readonly ChiaveFiltro[]
 }
 
 /**
  * La barra dell'elenco (docs/02-funzionalita.md), come quella della mappa:
  * ricerca e pulsante Filtri sulla stessa riga. Il pannello si apre sotto; i
  * filtri accesi restano in vista come etichette da togliere con un tocco, con
- * quanti trekking passano.
+ * quanti ne passano.
  */
 export function BarraElenco({
   ricerca,
@@ -52,6 +54,7 @@ export function BarraElenco({
   onMostraCompletati,
   mostrati,
   totali,
+  chiavi,
 }: PropsBarra) {
   const [aperto, setAperto] = useState(false)
   const id = useId()
@@ -78,7 +81,7 @@ export function BarraElenco({
               <X className="size-[18px]" aria-hidden="true" />
             </button>
           </div>
-          <PannelloFiltri valori={filtri} onCambia={onFiltri} conDistanza={conDistanza} />
+          <PannelloFiltri valori={filtri} onCambia={onFiltri} conDistanza={conDistanza} chiavi={chiavi} />
         </div>
       )}
       {qualcosa && (
@@ -166,6 +169,8 @@ interface PropsPannello {
   valori: Valori
   onCambia: (valori: Valori) => void
   conDistanza: boolean
+  /** I filtri da mostrare; senza, tutti. */
+  chiavi?: readonly ChiaveFiltro[]
 }
 
 /**
@@ -173,10 +178,10 @@ interface PropsPannello {
  * la barra flottante della mappa. Per ogni filtro le scelte rapide; "Altro…"
  * apre i campi per scrivere un intervallo a mano.
  */
-export function PannelloFiltri({ valori, onCambia, conDistanza }: PropsPannello) {
+export function PannelloFiltri({ valori, onCambia, conDistanza, chiavi = CHIAVI_FILTRI }: PropsPannello) {
   return (
     <div className="flex flex-col gap-4">
-      {CHIAVI_FILTRI.filter((chiave) => chiave !== 'distanza' || conDistanza).map((chiave) => (
+      {chiavi.filter((chiave) => chiave !== 'distanza' || conDistanza).map((chiave) => (
         <Filtro
           key={chiave}
           chiave={chiave}
@@ -185,7 +190,7 @@ export function PannelloFiltri({ valori, onCambia, conDistanza }: PropsPannello)
         />
       ))}
       <p className="m-0 text-xs text-testo-tenue">
-        I trekking senza il dato restano visibili: i filtri nascondono solo chi è fuori dall'intervallo.
+        Chi non ha il dato resta visibile: i filtri nascondono solo chi è fuori dall'intervallo.
       </p>
     </div>
   )

@@ -2,7 +2,7 @@
 
 ## Scopo
 
-**Trekking** è un piccolo database dei **trekking da fare**. Serve a salvare al volo un trekking trovato sui social, su un sito o su Komoot, con i dettagli disponibili in quel momento, e a sceglierne uno quando si decide dove andare: per dislivello, durata, distanza da casa, o guardando la mappa.
+**Adventures** (fino a ottobre 2026 **Trekking**) è un piccolo database delle **cose da fare fuori casa**: i **trekking** e le **avventure**, cioè tutto il resto che si vuole provare in coppia (rafting, ferrate, kayak…), senza una data. È nata per i trekking, e di quelli parla quasi tutto qui sotto: Serve a salvare al volo un trekking trovato sui social, su un sito o su Komoot, con i dettagli disponibili in quel momento, e a sceglierne uno quando si decide dove andare: per dislivello, durata, distanza da casa, o guardando la mappa.
 
 Le funzionalità sono descritte in [02](02-funzionalita.md).
 
@@ -39,6 +39,6 @@ Il proprietario e la partner, **allo stesso livello**, con l'account condiviso d
 ## Cosa NON è (per ora)
 
 - Un navigatore o un'app per registrare le tracce: niente GPS e niente posizione del telefono
-- Un catalogo organizzato: niente tag, tipi o raggruppamenti per zona (la zona si vede sulla mappa)
+- Un catalogo organizzato: due soli tipi (trekking e avventura), niente tag o raggruppamenti per zona (la zona si vede sulla mappa)
 - Un lettore di Komoot o di altri siti: i dati si scrivono a mano, il link si salva e basta
-- Un diario delle uscite: sui trekking ci sono solo le note
+- Un diario delle uscite né un calendario: ci sono solo le note, e le avventure non hanno una data

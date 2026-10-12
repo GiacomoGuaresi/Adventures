@@ -6,7 +6,8 @@ import { pulisciLink } from '../dominio/link'
 import { nomeValido, pulisciNome } from '../dominio/nome'
 import { doppione } from '../dominio/ricerca'
 import { pulisciViaggio, testoViaggio, viaggioManuale, viaggioValido } from '../dominio/viaggio'
-import type { CampiAttivita, Attivita } from '../dominio/tipi'
+import { TESTI, TIPI } from '../dominio/tipo'
+import type { Attivita, CampiAttivita, Tipo } from '../dominio/tipi'
 import { EditorMarkdown } from './EditorMarkdown'
 import { CampoLuogo } from './CampoLuogo'
 import { CampoTempo } from './CampoTempo'
@@ -14,34 +15,48 @@ import { Modale } from './Modale'
 import { luogoValido, risolviLuogo, statoLuogoIniziale } from './luogo'
 
 interface Props {
-  /** "Nuovo trekking" quando si crea, "Modifica trekking" quando si cambia. */
-  titolo: string
+  /** Il tipo proposto per un'attività nuova: quello della pagina da cui si apre. */
+  tipoIniziale?: Tipo
+  /** In modifica i campi salvati, tipo compreso; il titolo segue il tipo scelto. */
   iniziale?: CampiAttivita
-  /** Tutti i trekking, per avvisare dei doppioni mentre si scrive. */
+  /** Tutte le attività, per avvisare dei doppioni mentre si scrive. */
   esistenti: readonly Attivita[]
-  /** Il trekking che si sta modificando: non è doppione di sé stesso. */
+  /** L'attività che si sta modificando: non è doppione di sé stessa. */
   escludi?: string
   onSalva: (campi: CampiAttivita) => Promise<unknown>
   onChiudi: () => void
-  /** Solo in modifica: in fondo al form compare "Elimina trekking". */
+  /** Solo in modifica: in fondo al form compare "Elimina trekking" o "Elimina avventura". */
   onElimina?: () => void
 }
 
 const CAMPO =
   'min-h-11 w-full rounded-[11px] border border-bordo bg-white px-3 focus:outline-2 focus:-outline-offset-1 focus:outline-montagna'
 
-const PASSI = ['Dove', 'Quanto', 'Link', 'Note'] as const
-const ULTIMO = PASSI.length - 1
+type Passo = 'Dove' | 'Quanto' | 'Link' | 'Note'
+
+/** Un'avventura non ha dislivello né durata: il passo "Quanto" non c'è. */
+const PASSI: Record<Tipo, readonly Passo[]> = {
+  trekking: ['Dove', 'Quanto', 'Link', 'Note'],
+  avventura: ['Dove', 'Link', 'Note'],
+}
+
+const SCELTA_TIPO =
+  'min-h-11 flex-1 rounded-[11px] border border-bordo px-3 font-semibold text-testo-tenue aria-pressed:border-montagna aria-pressed:bg-montagna aria-pressed:text-panna'
 
 /**
- * Il form del trekking (docs/02-funzionalita.md, inserimento rapido), pensato
- * per il telefono: a schermo intero, un wizard in quattro passi (dove, quanto,
- * link, note) con "Indietro" e "Avanti" sempre in vista in fondo. Serve solo il
- * nome; il luogo si scrive per nome o per coordinate, i link uno per campo, le
- * note in Markdown. Un trekking nuovo si salva all'ultimo passo; in modifica
- * "Salva" c'è a ogni passo e dall'indicatore si salta dove serve.
+ * Il form di un trekking o di un'avventura (docs/02-funzionalita.md,
+ * inserimento rapido), pensato per il telefono: a schermo intero, un wizard a
+ * passi (dove, quanto, link, note; senza "quanto" per le avventure) con
+ * "Indietro" e "Avanti" sempre in vista in fondo. Serve solo il nome; il luogo
+ * si scrive per nome o per coordinate, i link uno per campo, le note in
+ * Markdown. Un'attività nuova si salva all'ultimo passo; in modifica "Salva"
+ * c'è a ogni passo e dall'indicatore si salta dove serve.
  */
-export function ModaleAttivita({ titolo, iniziale, esistenti, escludi, onSalva, onChiudi, onElimina }: Props) {
+export function ModaleAttivita({ tipoIniziale = 'trekking', iniziale, esistenti, escludi, onSalva, onChiudi, onElimina }: Props) {
+  const [tipo, setTipo] = useState<Tipo>(iniziale?.tipo ?? tipoIniziale)
+  const testi = TESTI[tipo]
+  const passi = PASSI[tipo]
+  const ultimo = passi.length - 1
   const [passo, setPasso] = useState(0)
   const [nome, setNome] = useState(iniziale?.nome ?? '')
   const [link, setLink] = useState<string[]>(() => (iniziale?.link.length ? [...iniziale.link] : ['']))
@@ -57,21 +72,22 @@ export function ModaleAttivita({ titolo, iniziale, esistenti, escludi, onSalva, 
   // (docs/02-funzionalita.md).
   const gia = doppione(esistenti, nome, escludi)
   /** Chi ha un campo storto ferma il wizard lì: link e note vanno sempre bene. */
-  const passiValidi = [
-    nomeValido(nome) && luogoValido(luogo),
-    dislivelloValido(dislivello) && durataValida(durata) && viaggioValido(viaggio),
-    true,
-    true,
-  ]
+  const validi: Record<Passo, boolean> = {
+    Dove: nomeValido(nome) && luogoValido(luogo),
+    Quanto: dislivelloValido(dislivello) && durataValida(durata) && viaggioValido(viaggio),
+    Link: true,
+    Note: true,
+  }
+  const passiValidi = passi.map((nomePasso) => validi[nomePasso])
   const valido = passiValidi.every(Boolean)
   /** Si arriva fino al primo passo storto compreso, non oltre. */
   const raggiungibile = (indice: number) => passiValidi.slice(0, indice).every(Boolean)
-  const salvabile = valido && (passo === ULTIMO || iniziale !== undefined)
+  const salvabile = valido && (passo === ultimo || iniziale !== undefined)
 
   // Invio dentro un campo porta avanti; solo all'ultimo passo salva.
   const invia = (evento: FormEvent) => {
     evento.preventDefault()
-    if (passo < ULTIMO) {
+    if (passo < ultimo) {
       if (passiValidi[passo]) setPasso(passo + 1)
       return
     }
@@ -86,11 +102,13 @@ export function ModaleAttivita({ titolo, iniziale, esistenti, escludi, onSalva, 
     try {
       const salvato = await risolviLuogo(luogo)
       await onSalva({
+        tipo,
         nome: pulisciNome(nome),
         link: pulisciLink(link.join('\n')),
         note: note.trim() === '' ? null : note,
-        dislivello: pulisciDislivello(dislivello),
-        durata_ore: pulisciDurata(durata),
+        // Un trekking che diventa avventura perde i numeri che non ha più.
+        dislivello: tipo === 'trekking' ? pulisciDislivello(dislivello) : null,
+        durata_ore: tipo === 'trekking' ? pulisciDurata(durata) : null,
         viaggio_minuti: minuti,
         viaggio_manuale: viaggioManuale(minuti, iniziale ?? null),
         ...salvato,
@@ -109,7 +127,7 @@ export function ModaleAttivita({ titolo, iniziale, esistenti, escludi, onSalva, 
 
   return (
     <Modale
-      titolo={titolo}
+      titolo={iniziale ? testi.modifica : testi.nuovo}
       onChiudi={onChiudi}
       mobile="schermoIntero"
       piede={
@@ -133,7 +151,7 @@ export function ModaleAttivita({ titolo, iniziale, esistenti, escludi, onSalva, 
               </>
             )}
           </button>
-          {passo < ULTIMO && iniziale !== undefined && (
+          {passo < ultimo && iniziale !== undefined && (
             <button
               type="button"
               className="min-h-11 flex-1 rounded-[11px] border border-montagna px-4 font-semibold text-montagna-scura hover:bg-fondo disabled:opacity-50 sm:flex-none"
@@ -143,7 +161,7 @@ export function ModaleAttivita({ titolo, iniziale, esistenti, escludi, onSalva, 
               {inCorso ? 'Salvo…' : 'Salva'}
             </button>
           )}
-          {passo < ULTIMO ? (
+          {passo < ultimo ? (
             <button
               type="button"
               className="flex min-h-11 flex-[2] items-center justify-center gap-1 rounded-[11px] bg-montagna px-4 font-semibold text-panna hover:bg-montagna-scura disabled:opacity-50 sm:flex-none"
@@ -166,8 +184,11 @@ export function ModaleAttivita({ titolo, iniziale, esistenti, escludi, onSalva, 
         </>
       }
     >
-      <ol className="m-0 mb-5 grid list-none grid-cols-4 gap-1.5 p-0" aria-label="Passi">
-        {PASSI.map((nomePasso, indice) => (
+      <ol
+        className={`m-0 mb-5 grid list-none gap-1.5 p-0 ${passi.length === 4 ? 'grid-cols-4' : 'grid-cols-3'}`}
+        aria-label="Passi"
+      >
+        {passi.map((nomePasso, indice) => (
           <li key={nomePasso}>
             <button
               type="button"
@@ -183,8 +204,21 @@ export function ModaleAttivita({ titolo, iniziale, esistenti, escludi, onSalva, 
         ))}
       </ol>
       <form id={id} className="flex flex-col gap-6" onSubmit={invia}>
-        {passo === 0 && (
+        {passi[passo] === 'Dove' && (
           <Gruppo titolo="Dove">
+            <div className="flex gap-2" role="group" aria-label="Tipo">
+              {TIPI.map((scelta) => (
+                <button
+                  key={scelta}
+                  type="button"
+                  className={SCELTA_TIPO}
+                  aria-pressed={scelta === tipo}
+                  onClick={() => setTipo(scelta)}
+                >
+                  {TESTI[scelta].nome}
+                </button>
+              ))}
+            </div>
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-semibold" htmlFor={`${id}-nome`}>
                 Nome <span className="font-normal text-testo-tenue">(obbligatorio)</span>
@@ -193,17 +227,17 @@ export function ModaleAttivita({ titolo, iniziale, esistenti, escludi, onSalva, 
                 id={`${id}-nome`}
                 aria-required="true"
                 className={CAMPO}
-                // Solo per un trekking nuovo: in modifica la tastiera coprirebbe metà form.
+                // Solo per un'attività nuova: in modifica la tastiera coprirebbe metà form.
                 autoFocus={!iniziale}
                 autoCapitalize="sentences"
                 enterKeyHint="next"
-                placeholder="Pizzo Coca"
+                placeholder={testi.esempioNome}
                 value={nome}
                 onChange={(evento) => setNome(evento.target.value)}
               />
               {gia && (
                 <p className="m-0 text-xs text-testo-tenue">
-                  Esiste già un trekking che si chiama <strong>{gia.nome}</strong>.
+                  {TESTI[gia.tipo].esisteGia} che si chiama <strong>{gia.nome}</strong>.
                 </p>
               )}
             </div>
@@ -213,7 +247,7 @@ export function ModaleAttivita({ titolo, iniziale, esistenti, escludi, onSalva, 
           </Gruppo>
         )}
 
-        {passo === 1 && (
+        {passi[passo] === 'Quanto' && (
           <Gruppo titolo="Quanto">
             <CampoNumero
               id={`${id}-dislivello`}
@@ -252,7 +286,7 @@ export function ModaleAttivita({ titolo, iniziale, esistenti, escludi, onSalva, 
           </Gruppo>
         )}
 
-        {passo === 2 && (
+        {passi[passo] === 'Link' && (
           <Gruppo titolo="Link">
             {link.map((indirizzo, indice) => (
               <div key={indice} className="flex items-center gap-1">
@@ -266,7 +300,7 @@ export function ModaleAttivita({ titolo, iniziale, esistenti, escludi, onSalva, 
                   autoCapitalize="off"
                   autoCorrect="off"
                   className={CAMPO}
-                  placeholder="https://www.komoot.com/tour/..."
+                  placeholder={testi.esempioLink}
                   value={indirizzo}
                   onChange={(evento) => cambiaLink(indice, evento.target.value)}
                 />
@@ -295,7 +329,7 @@ export function ModaleAttivita({ titolo, iniziale, esistenti, escludi, onSalva, 
           </Gruppo>
         )}
 
-        {passo === ULTIMO && (
+        {passi[passo] === 'Note' && (
           <Gruppo titolo="Note">
             <EditorMarkdown valore={note} onCambia={setNote} etichetta="Note" righe={8} />
           </Gruppo>
@@ -308,7 +342,7 @@ export function ModaleAttivita({ titolo, iniziale, esistenti, escludi, onSalva, 
             onClick={onElimina}
           >
             <Trash2 className="size-[18px]" aria-hidden="true" />
-            Elimina trekking
+            {testi.elimina}
           </button>
         )}
       </form>

@@ -7,7 +7,7 @@
 
 import type { Coordinate } from './coordinate'
 import { distanzaDaCasa } from './distanza'
-import type { Attivita } from './tipi'
+import type { Attivita, Tipo } from './tipi'
 import { formattaDurata } from './durata'
 import { formattaViaggio } from './viaggio'
 
@@ -50,6 +50,29 @@ export type ChiaveFiltro = keyof Filtri
 
 /** L'ordine in cui compaiono nel pannello e fra i filtri attivi. */
 export const CHIAVI_FILTRI: readonly ChiaveFiltro[] = ['dislivello', 'durata', 'distanza', 'viaggio']
+
+/**
+ * I filtri che hanno senso per ogni tipo: un'avventura non ha dislivello né
+ * durata, quindi si sceglie solo per quanto è lontana.
+ */
+export const CHIAVI_PER_TIPO: Record<Tipo, readonly ChiaveFiltro[]> = {
+  trekking: CHIAVI_FILTRI,
+  avventura: ['distanza', 'viaggio'],
+}
+
+/** I filtri con accese solo le chiavi date: le altre non contano e non si vedono. */
+export function soloChiavi(filtri: Filtri, chiavi: readonly ChiaveFiltro[]): Filtri {
+  const solo = { ...FILTRI_VUOTI }
+  for (const chiave of chiavi) solo[chiave] = filtri[chiave]
+  return solo
+}
+
+/** Riporta in `filtri` le chiavi date di `nuovi`, lasciando le altre come stavano. */
+export function conChiavi(filtri: Filtri, nuovi: Filtri, chiavi: readonly ChiaveFiltro[]): Filtri {
+  const uniti = { ...filtri }
+  for (const chiave of chiavi) uniti[chiave] = nuovi[chiave]
+  return uniti
+}
 
 export const NOMI_FILTRI: Record<ChiaveFiltro, string> = {
   dislivello: 'Dislivello',

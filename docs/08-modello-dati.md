@@ -9,13 +9,14 @@ Tutto sta nello schema Postgres `adventures`, con nomi in italiano come nelle al
 | Colonna | Tipo | Vincoli e note |
 |---|---|---|
 | `id` | `uuid` | chiave, `gen_random_uuid()` |
+| `tipo` | `text` | `trekking` (default) o `avventura` |
 | `nome` | `text` | obbligatorio, non vuoto |
 | `luogo_nome` | `text` | facoltativo; vuoto se il luogo è inserito come coordinate |
 | `lat` | `double precision` | facoltativo, tra −90 e 90 |
 | `lon` | `double precision` | facoltativo, tra −180 e 180; `lat` e `lon` sono entrambi presenti o entrambi vuoti |
 | `link` | `text[]` | uno o più indirizzi, default `{}` |
-| `dislivello` | `integer` | metri, `> 0`, facoltativo |
-| `durata_ore` | `numeric(3,1)` | `> 0`, solo multipli di 0.5, facoltativo |
+| `dislivello` | `integer` | metri, `> 0`, facoltativo; sempre vuoto per le avventure |
+| `durata_ore` | `numeric(3,1)` | `> 0`, solo multipli di 0.5, facoltativo; sempre vuoto per le avventure |
 | `viaggio_minuti` | `integer` | tempo di viaggio in auto da casa, `>= 0`, facoltativo |
 | `viaggio_manuale` | `boolean` | `true` se il tempo di viaggio è stato scritto a mano: il ricalcolo non lo tocca |
 | `note` | `text` | Markdown, facoltativo |
@@ -24,6 +25,7 @@ Tutto sta nello schema Postgres `adventures`, con nomi in italiano come nelle al
 | `modificato_il` | `timestamptz` | aggiornato da trigger |
 
 Regole nel database:
+- un'avventura non ha `dislivello` né `durata_ore` (vincolo `attivita_avventura_senza_numeri`);
 - se cambiano `lat` o `lon` e `viaggio_manuale` è `false`, un trigger svuota `viaggio_minuti`, così il tempo verrà ricalcolato;
 - se si svuota `viaggio_minuti`, `viaggio_manuale` torna `false`.
 

@@ -1,12 +1,22 @@
 import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react'
 import { Compass, Menu, Plus, X } from 'lucide-react'
 import { percorsi } from '../dati'
-import { quantiCompletati, visibili } from '../dominio/elenco'
-import { FILTRI_VUOTI, type Filtri as ValoriFiltri, filtra, quantiFiltri } from '../dominio/filtri'
+import { delTipo, quantiCompletati, visibili } from '../dominio/elenco'
+import {
+  CHIAVI_FILTRI,
+  CHIAVI_PER_TIPO,
+  FILTRI_VUOTI,
+  type Filtri as ValoriFiltri,
+  conChiavi,
+  filtra,
+  quantiFiltri,
+  soloChiavi,
+} from '../dominio/filtri'
 import { ORDINAMENTO_INIZIALE, ordina, tocca, type Ordinamento } from '../dominio/ordinamento'
 import { mancanti } from '../dominio/percorsi'
 import { cerca } from '../dominio/ricerca'
-import type { CampiAttivita, Attivita } from '../dominio/tipi'
+import { TESTI } from '../dominio/tipo'
+import type { Attivita, CampiAttivita, Tipo } from '../dominio/tipi'
 import { BarraMappa } from './BarraMappa'
 import { Conferma } from './Conferma'
 import { ModaleDettagli } from './ModaleDettagli'
@@ -17,7 +27,7 @@ import { MenuLaterale } from './MenuLaterale'
 import { ModaleAttivita } from './ModaleAttivita'
 import { useInterruttore } from './preferenze'
 import { useCasa } from './useCasa'
-import { indirizzi, useRotta } from './rotta'
+import { indirizzi, tipoDellaRotta, useRotta } from './rotta'
 import { installa, useInstallazione } from './installazione'
 import { useAttivita } from './useAttivita'
 
@@ -35,13 +45,20 @@ export function App() {
   const rotta = useRotta()
   /** La Mappa è la pagina principale e prende tutto lo spazio sotto l'intestazione. */
   const suMappa = rotta === 'mappa'
+  /** Il tipo dell'elenco che si guarda: `null` sulla Mappa e su Installa. */
+  const tipoPagina = tipoDellaRotta(rotta)
   const [menuAperto, setMenuAperto] = useState(false)
-  const [nuovoAperto, setNuovoAperto] = useState(false)
-  /** Il trekking che si sta modificando, e quello che si sta eliminando. */
+  /** Il form di un'attività nuova, aperto sul tipo della pagina: dalla Mappa un trekking. */
+  const [nuovo, setNuovo] = useState<Tipo | null>(null)
+  const apriNuovo = () => setNuovo(tipoPagina ?? 'trekking')
+  const etichettaNuovo = tipoPagina ? TESTI[tipoPagina].nuovo : 'Nuovo'
+  /** Sulla Mappa trekking e avventure stanno insieme: qui si sceglie se vederne uno solo. */
+  const [tipoMappa, setTipoMappa] = useState<Tipo | null>(null)
+  /** L'attività che si sta modificando, e quella che si sta eliminando. */
   const [daModificare, setDaModificare] = useState<Attivita | null>(null)
   const [daEliminare, setDaEliminare] = useState<Attivita | null>(null)
   /**
-   * Il trekking di cui si guardano i dettagli, per id: si rilegge dall'elenco,
+   * L'attività di cui si guardano i dettagli, per id: si rilegge dall'elenco,
    * così dopo una modifica o un completato mostra i dati nuovi. Mentre si
    * modifica resta sotto, e alla chiusura del form ricompare.
    */
@@ -71,8 +88,8 @@ export function App() {
   }, [stato, casa])
 
   /**
-   * Dopo ogni salvataggio si calcola il tempo del trekking appena salvato e di
-   * quelli che ancora mancano, in sottofondo: il form si chiude subito.
+   * Dopo ogni salvataggio si calcola il tempo dell'attività appena salvata e di
+   * quelle a cui ancora manca, in sottofondo: il form si chiude subito.
    */
   const conViaggi = (salva: (campi: CampiAttivita) => Promise<Attivita>) => async (campi: CampiAttivita) => {
     const salvato = await salva(campi)
@@ -80,9 +97,22 @@ export function App() {
     return salvato
   }
 
-  /** Quelli da mostrare, uguali per l'elenco e per la mappa (docs/02-funzionalita.md). */
-  const daMostrare = (tutti: readonly Attivita[]) =>
-    filtra(cerca(visibili(tutti, mostraCompletati), ricerca), filtri, casa)
+  /**
+   * Il tipo che si vede ora e i filtri che gli servono (docs/02-funzionalita.md):
+   * sulle avventure dislivello e durata non contano e non compaiono, ma restano
+   * accesi per quando si torna ai trekking.
+   */
+  const tipoVisto = suMappa ? tipoMappa : tipoPagina
+  const chiavi = tipoVisto ? CHIAVI_PER_TIPO[tipoVisto] : CHIAVI_FILTRI
+  const filtriVisti = soloChiavi(filtri, chiavi)
+  const cambiaFiltri = (nuovi: ValoriFiltri) => setFiltri((prima) => conChiavi(prima, nuovi, chiavi))
+
+  /** Quelle del tipo che si guarda: tutte, sulla Mappa senza una scelta. */
+  const delTipoVisto = (tutte: readonly Attivita[]) => (tipoVisto ? delTipo(tutte, tipoVisto) : [...tutte])
+
+  /** Quelle da mostrare, con le stesse regole per gli elenchi e per la mappa. */
+  const daMostrare = (tutte: readonly Attivita[]) =>
+    filtra(cerca(visibili(delTipoVisto(tutte), mostraCompletati), ricerca), filtriVisti, casa)
 
   /** Per l'avviso dei doppioni contano tutti, completati compresi. */
   const esistenti = stato.fase === 'pronto' ? stato.attivita : []
@@ -135,20 +165,21 @@ export function App() {
         <button
           className="ml-auto flex min-h-9 items-center gap-1.5 rounded-[11px] px-2.5 font-semibold hover:bg-montagna-scura active:bg-montagna-scura"
           type="button"
-          aria-label="Nuovo trekking"
-          onClick={() => setNuovoAperto(true)}
+          aria-label={etichettaNuovo}
+          onClick={apriNuovo}
         >
           <Plus className="size-[22px]" aria-hidden="true" />
-          <span className="hidden lg:inline">Nuovo trekking</span>
+          <span className="hidden lg:inline">{etichettaNuovo}</span>
         </button>
       </header>
       <MenuLaterale
         aperto={menuAperto}
         corrente={rotta}
         onChiudi={chiudiMenu}
+        etichettaNuovo={etichettaNuovo}
         onNuovo={() => {
           setMenuAperto(false)
-          setNuovoAperto(true)
+          apriNuovo()
         }}
         onInstalla={
           statoInstallazione === 'installata'
@@ -189,28 +220,32 @@ export function App() {
             <BarraMappa
               ricerca={ricerca}
               onRicerca={setRicerca}
-              filtri={filtri}
-              onFiltri={setFiltri}
+              filtri={filtriVisti}
+              onFiltri={cambiaFiltri}
               conDistanza={casa !== null}
               mostraCompletati={mostraCompletati}
-              quantiCompletati={quantiCompletati(stato.attivita)}
+              quantiCompletati={quantiCompletati(delTipoVisto(stato.attivita))}
               onMostraCompletati={setMostraCompletati}
+              tipo={tipoMappa}
+              onTipo={setTipoMappa}
+              chiavi={chiavi}
             />
           </Suspense>
         )}
-        {rotta === 'elenco' && stato.fase === 'pronto' && (
+        {tipoPagina && stato.fase === 'pronto' && (
           <>
             <BarraElenco
               ricerca={ricerca}
               onRicerca={setRicerca}
-              filtri={filtri}
-              onFiltri={setFiltri}
+              filtri={filtriVisti}
+              onFiltri={cambiaFiltri}
               conDistanza={casa !== null}
               mostraCompletati={mostraCompletati}
-              quantiCompletati={quantiCompletati(stato.attivita)}
+              quantiCompletati={quantiCompletati(delTipoVisto(stato.attivita))}
               onMostraCompletati={setMostraCompletati}
               mostrati={daMostrare(stato.attivita).length}
-              totali={stato.attivita.length}
+              totali={delTipoVisto(stato.attivita).length}
+              chiavi={chiavi}
             />
             {erroreCompletato && (
               <p className="mb-2 text-sm text-pericolo" role="alert">
@@ -218,15 +253,16 @@ export function App() {
               </p>
             )}
             <Elenco
+              tipo={tipoPagina}
               attivita={ordina(daMostrare(stato.attivita), ordinamento, casa)}
               ordinamento={ordinamento}
               onOrdina={(colonna) => setOrdinamento((prima) => tocca(prima, colonna))}
               ricerca={ricerca}
-              conFiltri={quantiFiltri(filtri) > 0}
+              conFiltri={quantiFiltri(filtriVisti) > 0}
               casa={casa}
-              onNuovo={() => setNuovoAperto(true)}
+              onNuovo={apriNuovo}
               onDettagli={apriDettagli}
-              nascosti={mostraCompletati ? 0 : quantiCompletati(stato.attivita)}
+              nascosti={mostraCompletati ? 0 : quantiCompletati(delTipoVisto(stato.attivita))}
               onCompletato={(t) => void cambiaCompletato(t)}
               onRinomina={setDaModificare}
               onElimina={(t) => {
@@ -237,12 +273,12 @@ export function App() {
           </>
         )}
       </main>
-      {nuovoAperto && (
+      {nuovo && (
         <ModaleAttivita
-          titolo="Nuovo trekking"
+          tipoIniziale={nuovo}
           esistenti={esistenti}
           onSalva={conViaggi(crea)}
-          onChiudi={() => setNuovoAperto(false)}
+          onChiudi={() => setNuovo(null)}
         />
       )}
       {dettaglio && !daModificare && !daEliminare && (
@@ -256,8 +292,8 @@ export function App() {
       )}
       {daModificare && (
         <ModaleAttivita
-          titolo="Modifica trekking"
           iniziale={{
+            tipo: daModificare.tipo,
             nome: daModificare.nome,
             link: daModificare.link,
             note: daModificare.note,
@@ -292,8 +328,8 @@ export function App() {
         >
           <p className="m-0">
             {daRicalcolare === 1
-              ? 'A un trekking manca il tempo di viaggio da casa.'
-              : `A ${daRicalcolare} trekking manca il tempo di viaggio da casa.`}
+              ? "A un'attività manca il tempo di viaggio da casa."
+              : `A ${daRicalcolare} attività manca il tempo di viaggio da casa.`}
           </p>
         </Conferma>
       )}
@@ -313,7 +349,7 @@ export function App() {
       )}
       {daEliminare && (
         <Conferma
-          titolo="Elimina trekking"
+          titolo={TESTI[daEliminare.tipo].elimina}
           conferma="Elimina"
           pericolo
           onConferma={() => void confermaEliminazione()}

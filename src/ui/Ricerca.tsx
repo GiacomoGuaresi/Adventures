@@ -13,7 +13,7 @@ export function Ricerca({ testo, onCambia }: Props) {
   return (
     <div className="relative flex-1">
       <label className="sr-only" htmlFor={id}>
-        Cerca un trekking
+        Cerca per nome
       </label>
       <Search
         className="pointer-events-none absolute top-1/2 left-3 size-[18px] -translate-y-1/2 text-testo-tenue"

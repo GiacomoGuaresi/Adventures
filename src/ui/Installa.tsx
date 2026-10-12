@@ -42,7 +42,7 @@ export function Installa({ stato }: { stato: StatoInstallazione }) {
     <section className={riquadro}>
       <h2 className="text-lg font-semibold">Mettila sulla schermata Home</h2>
       <p className="text-testo-tenue">
-        Installata si apre a schermo intero, come un'app. Per vedere e salvare i trekking serve comunque la rete.
+        Installata si apre a schermo intero, come un'app. Per vedere e salvare trekking e avventure serve comunque la rete.
       </p>
       <ol className="flex list-decimal flex-col gap-1.5 pl-5">
         {passi.map((passo) => (
