@@ -211,17 +211,17 @@ L'app smette di essere solo trekking: prima cambia nome senza cambiare cosa fa, 
 - [ ] **30 · Rinomina in Adventures**: repository, indirizzo, nome della PWA, schema e tabella del database, Edge Function; nessuna funzione nuova
   - [x] Codice: `base: '/Adventures/'`, manifest, schema `adventures`, tabella `attivita` (`src/dati/attivita.ts`), tipi `Attivita` e `CampiAttivita`, `useAttivita.ts`, `ModaleAttivita.tsx`, Edge Function `adventures-link-mappe`
   - [x] Icona Lucide `compass` al posto di `mountain-snow` (`public/icona.svg`, `npm run icone`); palette e sfondo restano
-  - [ ] `012_adventures.sql` applicato in produzione: schema, tabella, policy e vincoli rinominati
-  - [ ] `adventures` al posto di `trekking` negli Exposed schemas; nuovo indirizzo negli URL di redirect di Auth
-  - [ ] Edge Function `adventures-link-mappe` pubblicata, la vecchia eliminata
-  - [ ] Repository rinominato in `Adventures`, deploy su `giacomoguaresi.github.io/Adventures/`
+  - [x] `012_adventures.sql` applicato in produzione il 2026-10-12: schema, tabella, policy e vincoli rinominati, le 116 righe al loro posto
+  - [x] `adventures` al posto di `trekking` negli Exposed schemas; nuovo indirizzo negli URL di redirect di Auth al posto del vecchio (2026-10-12)
+  - [x] Edge Function `adventures-link-mappe` pubblicata, la vecchia eliminata (2026-10-12)
+  - [x] Repository rinominato in `Adventures`, deploy su `giacomoguaresi.github.io/Adventures/` (2026-10-12); il vecchio indirizzo non risponde più
   - [ ] App reinstallata sui telefoni dal nuovo indirizzo
 - [ ] **31 · Avventure**: colonna `tipo` (`trekking` · `avventura`), due elenchi nel menu, form senza "Quanto" per le avventure, tipo sulla mappa
   - [x] `tipo` nei tipi, `delTipo` e filtri per tipo con i loro test (`src/dominio/tipi.ts`, `tipo.ts`, `elenco.ts`, `filtri.ts`)
   - [x] Rotte `#/trekking` e `#/avventure` (il vecchio `#/elenco` porta ai trekking), menu con le due voci (`rotta.ts`, `MenuLaterale.tsx`)
   - [x] Form con la scelta del tipo e senza "Quanto" per le avventure (`ModaleAttivita.tsx`); elenco, dettagli e popup senza dislivello e durata
   - [x] Mappa comune con i puntini terracotta per le avventure e la scelta Tutti / Trekking / Avventure (`Mappa.tsx`, `BarraMappa.tsx`)
-  - [ ] `013_tipo.sql` applicato in produzione
+  - [x] `013_tipo.sql` applicato in produzione il 2026-10-12: le righe esistenti sono trekking, un'avventura con il dislivello viene rifiutata
   - [ ] Provato sull'app online: una "Fare rafting" creata, vista sul suo elenco e sulla mappa, completata
 
 ## Più avanti, se servirà

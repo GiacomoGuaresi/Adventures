@@ -37,7 +37,7 @@ URL: `https://giacomoguaresi.github.io/Adventures/`. Vite ha `base: '/Adventures
 ## Configurazioni una tantum
 
 Sulla dashboard Supabase:
-1. Settings → Data API → aggiungere `trekking` agli *Exposed schemas*. Fatto il 2026-09-16 con la Management API (`PATCH /v1/projects/{ref}/postgrest`, `db_schema: "public,graphql_public,projects,trekking"`): la lista si manda sempre intera. Con la rinomina ([06](06-roadmap.md), step 30) nella lista `adventures` prende il posto di `trekking`
+1. Settings → Data API → aggiungere `trekking` agli *Exposed schemas*. Fatto il 2026-09-16 con la Management API (`PATCH /v1/projects/{ref}/postgrest`, `db_schema: "public,graphql_public,projects,trekking"`): la lista si manda sempre intera. Con la rinomina ([06](06-roadmap.md), step 30) nella lista `adventures` ha preso il posto di `trekking` (2026-10-12: `public,graphql_public,projects,adventures,logger,space`)
 2. Authentication → URL Configuration → aggiungere `https://giacomoguaresi.github.io/Adventures/` (fino alla rinomina era `…/Trekking/`, aggiunto il 2026-09-16 con la Management API: `PATCH /v1/projects/{ref}/config/auth`, `uri_allow_list`)
 3. Eseguire gli script di `supabase/sql/` in ordine: dalla cartella di Grocery, già collegata al progetto, `supabase db query --linked -f ../Adventures/supabase/sql/NNN_*.sql`
 4. Inserire le coordinate di casa in `adventures.impostazioni` dal SQL Editor, **senza salvarle in un file** ([04](04-sicurezza.md))

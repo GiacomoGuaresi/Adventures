@@ -55,7 +55,7 @@ Un'app statica **non ha segreti**: ogni variabile `VITE_*`, anche se sta nei *Se
 
 Dopo la rinomina in Adventures ([06](06-roadmap.md), step 30):
 
-- [ ] RLS ancora attiva su `adventures.attivita` e `adventures.impostazioni`; senza sessione nessuna riga
-- [ ] URL di redirect di Auth: aggiunto `https://giacomoguaresi.github.io/Adventures/`, tolto quello vecchio
+- [x] RLS ancora attiva su `adventures.attivita` e `adventures.impostazioni`; senza sessione nessuna riga (2026-10-12: "permission denied for schema adventures")
+- [x] URL di redirect di Auth: aggiunto `https://giacomoguaresi.github.io/Adventures/`, tolto quello vecchio (2026-10-12)
 - [ ] Sessione condivisa: accesso a Projects → Adventures aperto senza passphrase
-- [ ] Edge Function `adventures-link-mappe`: senza sessione risponde `401`; la vecchia `trekking-link-mappe` eliminata
+- [x] Edge Function `adventures-link-mappe`: senza sessione risponde `401`, anche con la sola publishable key; la vecchia `trekking-link-mappe` eliminata (2026-10-12)
