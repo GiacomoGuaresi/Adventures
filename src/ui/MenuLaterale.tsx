@@ -112,7 +112,7 @@ export function MenuLaterale({ aperto, corrente, onChiudi, tipoNuovo, onNuovo, o
                 href={indirizzi[rotta]}
                 aria-current={rotta === corrente ? 'page' : undefined}
                 onClick={onChiudi}
-                className="group flex min-h-11 items-center gap-3 rounded-lg px-3 hover:bg-fondo active:bg-bordo aria-[current=page]:bg-ghiaccio aria-[current=page]:font-semibold aria-[current=page]:shadow-[inset_3px_0_0_var(--color-montagna-scura)]"
+                className="group flex min-h-11 items-center gap-3 rounded-lg px-3 hover:bg-fondo active:bg-bordo aria-[current=page]:bg-ghiaccio aria-[current=page]:font-semibold aria-[current=page]:shadow-[inset_3px_0_0_var(--color-sole-scuro)]"
               >
                 <Icona
                   className="size-[18px] text-testo-tenue group-aria-[current=page]:text-montagna-scura"

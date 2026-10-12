@@ -36,7 +36,7 @@ export function Accesso({ onEntra }: Props) {
   return (
     <main className="grid min-h-dvh place-items-center bg-fondo p-3">
       <form className="flex w-full max-w-[300px] flex-col gap-2" onSubmit={invia}>
-        <MountainSnow className="size-11 self-center text-montagna" aria-hidden="true" />
+        <MountainSnow className="size-11 self-center text-sole-scuro" aria-hidden="true" />
         <h1 className="mb-3 text-center text-lg font-semibold">Adventures</h1>
         <label className="text-xs text-testo-tenue" htmlFor="passphrase">
           Passphrase

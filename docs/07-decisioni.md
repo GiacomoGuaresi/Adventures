@@ -48,3 +48,4 @@
 | 2026-10-12 | Per le avventure bastano **note e link**: niente diario a voci datate come in Projects | deciso |
 | 2026-10-12 | Nel menu **due elenchi separati**, Trekking e Avventure, più la Mappa comune | deciso |
 | 2026-10-12 | Icona Lucide `compass` al posto di `mountain-snow`; palette e sfondo restano | deciso |
+| 2026-10-12 | **Accento color sole** (`#f0b556`, scuro `#9a6a12`), l'oro delle altre app di casa: ago dell'icona, bussola dell'intestazione, barretta del menu, icona dell'accesso ([09](09-interfaccia.md)) | deciso |

@@ -164,7 +164,7 @@ export function App() {
         >
           <Menu className="size-[22px]" aria-hidden="true" />
         </button>
-        <Compass className="size-[22px] shrink-0" aria-hidden="true" />
+        <Compass className="size-[22px] shrink-0 text-sole" aria-hidden="true" />
         <h1 className="ml-1 text-lg font-semibold tracking-[0.01em]">Adventures</h1>
         <button
           className="ml-auto flex min-h-9 items-center gap-1.5 rounded-[11px] px-2.5 font-semibold hover:bg-montagna-scura active:bg-montagna-scura"

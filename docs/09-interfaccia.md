@@ -13,7 +13,9 @@ Stessa struttura di Grocery e Projects, con un colore diverso:
 | Uso | Colore | Note |
 |---|---|---|
 | Intestazione, pulsanti principali, `theme_color` della PWA | `#3f6485` | blu montagna |
-| Accento, puntini dei trekking sulla mappa | `#5b87ad` | blu più chiaro |
+| Puntini dei trekking sulla mappa | `#5b87ad` | blu più chiaro |
+| Accento sul blu: bussola dell'intestazione, ago dell'icona | `#f0b556` | sole, l'oro delle altre app di casa |
+| Accento sui fondi chiari: barretta della voce corrente nel menu, icona dell'accesso | `#9a6a12` | sole scuro |
 | Puntini delle avventure sulla mappa | `#c9793f` | terracotta, bordo `#8a4a22` |
 | Sfondo, `background_color` della PWA | `#f1f5f9` | azzurro ghiaccio molto chiaro |
 | Testo e icone sull'intestazione | `#fbf8f1` | panna, come nelle altre app |
@@ -22,7 +24,7 @@ Valori di partenza, da rifinire allo step "Aspetto" della [roadmap](06-roadmap.m
 
 ## Icona
 
-Stesso sistema delle altre app: disegno Lucide **`compass`** (la bussola: prima della rinomina era `mountain-snow`) panna su blu montagna `#3f6485`, in `public/icona.svg`, da cui `npm run icone` genera le icone della PWA.
+Stesso sistema delle altre app: disegno Lucide **`compass`** (la bussola: prima della rinomina era `mountain-snow`) su blu montagna `#3f6485`, col cerchio panna e l'ago color sole `#f0b556`, in `public/icona.svg`, da cui `npm run icone` genera le icone della PWA.
 
 ## Sfondo
 

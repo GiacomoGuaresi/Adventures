@@ -6,6 +6,9 @@
   --color-montagna: #3f6485;
   --color-montagna-chiara: #5b87ad;
   --color-montagna-scura: #32516c;
+  /* Accento: il chiaro sta sul blu montagna, lo scuro sui fondi chiari. */
+  --color-sole: #f0b556;
+  --color-sole-scuro: #9a6a12;
   --color-fondo: #f1f5f9;
   /* Fondo della voce scelta nel menu. */
   --color-ghiaccio: #dbe7f1;
