@@ -23,11 +23,11 @@ export function distanza(da: Coordinate, a: Coordinate): number {
 
 /** La distanza da casa di un trekking: `null` se manca il luogo o la posizione di casa. */
 export function distanzaDaCasa(
-  trekking: { lat: number | null; lon: number | null },
+  attivita: { lat: number | null; lon: number | null },
   casa: Coordinate | null,
 ): number | null {
-  if (casa === null || trekking.lat === null || trekking.lon === null) return null
-  return distanza(casa, { lat: trekking.lat, lon: trekking.lon })
+  if (casa === null || attivita.lat === null || attivita.lon === null) return null
+  return distanza(casa, { lat: attivita.lat, lon: attivita.lon })
 }
 
 /** Come si legge nell'elenco: i decimali solo quando è vicino. */

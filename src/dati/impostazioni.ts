@@ -1,4 +1,4 @@
-// Le impostazioni dell'app, tabella `trekking.impostazioni` (docs/08-modello-dati.md):
+// Le impostazioni dell'app, tabella `adventures.impostazioni` (docs/08-modello-dati.md):
 // una riga sola, con la posizione di casa inserita a mano dal SQL Editor.
 
 import type { SupabaseClient } from '@supabase/supabase-js'

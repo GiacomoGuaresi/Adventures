@@ -1,16 +1,16 @@
 import { describe, expect, it } from 'vitest'
 import { ORDINAMENTO_INIZIALE, ordina, tocca } from './ordinamento'
 import { esempio } from './esempi'
-import type { Trekking } from './tipi'
+import type { Attivita } from './tipi'
 
-function trekking(id: string, nome: string, creato_il: string): Trekking {
+function attivita(id: string, nome: string, creato_il: string): Attivita {
   return esempio({ id, nome, creato_il, modificato_il: creato_il })
 }
 
 const elenco = [
-  trekking('1', 'Monte Baldo', '2026-09-01T08:00:00Z'),
-  trekking('2', 'cima Tosa', '2026-09-03T08:00:00Z'),
-  trekking('3', 'Àlbero', '2026-09-02T08:00:00Z'),
+  attivita('1', 'Monte Baldo', '2026-09-01T08:00:00Z'),
+  attivita('2', 'cima Tosa', '2026-09-03T08:00:00Z'),
+  attivita('3', 'Àlbero', '2026-09-02T08:00:00Z'),
 ]
 
 describe('ordina', () => {

@@ -6,7 +6,7 @@ import { pulisciLink } from '../dominio/link'
 import { nomeValido, pulisciNome } from '../dominio/nome'
 import { doppione } from '../dominio/ricerca'
 import { pulisciViaggio, testoViaggio, viaggioManuale, viaggioValido } from '../dominio/viaggio'
-import type { CampiTrekking, Trekking } from '../dominio/tipi'
+import type { CampiAttivita, Attivita } from '../dominio/tipi'
 import { EditorMarkdown } from './EditorMarkdown'
 import { CampoLuogo } from './CampoLuogo'
 import { CampoTempo } from './CampoTempo'
@@ -16,12 +16,12 @@ import { luogoValido, risolviLuogo, statoLuogoIniziale } from './luogo'
 interface Props {
   /** "Nuovo trekking" quando si crea, "Modifica trekking" quando si cambia. */
   titolo: string
-  iniziale?: CampiTrekking
+  iniziale?: CampiAttivita
   /** Tutti i trekking, per avvisare dei doppioni mentre si scrive. */
-  esistenti: readonly Trekking[]
+  esistenti: readonly Attivita[]
   /** Il trekking che si sta modificando: non è doppione di sé stesso. */
   escludi?: string
-  onSalva: (campi: CampiTrekking) => Promise<unknown>
+  onSalva: (campi: CampiAttivita) => Promise<unknown>
   onChiudi: () => void
   /** Solo in modifica: in fondo al form compare "Elimina trekking". */
   onElimina?: () => void
@@ -41,7 +41,7 @@ const ULTIMO = PASSI.length - 1
  * note in Markdown. Un trekking nuovo si salva all'ultimo passo; in modifica
  * "Salva" c'è a ogni passo e dall'indicatore si salta dove serve.
  */
-export function ModaleTrekking({ titolo, iniziale, esistenti, escludi, onSalva, onChiudi, onElimina }: Props) {
+export function ModaleAttivita({ titolo, iniziale, esistenti, escludi, onSalva, onChiudi, onElimina }: Props) {
   const [passo, setPasso] = useState(0)
   const [nome, setNome] = useState(iniziale?.nome ?? '')
   const [link, setLink] = useState<string[]>(() => (iniziale?.link.length ? [...iniziale.link] : ['']))

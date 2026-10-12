@@ -19,7 +19,7 @@ export function leggiCookie(testo: string, nome: string): string | null {
 
 /**
  * Un interruttore acceso/spento salvato nel cookie `nome`. Il percorso è quello
- * dell'app (`/Trekking/`), così non si mescola con i cookie delle altre app.
+ * dell'app (`/Adventures/`), così non si mescola con i cookie delle altre app.
  */
 export function useInterruttore(nome: string, predefinito: boolean): [boolean, (acceso: boolean) => void] {
   const [acceso, setAcceso] = useState(() => {

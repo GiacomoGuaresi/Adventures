@@ -7,7 +7,7 @@
 
 import type { Coordinate } from './coordinate'
 import { distanzaDaCasa } from './distanza'
-import type { Trekking } from './tipi'
+import type { Attivita } from './tipi'
 
 export type Colonna = 'nome' | 'creato_il' | 'dislivello' | 'durata_ore' | 'distanza' | 'viaggio_minuti'
 export type Verso = 'crescente' | 'decrescente'
@@ -31,11 +31,11 @@ export function tocca(ordinamento: Ordinamento, colonna: Colonna): Ordinamento {
   return { colonna, verso: ordinamento.verso === 'crescente' ? 'decrescente' : 'crescente' }
 }
 
-function perNome(a: Trekking, b: Trekking): number {
+function perNome(a: Attivita, b: Attivita): number {
   return a.nome.localeCompare(b.nome, 'it', { sensitivity: 'base' })
 }
 
-function confronta(a: Trekking, b: Trekking, colonna: Colonna, casa: Coordinate | null): number {
+function confronta(a: Attivita, b: Attivita, colonna: Colonna, casa: Coordinate | null): number {
   if (colonna === 'nome') return perNome(a, b)
   if (colonna === 'dislivello') return (a.dislivello ?? 0) - (b.dislivello ?? 0)
   if (colonna === 'durata_ore') return (a.durata_ore ?? 0) - (b.durata_ore ?? 0)
@@ -45,20 +45,20 @@ function confronta(a: Trekking, b: Trekking, colonna: Colonna, casa: Coordinate 
 }
 
 /** Chi non ha il valore va in fondo in tutti e due i versi (docs/02-funzionalita.md). */
-function senzaValore(trekking: Trekking, colonna: Colonna, casa: Coordinate | null): boolean {
-  if (colonna === 'dislivello') return trekking.dislivello === null
-  if (colonna === 'durata_ore') return trekking.durata_ore === null
-  if (colonna === 'distanza') return distanzaDaCasa(trekking, casa) === null
-  if (colonna === 'viaggio_minuti') return trekking.viaggio_minuti === null
+function senzaValore(attivita: Attivita, colonna: Colonna, casa: Coordinate | null): boolean {
+  if (colonna === 'dislivello') return attivita.dislivello === null
+  if (colonna === 'durata_ore') return attivita.durata_ore === null
+  if (colonna === 'distanza') return distanzaDaCasa(attivita, casa) === null
+  if (colonna === 'viaggio_minuti') return attivita.viaggio_minuti === null
   return false
 }
 
 /** L'elenco ordinato; a parità vale il nome, così l'ordine non balla. */
 export function ordina(
-  elenco: readonly Trekking[],
+  elenco: readonly Attivita[],
   { colonna, verso }: Ordinamento,
   casa: Coordinate | null = null,
-): Trekking[] {
+): Attivita[] {
   const segno = verso === 'crescente' ? 1 : -1
   return [...elenco].sort((a, b) => {
     const mancaA = senzaValore(a, colonna, casa)

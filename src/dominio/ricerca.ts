@@ -4,7 +4,7 @@
  */
 
 import { pulisciNome } from './nome'
-import type { Trekking } from './tipi'
+import type { Attivita } from './tipi'
 
 /** Il testo ridotto alla sua forma confrontabile: minuscolo e senza accenti. */
 export function normalizza(testo: string): string {
@@ -15,7 +15,7 @@ export function normalizza(testo: string): string {
 }
 
 /** Quelli il cui nome contiene il testo cercato; con la ricerca vuota, tutti. */
-export function cerca(elenco: readonly Trekking[], testo: string): Trekking[] {
+export function cerca(elenco: readonly Attivita[], testo: string): Attivita[] {
   const cercato = normalizza(testo)
   if (cercato === '') return [...elenco]
   return elenco.filter((t) => normalizza(t.nome).includes(cercato))
@@ -26,7 +26,7 @@ export function cerca(elenco: readonly Trekking[], testo: string): Trekking[] {
  * scrive. `escludi` è il trekking che si sta modificando, che non è doppione
  * di sé stesso. L'avviso non blocca il salvataggio.
  */
-export function doppione(elenco: readonly Trekking[], nome: string, escludi?: string): Trekking | null {
+export function doppione(elenco: readonly Attivita[], nome: string, escludi?: string): Attivita | null {
   const cercato = normalizza(nome)
   if (cercato === '') return null
   return elenco.find((t) => t.id !== escludi && normalizza(t.nome) === cercato) ?? null

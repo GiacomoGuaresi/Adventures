@@ -4,16 +4,16 @@ import { Info } from 'lucide-react'
 import type { Coordinate } from '../dominio/coordinate'
 import { distanzaDaCasa, formattaDistanza } from '../dominio/distanza'
 import { formattaDurata } from '../dominio/durata'
-import type { Trekking } from '../dominio/tipi'
+import type { Attivita } from '../dominio/tipi'
 import { formattaViaggio } from '../dominio/viaggio'
 import 'leaflet/dist/leaflet.css'
 
 interface Props {
   /** Gli stessi trekking dell'elenco: quelli senza coordinate non compaiono. */
-  trekking: readonly Trekking[]
+  attivita: readonly Attivita[]
   casa: Coordinate | null
   /** Il pulsante "Dettagli" del popup apre la scheda in sola lettura. */
-  onDettagli: (trekking: Trekking) => void
+  onDettagli: (attivita: Attivita) => void
 }
 
 /** L'icona di casa: una casetta disegnata a mano, senza file da caricare. */
@@ -49,8 +49,8 @@ const SOTTO_LA_BARRA = 80
  * e filtri, quindi i comandi di Leaflet stanno in basso a destra e inquadratura
  * e popup lasciano libera la fascia in alto.
  */
-export function Mappa({ trekking, casa, onDettagli }: Props) {
-  const conLuogo = trekking.filter((t) => t.lat !== null && t.lon !== null)
+export function Mappa({ attivita, casa, onDettagli }: Props) {
+  const conLuogo = attivita.filter((t) => t.lat !== null && t.lon !== null)
 
   return (
     <div className="size-full">
@@ -94,7 +94,7 @@ export function Mappa({ trekking, casa, onDettagli }: Props) {
             }}
           >
             <Popup autoPanPaddingTopLeft={[16, SOTTO_LA_BARRA]}>
-              <Anteprima trekking={t} casa={casa} onDettagli={onDettagli} />
+              <Anteprima attivita={t} casa={casa} onDettagli={onDettagli} />
             </Popup>
           </CircleMarker>
         ))}
@@ -109,7 +109,7 @@ export function Mappa({ trekking, casa, onDettagli }: Props) {
 }
 
 /** Il popup: nome e numeri, con il pulsante che apre i dettagli. */
-function Anteprima({ trekking: t, casa, onDettagli }: { trekking: Trekking; casa: Coordinate | null; onDettagli: (t: Trekking) => void }) {
+function Anteprima({ attivita: t, casa, onDettagli }: { attivita: Attivita; casa: Coordinate | null; onDettagli: (t: Attivita) => void }) {
   const righe = [
     ['Dislivello', t.dislivello === null ? '—' : `${t.dislivello} m`],
     ['Durata', formattaDurata(t.durata_ore)],

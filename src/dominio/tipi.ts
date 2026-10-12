@@ -1,8 +1,8 @@
-/** Le righe di `trekking.trekking` (docs/08-modello-dati.md). Le colonne
+/** Le righe di `adventures.attivita` (docs/08-modello-dati.md). Le colonne
  *  arrivano con gli step della roadmap che le usano: per ora il nome, i link,
  *  le note, il dislivello, la durata, il luogo, il tempo di viaggio e il segno
  *  "completato". */
-export interface Trekking {
+export interface Attivita {
   id: string
   nome: string
   link: string[]
@@ -26,7 +26,7 @@ export interface Trekking {
 }
 
 /** Quello che si scrive nel form: le colonne che l'app salva (docs/02-funzionalita.md). */
-export interface CampiTrekking {
+export interface CampiAttivita {
   nome: string
   link: string[]
   /** Markdown; vuoto vuol dire `null`. */

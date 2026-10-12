@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { cerca, doppione, normalizza } from './ricerca'
 import { esempio } from './esempi'
-import type { Trekking } from './tipi'
+import type { Attivita } from './tipi'
 
-function trekking(id: string, nome: string): Trekking {
+function attivita(id: string, nome: string): Attivita {
   return esempio({ id, nome })
 }
 
-const elenco = [trekking('1', 'Città Morta'), trekking('2', 'Monte Baldo'), trekking('3', 'Cima Tosa')]
+const elenco = [attivita('1', 'Città Morta'), attivita('2', 'Monte Baldo'), attivita('3', 'Cima Tosa')]
 
 describe('normalizza', () => {
   it('toglie accenti, maiuscole e spazi di troppo', () => {

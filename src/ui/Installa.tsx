@@ -16,7 +16,7 @@ const istruzioni: Record<Piattaforma, string[]> = {
   ],
   desktop: [
     'Apri la pagina con Chrome o Edge.',
-    'Clicca l’icona di installazione a destra nella barra degli indirizzi, oppure menu ⋮ → “Installa Trekking”.',
+    'Clicca l’icona di installazione a destra nella barra degli indirizzi, oppure menu ⋮ → “Installa Adventures”.',
     'Su Safari per Mac: menu File → “Aggiungi al Dock”.',
   ],
 }

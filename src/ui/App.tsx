@@ -1,12 +1,12 @@
 import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react'
-import { Menu, MountainSnow, Plus, X } from 'lucide-react'
+import { Compass, Menu, Plus, X } from 'lucide-react'
 import { percorsi } from '../dati'
 import { quantiCompletati, visibili } from '../dominio/elenco'
 import { FILTRI_VUOTI, type Filtri as ValoriFiltri, filtra, quantiFiltri } from '../dominio/filtri'
 import { ORDINAMENTO_INIZIALE, ordina, tocca, type Ordinamento } from '../dominio/ordinamento'
 import { mancanti } from '../dominio/percorsi'
 import { cerca } from '../dominio/ricerca'
-import type { CampiTrekking, Trekking } from '../dominio/tipi'
+import type { CampiAttivita, Attivita } from '../dominio/tipi'
 import { BarraMappa } from './BarraMappa'
 import { Conferma } from './Conferma'
 import { ModaleDettagli } from './ModaleDettagli'
@@ -14,12 +14,12 @@ import { Elenco } from './Elenco'
 import { Installa } from './Installa'
 import { BarraElenco } from './Filtri'
 import { MenuLaterale } from './MenuLaterale'
-import { ModaleTrekking } from './ModaleTrekking'
+import { ModaleAttivita } from './ModaleAttivita'
 import { useInterruttore } from './preferenze'
 import { useCasa } from './useCasa'
 import { indirizzi, useRotta } from './rotta'
 import { installa, useInstallazione } from './installazione'
-import { useTrekking } from './useTrekking'
+import { useAttivita } from './useAttivita'
 
 // Leaflet pesa: si carica a parte, così l'intestazione compare subito anche
 // con la rete del telefono in montagna, e chi apre l'Elenco non lo scarica.
@@ -38,8 +38,8 @@ export function App() {
   const [menuAperto, setMenuAperto] = useState(false)
   const [nuovoAperto, setNuovoAperto] = useState(false)
   /** Il trekking che si sta modificando, e quello che si sta eliminando. */
-  const [daModificare, setDaModificare] = useState<Trekking | null>(null)
-  const [daEliminare, setDaEliminare] = useState<Trekking | null>(null)
+  const [daModificare, setDaModificare] = useState<Attivita | null>(null)
+  const [daEliminare, setDaEliminare] = useState<Attivita | null>(null)
   /**
    * Il trekking di cui si guardano i dettagli, per id: si rilegge dall'elenco,
    * così dopo una modifica o un completato mostra i dati nuovi. Mentre si
@@ -49,13 +49,13 @@ export function App() {
   const [erroreEliminazione, setErroreEliminazione] = useState<string | null>(null)
   /** L'errore di un tocco sul completato: l'elenco resta com'era. */
   const [erroreCompletato, setErroreCompletato] = useState<string | null>(null)
-  const [mostraCompletati, setMostraCompletati] = useInterruttore('trekking_completati', false)
+  const [mostraCompletati, setMostraCompletati] = useInterruttore('completati', false)
   const [ricerca, setRicerca] = useState('')
   const [ordinamento, setOrdinamento] = useState<Ordinamento>(ORDINAMENTO_INIZIALE)
   const [filtri, setFiltri] = useState<ValoriFiltri>(FILTRI_VUOTI)
   const chiudiMenu = useCallback(() => setMenuAperto(false), [])
   const { stato, ricarica, crea, aggiorna, segnaCompletato, elimina, calcolaViaggi, luoghiTolti, chiudiLuoghiTolti } =
-    useTrekking()
+    useAttivita()
   const casa = useCasa()
   const statoInstallazione = useInstallazione()
   /** Quanti tempi di viaggio mancano all'apertura: se più di zero compare il popup. */
@@ -67,30 +67,30 @@ export function App() {
   useEffect(() => {
     if (ricalcoloChiesto.current || stato.fase !== 'pronto' || !casa || !percorsi()) return
     ricalcoloChiesto.current = true
-    setDaRicalcolare(mancanti(stato.trekking).length)
+    setDaRicalcolare(mancanti(stato.attivita).length)
   }, [stato, casa])
 
   /**
    * Dopo ogni salvataggio si calcola il tempo del trekking appena salvato e di
    * quelli che ancora mancano, in sottofondo: il form si chiude subito.
    */
-  const conViaggi = (salva: (campi: CampiTrekking) => Promise<Trekking>) => async (campi: CampiTrekking) => {
+  const conViaggi = (salva: (campi: CampiAttivita) => Promise<Attivita>) => async (campi: CampiAttivita) => {
     const salvato = await salva(campi)
     if (casa) void calcolaViaggi(casa)
     return salvato
   }
 
   /** Quelli da mostrare, uguali per l'elenco e per la mappa (docs/02-funzionalita.md). */
-  const daMostrare = (tutti: readonly Trekking[]) =>
+  const daMostrare = (tutti: readonly Attivita[]) =>
     filtra(cerca(visibili(tutti, mostraCompletati), ricerca), filtri, casa)
 
   /** Per l'avviso dei doppioni contano tutti, completati compresi. */
-  const esistenti = stato.fase === 'pronto' ? stato.trekking : []
+  const esistenti = stato.fase === 'pronto' ? stato.attivita : []
   const dettaglio = esistenti.find((t) => t.id === inDettaglio) ?? null
 
-  const apriDettagli = (t: Trekking) => setInDettaglio(t.id)
+  const apriDettagli = (t: Attivita) => setInDettaglio(t.id)
 
-  const cambiaCompletato = async (t: Trekking) => {
+  const cambiaCompletato = async (t: Attivita) => {
     setErroreCompletato(null)
     try {
       await segnaCompletato(t.id, !t.completato)
@@ -130,8 +130,8 @@ export function App() {
         >
           <Menu className="size-[22px]" aria-hidden="true" />
         </button>
-        <MountainSnow className="size-[22px] shrink-0" aria-hidden="true" />
-        <h1 className="ml-1 text-lg font-semibold tracking-[0.01em]">Trekking</h1>
+        <Compass className="size-[22px] shrink-0" aria-hidden="true" />
+        <h1 className="ml-1 text-lg font-semibold tracking-[0.01em]">Adventures</h1>
         <button
           className="ml-auto flex min-h-9 items-center gap-1.5 rounded-[11px] px-2.5 font-semibold hover:bg-montagna-scura active:bg-montagna-scura"
           type="button"
@@ -184,7 +184,7 @@ export function App() {
         {suMappa && stato.fase === 'pronto' && (
           <Suspense fallback={<p className="mt-8 text-center text-testo-tenue">Carico la mappa…</p>}>
             <div className="absolute inset-0">
-              <Mappa trekking={daMostrare(stato.trekking)} casa={casa} onDettagli={apriDettagli} />
+              <Mappa attivita={daMostrare(stato.attivita)} casa={casa} onDettagli={apriDettagli} />
             </div>
             <BarraMappa
               ricerca={ricerca}
@@ -193,7 +193,7 @@ export function App() {
               onFiltri={setFiltri}
               conDistanza={casa !== null}
               mostraCompletati={mostraCompletati}
-              quantiCompletati={quantiCompletati(stato.trekking)}
+              quantiCompletati={quantiCompletati(stato.attivita)}
               onMostraCompletati={setMostraCompletati}
             />
           </Suspense>
@@ -207,10 +207,10 @@ export function App() {
               onFiltri={setFiltri}
               conDistanza={casa !== null}
               mostraCompletati={mostraCompletati}
-              quantiCompletati={quantiCompletati(stato.trekking)}
+              quantiCompletati={quantiCompletati(stato.attivita)}
               onMostraCompletati={setMostraCompletati}
-              mostrati={daMostrare(stato.trekking).length}
-              totali={stato.trekking.length}
+              mostrati={daMostrare(stato.attivita).length}
+              totali={stato.attivita.length}
             />
             {erroreCompletato && (
               <p className="mb-2 text-sm text-pericolo" role="alert">
@@ -218,7 +218,7 @@ export function App() {
               </p>
             )}
             <Elenco
-              trekking={ordina(daMostrare(stato.trekking), ordinamento, casa)}
+              attivita={ordina(daMostrare(stato.attivita), ordinamento, casa)}
               ordinamento={ordinamento}
               onOrdina={(colonna) => setOrdinamento((prima) => tocca(prima, colonna))}
               ricerca={ricerca}
@@ -226,7 +226,7 @@ export function App() {
               casa={casa}
               onNuovo={() => setNuovoAperto(true)}
               onDettagli={apriDettagli}
-              nascosti={mostraCompletati ? 0 : quantiCompletati(stato.trekking)}
+              nascosti={mostraCompletati ? 0 : quantiCompletati(stato.attivita)}
               onCompletato={(t) => void cambiaCompletato(t)}
               onRinomina={setDaModificare}
               onElimina={(t) => {
@@ -238,7 +238,7 @@ export function App() {
         )}
       </main>
       {nuovoAperto && (
-        <ModaleTrekking
+        <ModaleAttivita
           titolo="Nuovo trekking"
           esistenti={esistenti}
           onSalva={conViaggi(crea)}
@@ -247,7 +247,7 @@ export function App() {
       )}
       {dettaglio && !daModificare && !daEliminare && (
         <ModaleDettagli
-          trekking={dettaglio}
+          attivita={dettaglio}
           casa={casa}
           onModifica={() => setDaModificare(dettaglio)}
           onCompletato={() => segnaCompletato(dettaglio.id, !dettaglio.completato)}
@@ -255,7 +255,7 @@ export function App() {
         />
       )}
       {daModificare && (
-        <ModaleTrekking
+        <ModaleAttivita
           titolo="Modifica trekking"
           iniziale={{
             nome: daModificare.nome,

@@ -204,6 +204,20 @@ Accanto a uno step è indicata la domanda del [Q&A](../Q&A.md) da chiudere prima
 
 - [x] **26 · Apri in Google Maps**: "Apri in Maps" e il luogo nell'elenco aprono il punto su Google Maps invece che su OpenStreetMap, così sul telefono si parte col navigatore (`mappaEsterna` in `coordinate.ts`)
 
+## Fase 6 · Da Trekking ad Adventures
+
+L'app smette di essere solo trekking: prima cambia nome senza cambiare cosa fa, poi arrivano le avventure ([07](07-decisioni.md), 2026-10-12).
+
+- [ ] **30 · Rinomina in Adventures**: repository, indirizzo, nome della PWA, schema e tabella del database, Edge Function; nessuna funzione nuova
+  - [x] Codice: `base: '/Adventures/'`, manifest, schema `adventures`, tabella `attivita` (`src/dati/attivita.ts`), tipi `Attivita` e `CampiAttivita`, `useAttivita.ts`, `ModaleAttivita.tsx`, Edge Function `adventures-link-mappe`
+  - [x] Icona Lucide `compass` al posto di `mountain-snow` (`public/icona.svg`, `npm run icone`); palette e sfondo restano
+  - [ ] `012_adventures.sql` applicato in produzione: schema, tabella, policy e vincoli rinominati
+  - [ ] `adventures` al posto di `trekking` negli Exposed schemas; nuovo indirizzo negli URL di redirect di Auth
+  - [ ] Edge Function `adventures-link-mappe` pubblicata, la vecchia eliminata
+  - [ ] Repository rinominato in `Adventures`, deploy su `giacomoguaresi.github.io/Adventures/`
+  - [ ] App reinstallata sui telefoni dal nuovo indirizzo
+- [ ] **31 · Avventure**: colonna `tipo` (`trekking` · `avventura`), due elenchi nel menu, form senza "Quanto" per le avventure, tipo sulla mappa
+
 ## Più avanti, se servirà
 - [ ] Posizione GPS: distanza dalla posizione attuale e puntino sulla mappa
 - [ ] Google Places al posto di Photon

@@ -2,7 +2,7 @@
 
 ## Repository
 
-- Pubblico, `github.com/GiacomoGuaresi/Trekking`, licenza **MIT**
+- Pubblico, `github.com/GiacomoGuaresi/Adventures`, licenza **MIT**
 - Branch principale `main`
 
 ## Frontend → GitHub Pages
@@ -18,7 +18,7 @@ Variabili del repository (Settings → Secrets and variables → Actions → **V
 - `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_SUPABASE_EMAIL`: stessi valori di produzione di Grocery e Projects
 - `VITE_OPENROUTESERVICE_KEY`: la chiave del piano gratuito di openrouteservice
 
-URL: `https://giacomoguaresi.github.io/Trekking/`. Vite ha `base: '/Trekking/'`; il routing usa l'hash, quindi non serve `404.html`.
+URL: `https://giacomoguaresi.github.io/Adventures/`. Vite ha `base: '/Adventures/'`; il routing usa l'hash, quindi non serve `404.html`.
 
 ## Sviluppo locale
 
@@ -29,18 +29,18 @@ URL: `https://giacomoguaresi.github.io/Trekking/`. Vite ha `base: '/Trekking/'`;
 | Aspetto | Decisione |
 |---|---|
 | Progetto | **produzione di Grocery** |
-| Schema | `trekking`, esposto nell'API |
+| Schema | `adventures`, esposto nell'API |
 | Script SQL | `supabase/sql/NNN_*.sql`, applicati a mano |
 | Keep-alive | non serve |
-| Tipi TypeScript | `supabase gen types typescript --schema trekking` |
+| Tipi TypeScript | `supabase gen types typescript --schema adventures` |
 
 ## Configurazioni una tantum
 
 Sulla dashboard Supabase:
-1. Settings → Data API → aggiungere `trekking` agli *Exposed schemas*. Fatto il 2026-09-16 con la Management API (`PATCH /v1/projects/{ref}/postgrest`, `db_schema: "public,graphql_public,projects,trekking"`): la lista si manda sempre intera
-2. Authentication → URL Configuration → aggiungere `https://giacomoguaresi.github.io/Trekking/`. Fatto il 2026-09-16 con la Management API (`PATCH /v1/projects/{ref}/config/auth`, `uri_allow_list`)
-3. Eseguire gli script di `supabase/sql/` in ordine: dalla cartella di Grocery, già collegata al progetto, `supabase db query --linked -f ../Trekking/supabase/sql/NNN_*.sql`
-4. Inserire le coordinate di casa in `trekking.impostazioni` dal SQL Editor, **senza salvarle in un file** ([04](04-sicurezza.md))
+1. Settings → Data API → aggiungere `trekking` agli *Exposed schemas*. Fatto il 2026-09-16 con la Management API (`PATCH /v1/projects/{ref}/postgrest`, `db_schema: "public,graphql_public,projects,trekking"`): la lista si manda sempre intera. Con la rinomina ([06](06-roadmap.md), step 30) nella lista `adventures` prende il posto di `trekking`
+2. Authentication → URL Configuration → aggiungere `https://giacomoguaresi.github.io/Adventures/` (fino alla rinomina era `…/Trekking/`, aggiunto il 2026-09-16 con la Management API: `PATCH /v1/projects/{ref}/config/auth`, `uri_allow_list`)
+3. Eseguire gli script di `supabase/sql/` in ordine: dalla cartella di Grocery, già collegata al progetto, `supabase db query --linked -f ../Adventures/supabase/sql/NNN_*.sql`
+4. Inserire le coordinate di casa in `adventures.impostazioni` dal SQL Editor, **senza salvarle in un file** ([04](04-sicurezza.md))
 
 Su openrouteservice:
 5. Creare l'account gratuito su `openrouteservice.org` e generare la chiave

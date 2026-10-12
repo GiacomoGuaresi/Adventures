@@ -7,12 +7,12 @@ import { formattaDurata } from '../dominio/durata'
 import { etichettaLink, perApertura } from '../dominio/link'
 import { formattaViaggio } from '../dominio/viaggio'
 import type { Colonna, Ordinamento } from '../dominio/ordinamento'
-import type { Trekking } from '../dominio/tipi'
+import type { Attivita } from '../dominio/tipi'
 import { Markdown } from './Markdown'
 
 interface Props {
   /** Solo quelli da mostrare: completati, ricerca e ordinamento sono già stati applicati. */
-  trekking: readonly Trekking[]
+  attivita: readonly Attivita[]
   ordinamento: Ordinamento
   onOrdina: (colonna: Colonna) => void
   /** Il testo cercato: cambia il messaggio quando non si trova nulla. */
@@ -25,10 +25,10 @@ interface Props {
   nascosti: number
   onNuovo: () => void
   /** Toccando il nome si aprono i dettagli in sola lettura. */
-  onDettagli: (trekking: Trekking) => void
-  onCompletato: (trekking: Trekking) => void
-  onRinomina: (trekking: Trekking) => void
-  onElimina: (trekking: Trekking) => void
+  onDettagli: (attivita: Attivita) => void
+  onCompletato: (attivita: Attivita) => void
+  onRinomina: (attivita: Attivita) => void
+  onElimina: (attivita: Attivita) => void
 }
 
 const data = new Intl.DateTimeFormat('it-IT', { day: '2-digit', month: 'short', year: 'numeric' })
@@ -42,7 +42,7 @@ const data = new Intl.DateTimeFormat('it-IT', { day: '2-digit', month: 'short', 
  * inverte. Le altre colonne e i filtri arrivano con gli step successivi.
  */
 export function Elenco({
-  trekking,
+  attivita,
   ordinamento,
   onOrdina,
   ricerca,
@@ -60,7 +60,7 @@ export function Elenco({
   const apriChiudi = (id: string) =>
     setAperte((prima) => (prima.includes(id) ? prima.filter((x) => x !== id) : [...prima, id]))
 
-  if (trekking.length === 0) {
+  if (attivita.length === 0) {
     if (ricerca.trim() !== '') {
       return <p className="mt-8 text-center text-testo-tenue">Nessun trekking con questo nome.</p>
     }
@@ -133,7 +133,7 @@ export function Elenco({
           </tr>
         </thead>
         <tbody>
-          {trekking.map((t) => (
+          {attivita.map((t) => (
             <Fragment key={t.id}>
               <tr className="border-b border-bordo last:border-0">
                 <td className="py-1 pl-1">

@@ -1,8 +1,8 @@
-# Trekking
+# Adventures
 
-Piccolo database dei trekking da fare: si salvano al volo, con i dettagli disponibili, quando se ne trova uno interessante sui social, su un sito o su Komoot, e si sceglie dove andare dall'elenco o dalla mappa. Terza app di casa dopo **Grocery** e **Projects**. Si usa da smartphone e da PC.
+Piccolo database dei trekking da fare: si salvano al volo, con i dettagli disponibili, quando se ne trova uno interessante sui social, su un sito o su Komoot, e si sceglie dove andare dall'elenco o dalla mappa. Terza app di casa dopo **Grocery** e **Projects**; fino a ottobre 2026 si chiamava Trekking. Si usa da smartphone e da PC.
 
-> **Stato: completa e in uso.** Tutti gli step della [roadmap](docs/06-roadmap.md) sono chiusi; restano solo le idee di "Più avanti, se servirà". Online su [giacomoguaresi.github.io/Trekking](https://giacomoguaresi.github.io/Trekking/).
+> **Stato: completa e in uso.** In corso la [fase 6](docs/06-roadmap.md): il nuovo nome e le avventure accanto ai trekking. Online su [giacomoguaresi.github.io/Adventures](https://giacomoguaresi.github.io/Adventures/).
 
 ## Cosa fa
 
@@ -21,7 +21,7 @@ Serve Node 22.12 o più recente (Vite 8 e Vitest 5 con Node 18 non partono); la 
 nvm use                      # o `nvm install` la prima volta
 cp .env.example .env.local   # e riempi le variabili (docs/05)
 npm install
-npm run dev                  # http://localhost:5173/Trekking/
+npm run dev                  # http://localhost:5173/Adventures/
 npm test
 npm run build
 ```
@@ -35,7 +35,7 @@ A ogni push su `main` il workflow [`pubblica.yml`](.github/workflows/pubblica.ym
 - **Frontend**: Vite + React + TypeScript + Tailwind, sito statico installabile come PWA
 - **Dati e accesso**: [Supabase](https://supabase.com) (Postgres + Auth), sullo stesso progetto e con lo stesso account di Grocery e Projects
 - **Mappe**: Leaflet con OpenStreetMap e OpenTopoMap, Photon, openrouteservice
-- **Hosting**: GitHub Pages → `giacomoguaresi.github.io/Trekking/`
+- **Hosting**: GitHub Pages → `giacomoguaresi.github.io/Adventures/`
 - **Lingua**: italiano · **Costo**: 0 € · **Licenza**: MIT
 
 ## Documentazione

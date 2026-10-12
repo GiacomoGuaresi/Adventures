@@ -78,7 +78,7 @@ export function MenuLaterale({ aperto, corrente, onChiudi, onNuovo, onInstalla }
         }`}
       >
         <div className="flex items-center justify-between pl-2 lg:hidden">
-          <span className="text-lg font-semibold">Trekking</span>
+          <span className="text-lg font-semibold">Adventures</span>
           <button
             className="grid size-11 place-items-center rounded-[11px] text-testo-tenue active:bg-fondo"
             type="button"

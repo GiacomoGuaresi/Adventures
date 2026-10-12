@@ -1,4 +1,4 @@
-# Q&A · Trekking
+# Q&A · Adventures
 
 > I giri 1–7 sono stati trasferiti nella documentazione il 2026-09-15 (registro in [docs/07-decisioni.md](docs/07-decisioni.md)).
 >

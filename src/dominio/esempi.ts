@@ -1,10 +1,10 @@
 // Trekking d'esempio per i test: si scrivono solo i campi che contano alla prova.
 
-import type { Trekking } from './tipi'
+import type { Attivita } from './tipi'
 
 let prossimo = 1
 
-export function esempio(campi: Partial<Trekking> = {}): Trekking {
+export function esempio(campi: Partial<Attivita> = {}): Attivita {
   const id = String(prossimo++)
   return {
     id,

@@ -4,9 +4,9 @@ import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 // base = nome del repository, perché il sito è servito da GitHub Pages
-// su giacomoguaresi.github.io/Trekking/ (docs/05-deploy.md).
+// su giacomoguaresi.github.io/Adventures/ (docs/05-deploy.md).
 export default defineConfig({
-  base: '/Trekking/',
+  base: '/Adventures/',
   plugins: [
     react(),
     tailwindcss(),
@@ -18,9 +18,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'icona.svg', 'apple-touch-icon-180x180.png'],
       manifest: {
-        name: 'Trekking',
-        short_name: 'Trekking',
-        description: 'Piccolo database dei trekking da fare',
+        name: 'Adventures',
+        short_name: 'Adventures',
+        description: 'Trekking e avventure da fare fuori casa',
         lang: 'it',
         display: 'standalone',
         // Come l'intestazione e lo sfondo dell'app (src/index.css).

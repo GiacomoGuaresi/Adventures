@@ -1,22 +1,22 @@
 import { describe, expect, it } from 'vitest'
 import { quantiCompletati, rimuovi, sostituisci, visibili } from './elenco'
 import { esempio } from './esempi'
-import type { Trekking } from './tipi'
+import type { Attivita } from './tipi'
 
-function trekking(id: string, nome: string, completato = false): Trekking {
+function attivita(id: string, nome: string, completato = false): Attivita {
   return esempio({ id, nome, completato })
 }
 
-const elenco = [trekking('1', 'Cima Tosa'), trekking('2', 'Monte Baldo'), trekking('3', 'Città Morta')]
+const elenco = [attivita('1', 'Cima Tosa'), attivita('2', 'Monte Baldo'), attivita('3', 'Città Morta')]
 
 describe('sostituisci', () => {
   it('cambia solo il trekking con quel codice e lascia l’ordine com’è', () => {
-    const dopo = sostituisci(elenco, trekking('2', 'Monte Baldo dalla Ferrara'))
+    const dopo = sostituisci(elenco, attivita('2', 'Monte Baldo dalla Ferrara'))
     expect(dopo.map((t) => t.nome)).toEqual(['Cima Tosa', 'Monte Baldo dalla Ferrara', 'Città Morta'])
   })
 
   it('non cambia nulla se quel codice non c’è', () => {
-    expect(sostituisci(elenco, trekking('9', 'Sconosciuto'))).toEqual(elenco)
+    expect(sostituisci(elenco, attivita('9', 'Sconosciuto'))).toEqual(elenco)
   })
 })
 
@@ -30,7 +30,7 @@ describe('rimuovi', () => {
   })
 })
 
-const conCompletati = [trekking('1', 'Cima Tosa'), trekking('2', 'Monte Baldo', true), trekking('3', 'Città Morta')]
+const conCompletati = [attivita('1', 'Cima Tosa'), attivita('2', 'Monte Baldo', true), attivita('3', 'Città Morta')]
 
 describe('visibili', () => {
   it('nasconde i completati', () => {

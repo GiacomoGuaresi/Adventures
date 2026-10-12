@@ -1,4 +1,4 @@
-// Punto d'ingresso dei dati: un solo client Supabase, sullo schema `trekking`
+// Punto d'ingresso dei dati: un solo client Supabase, sullo schema `adventures`
 // del progetto di produzione di Grocery (docs/03-architettura.md).
 
 import { createBrowserClient } from '@supabase/ssr'
@@ -9,18 +9,18 @@ import { LinkMappeSupabase, type AperturaLink } from './linkMappe'
 import { PhotonLuoghi, type RicercaLuoghi } from './luoghi'
 import { fetchPaziente } from './orologio'
 import { OpenRouteService, type CalcoloPercorsi } from './percorsi'
-import { TrekkingSupabase } from './trekking'
+import { AttivitaSupabase } from './attivita'
 
 export type { Accesso, EsitoAccesso } from './accesso'
 export type { ImpostazioniSupabase } from './impostazioni'
 export type { AperturaLink } from './linkMappe'
 export type { RicercaLuoghi } from './luoghi'
 export type { CalcoloPercorsi } from './percorsi'
-export type { TrekkingSupabase } from './trekking'
+export type { AttivitaSupabase } from './attivita'
 
 let connessione: {
   accesso: Accesso
-  trekking: TrekkingSupabase
+  attivita: AttivitaSupabase
   impostazioni: ImpostazioniSupabase
   linkMappe: AperturaLink
 } | null = null
@@ -45,11 +45,11 @@ function connetti() {
   const client = createBrowserClient(url, chiave, {
     cookieOptions: { path: '/' },
     global: { fetch: fetchPaziente() },
-    db: { schema: 'trekking' },
+    db: { schema: 'adventures' },
   }) as unknown as SupabaseClient
   connessione = {
     accesso: new AccessoSupabase(client, email),
-    trekking: new TrekkingSupabase(client),
+    attivita: new AttivitaSupabase(client),
     impostazioni: new ImpostazioniSupabase(client),
     linkMappe: new LinkMappeSupabase(client),
   }
@@ -62,8 +62,8 @@ export function accesso(): Accesso {
 }
 
 /** Le query sui trekking. */
-export function trekking(): TrekkingSupabase {
-  return connetti().trekking
+export function attivita(): AttivitaSupabase {
+  return connetti().attivita
 }
 
 /** Le impostazioni: per ora la sola posizione di casa. */

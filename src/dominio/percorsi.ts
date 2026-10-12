@@ -5,7 +5,7 @@
  */
 
 import type { Coordinate } from './coordinate'
-import type { Trekking } from './tipi'
+import type { Attivita } from './tipi'
 
 /**
  * Come è andata una richiesta:
@@ -19,12 +19,12 @@ export type EsitoPercorso = { esito: 'minuti'; minuti: number } | { esito: 'impo
  * Chi aspetta il tempo (docs/08-modello-dati.md): con le coordinate, senza
  * tempo e non scritto a mano.
  */
-export function daCalcolare(trekking: Trekking): boolean {
-  return trekking.lat !== null && trekking.lon !== null && trekking.viaggio_minuti === null && !trekking.viaggio_manuale
+export function daCalcolare(attivita: Attivita): boolean {
+  return attivita.lat !== null && attivita.lon !== null && attivita.viaggio_minuti === null && !attivita.viaggio_manuale
 }
 
 /** I tempi mancanti, completati compresi: anche loro compaiono con "Mostra completati". */
-export function mancanti(elenco: readonly Trekking[]): Trekking[] {
+export function mancanti(elenco: readonly Attivita[]): Attivita[] {
   return elenco.filter(daCalcolare)
 }
 

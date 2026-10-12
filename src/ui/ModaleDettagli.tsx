@@ -5,13 +5,13 @@ import { mappaEsterna } from '../dominio/coordinate'
 import { distanzaDaCasa, formattaDistanza } from '../dominio/distanza'
 import { formattaDurata } from '../dominio/durata'
 import { etichettaLink, perApertura } from '../dominio/link'
-import type { Trekking } from '../dominio/tipi'
+import type { Attivita } from '../dominio/tipi'
 import { formattaViaggio } from '../dominio/viaggio'
 import { Markdown } from './Markdown'
 import { Modale } from './Modale'
 
 interface Props {
-  trekking: Trekking
+  attivita: Attivita
   casa: Coordinate | null
   onModifica: () => void
   /** Segna o toglie il completato; se va storto lancia, e l'errore compare qui. */
@@ -27,7 +27,7 @@ const data = new Intl.DateTimeFormat('it-IT', { day: 'numeric', month: 'long', y
  * sale dal basso. In fondo "Modifica" apre il form, e si può segnare il
  * completato senza passare dal form.
  */
-export function ModaleDettagli({ trekking: t, casa, onModifica, onCompletato, onChiudi }: Props) {
+export function ModaleDettagli({ attivita: t, casa, onModifica, onCompletato, onChiudi }: Props) {
   const [inCorso, setInCorso] = useState(false)
   const [errore, setErrore] = useState<string | null>(null)
 

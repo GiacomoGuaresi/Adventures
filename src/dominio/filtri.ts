@@ -7,7 +7,7 @@
 
 import type { Coordinate } from './coordinate'
 import { distanzaDaCasa } from './distanza'
-import type { Trekking } from './tipi'
+import type { Attivita } from './tipi'
 import { formattaDurata } from './durata'
 import { formattaViaggio } from './viaggio'
 
@@ -134,7 +134,7 @@ export function dentro(valore: number | null, { min, max }: Intervallo): boolean
 }
 
 /** La distanza non è una colonna: si calcola qui, con la posizione di casa. */
-export function filtra(elenco: readonly Trekking[], filtri: Filtri, casa: Coordinate | null = null): Trekking[] {
+export function filtra(elenco: readonly Attivita[], filtri: Filtri, casa: Coordinate | null = null): Attivita[] {
   return elenco.filter(
     (t) =>
       dentro(t.dislivello, filtri.dislivello) &&

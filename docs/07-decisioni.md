@@ -42,3 +42,9 @@
 | 2026-09-15 | Komoot si salva **solo come link**; nessun dato letto dai siti | deciso |
 | 2026-09-15 | **Importazione** del file di note rimandata | deciso |
 | 2026-09-15 | Sviluppo **a piccoli incrementi stabili**: ogni step porta una funzione completa dal database all'interfaccia, pubblicata e utilizzabile; le colonne del database arrivano con lo step che le usa | deciso |
+| 2026-10-12 | Le **avventure** (cose da fare fuori casa in coppia, senza data) stanno in questa app e non in Projects né in un'app nuova | deciso |
+| 2026-10-12 | L'app si chiama **Adventures**: rinomina completa di repository, indirizzo, schema (`adventures`), tabella (`attivita`) ed Edge Function; l'app si reinstalla sui telefoni | deciso |
+| 2026-10-12 | Trekking e avventure nella **stessa tabella**, distinti dalla colonna `tipo`; la riga generica si chiama **attività** | deciso |
+| 2026-10-12 | Per le avventure bastano **note e link**: niente diario a voci datate come in Projects | deciso |
+| 2026-10-12 | Nel menu **due elenchi separati**, Trekking e Avventure, più la Mappa comune | deciso |
+| 2026-10-12 | Icona Lucide `compass` al posto di `mountain-snow`; palette e sfondo restano | deciso |

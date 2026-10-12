@@ -21,7 +21,7 @@ Valori di partenza, da rifinire allo step "Aspetto" della [roadmap](06-roadmap.m
 
 ## Icona
 
-Stesso sistema delle altre app: disegno Lucide **`mountain-snow`** (montagna con la cima innevata) panna su blu montagna `#3f6485`, in `public/icona.svg`, da cui `npm run icone` genera le icone della PWA.
+Stesso sistema delle altre app: disegno Lucide **`compass`** (la bussola: prima della rinomina era `mountain-snow`) panna su blu montagna `#3f6485`, in `public/icona.svg`, da cui `npm run icone` genera le icone della PWA.
 
 ## Sfondo
 

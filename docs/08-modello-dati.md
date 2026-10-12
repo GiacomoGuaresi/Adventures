@@ -2,9 +2,9 @@
 
 > Prima stesura: è il modello **di arrivo**. Le tabelle e le colonne si aggiungono un po' alla volta, con uno script `supabase/sql/NNN_*.sql` per ogni step della [roadmap](06-roadmap.md) che ne ha bisogno.
 
-Tutto sta nello schema Postgres `trekking`, con nomi in italiano come nelle altre app.
+Tutto sta nello schema Postgres `adventures`, con nomi in italiano come nelle altre app.
 
-## `trekking.trekking`
+## `adventures.attivita`
 
 | Colonna | Tipo | Vincoli e note |
 |---|---|---|
@@ -33,7 +33,7 @@ Se il percorso risulta impossibile, l'app svuota `luogo_nome`, `lat` e `lon`: il
 
 La **distanza in linea d'aria** non si salva: si calcola nel browser.
 
-## `trekking.impostazioni`
+## `adventures.impostazioni`
 
 Una sola riga.
 
