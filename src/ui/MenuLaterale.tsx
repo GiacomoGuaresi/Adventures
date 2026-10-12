@@ -1,11 +1,11 @@
 import { useEffect, useRef } from 'react'
-import { Download, House, Map, MountainSnow, Plus, Tent, X, type LucideIcon } from 'lucide-react'
+import { ArrowLeft, Download, Map, MountainSnow, Plus, Tent, X, type LucideIcon } from 'lucide-react'
 import type { Tipo } from '../dominio/tipi'
 import { EtichettaNuovo, NUOVO } from './EtichettaNuovo'
 import { indirizzi, type Rotta } from './rotta'
 
 /** Il launcher con tutte le app di casa: da lì si passa da un'app all'altra. */
-const TUTTE_LE_APP = 'https://giacomoguaresi.github.io/Casa/'
+const ELENCO_APP = 'https://giacomoguaresi.github.io/Casa/'
 
 /** Da questa larghezza il menu è sempre aperto: la stessa soglia di `lg:`. */
 const SEMPRE_APERTO = '(min-width: 1024px)'
@@ -95,6 +95,16 @@ export function MenuLaterale({ aperto, corrente, onChiudi, tipoNuovo, onNuovo, o
             <X className="size-5" aria-hidden="true" />
           </button>
         </div>
+        {/* Sempre la prima voce, staccata dalle altre: si torna al launcher. */}
+        <a
+          href={ELENCO_APP}
+          onClick={onChiudi}
+          className="flex min-h-11 shrink-0 items-center gap-3 rounded-lg px-3 hover:bg-fondo active:bg-bordo"
+        >
+          <ArrowLeft className="size-[18px] text-testo-tenue" aria-hidden="true" />
+          Torna all'elenco app
+        </a>
+        <hr className="mx-1 my-2 border-bordo" />
         <ul className="flex flex-col gap-0.5">
           {sezioni.map(({ rotta, etichetta, icona: Icona }) => (
             <li key={rotta}>
@@ -124,20 +134,12 @@ export function MenuLaterale({ aperto, corrente, onChiudi, tipoNuovo, onNuovo, o
           <EtichettaNuovo tipo={tipoNuovo} />
         </button>
         {/* Le voci di servizio stanno in fondo, lontane dall'uso di tutti i giorni. */}
-        <a
-          href={TUTTE_LE_APP}
-          onClick={onChiudi}
-          className="mt-auto flex min-h-11 items-center gap-3 rounded-lg px-3 hover:bg-fondo active:bg-bordo"
-        >
-          <House className="size-[18px] text-testo-tenue" aria-hidden="true" />
-          Tutte le app
-        </a>
         {onInstalla && (
           <button
             type="button"
             onClick={onInstalla}
             aria-current={corrente === 'installa' ? 'page' : undefined}
-            className="group flex min-h-11 w-full items-center gap-3 rounded-lg px-3 text-left hover:bg-fondo active:bg-bordo aria-[current=page]:bg-ghiaccio aria-[current=page]:font-semibold"
+            className="group mt-auto flex min-h-11 w-full items-center gap-3 rounded-lg px-3 text-left hover:bg-fondo active:bg-bordo aria-[current=page]:bg-ghiaccio aria-[current=page]:font-semibold"
           >
             <Download
               className="size-[18px] text-testo-tenue group-aria-[current=page]:text-montagna-scura"
