@@ -1,3 +1,5 @@
+import type { Stagione } from './stagioni'
+
 /** Cosa si salva (docs/02-funzionalita.md): un trekking, con i suoi numeri, o
  *  un'avventura, qualunque altra cosa da fare fuori casa. */
 export type Tipo = 'trekking' | 'avventura'
@@ -25,6 +27,8 @@ export interface Attivita {
   viaggio_minuti: number | null
   /** `true` se il tempo è stato scritto a mano: il ricalcolo non lo tocca. */
   viaggio_manuale: boolean
+  /** Quando ha senso farla: solo avventure; vuoto vuol dire tutto l'anno. */
+  stagioni: Stagione[]
   completato: boolean
   /** Il giorno del giro, `AAAA-MM-GG`; `null` per i completati di prima che si chiedesse. */
   completato_il: string | null
@@ -51,6 +55,8 @@ export interface CampiAttivita {
   lon: number | null
   viaggio_minuti: number | null
   viaggio_manuale: boolean
+  /** Sempre vuoto per i trekking. */
+  stagioni: Stagione[]
 }
 
 /** Quello che si scrive quando si segna il completato (docs/02-funzionalita.md). */

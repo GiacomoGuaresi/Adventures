@@ -20,6 +20,7 @@ Tutto sta nello schema Postgres `adventures`, con nomi in italiano come nelle al
 | `viaggio_minuti` | `integer` | tempo di viaggio in auto da casa, `>= 0`, facoltativo |
 | `viaggio_manuale` | `boolean` | `true` se il tempo di viaggio è stato scritto a mano: il ricalcolo non lo tocca |
 | `note` | `text` | Markdown, facoltativo |
+| `stagioni` | `text[]` | quando fare un'avventura: `primavera`, `estate`, `autunno`, `inverno`; default `{}`, cioè tutto l'anno; sempre vuoto per i trekking |
 | `completato` | `boolean` | default `false` |
 | `completato_il` | `date` | il giorno del giro; vuoto per i completati di prima del completamento |
 | `fatto_dislivello` | `integer` | metri veri, `> 0`, facoltativo; solo trekking |
@@ -31,6 +32,7 @@ Tutto sta nello schema Postgres `adventures`, con nomi in italiano come nelle al
 
 Regole nel database:
 - un'avventura non ha `dislivello` né `durata_ore` (vincolo `attivita_avventura_senza_numeri`) né i numeri `fatto_*` (`attivita_avventura_senza_fatto`);
+- `stagioni` contiene solo le quattro stagioni (`attivita_stagioni_valide`) ed è vuoto per i trekking (`attivita_stagioni_solo_avventure`);
 - data e numeri veri ci sono solo da completato (`attivita_fatto_solo_completato`): "Togli completato" li azzera;
 - se cambiano `lat` o `lon` e `viaggio_manuale` è `false`, un trigger svuota `viaggio_minuti`, così il tempo verrà ricalcolato;
 - se si svuota `viaggio_minuti`, `viaggio_manuale` torna `false`.

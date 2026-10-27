@@ -56,3 +56,4 @@
 | 2026-10-27 | Niente GPX; i numeri dallo **screenshot di Komoot** con OCR nel browser più avanti. Niente libro di vetta né mappa che si svela | deciso |
 | 2026-10-27 | **Togli completato** chiede conferma: perde la data e i numeri veri | deciso |
 | 2026-10-27 | **Passaporto e traguardi uniti**: ogni traguardo raggiunto è un sigillo d'oro del passaporto; quelli da raggiungere sono nascosti e si leggono, con l'avanzamento, nel foglio **Da sbloccare** | deciso |
+| 2026-10-27 | Le **avventure hanno una o più stagioni** (nessuna = tutto l'anno); il filtro **Stagione** parte da quella corrente e include chi le ha tutte o nessuna. I trekking no | deciso |

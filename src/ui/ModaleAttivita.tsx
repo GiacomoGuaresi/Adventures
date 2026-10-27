@@ -5,6 +5,7 @@ import { durataValida, pulisciDurata, testoDurata } from '../dominio/durata'
 import { pulisciLink } from '../dominio/link'
 import { nomeValido, pulisciNome } from '../dominio/nome'
 import { doppione } from '../dominio/ricerca'
+import { NOMI_STAGIONI, STAGIONI, pulisciStagioni, type Stagione } from '../dominio/stagioni'
 import { pulisciViaggio, testoViaggio, viaggioManuale, viaggioValido } from '../dominio/viaggio'
 import { TESTI, TIPI } from '../dominio/tipo'
 import type { Attivita, CampiAttivita, Tipo } from '../dominio/tipi'
@@ -30,12 +31,12 @@ interface Props {
   onElimina?: () => void
 }
 
-type Passo = 'Dove' | 'Quanto' | 'Link' | 'Note'
+type Passo = 'Dove' | 'Quanto' | 'Stagioni' | 'Link' | 'Note'
 
-/** Un'avventura non ha dislivello né durata: il passo "Quanto" non c'è. */
+/** Un'avventura non ha dislivello né durata, ma ha le sue stagioni: al posto di "Quanto" c'è "Stagioni". */
 const PASSI: Record<Tipo, readonly Passo[]> = {
   trekking: ['Dove', 'Quanto', 'Link', 'Note'],
-  avventura: ['Dove', 'Link', 'Note'],
+  avventura: ['Dove', 'Stagioni', 'Link', 'Note'],
 }
 
 const SCELTA_TIPO =
@@ -63,6 +64,7 @@ export function ModaleAttivita({ tipoIniziale = 'trekking', iniziale, esistenti,
   const [durata, setDurata] = useState(testoDurata(iniziale?.durata_ore ?? null))
   const [luogo, setLuogo] = useState(() => statoLuogoIniziale(iniziale))
   const [viaggio, setViaggio] = useState(testoViaggio(iniziale?.viaggio_minuti ?? null))
+  const [stagioni, setStagioni] = useState<Stagione[]>(iniziale?.stagioni ?? [])
   const [inCorso, setInCorso] = useState(false)
   const [errore, setErrore] = useState<string | null>(null)
   const id = useId()
@@ -73,6 +75,7 @@ export function ModaleAttivita({ tipoIniziale = 'trekking', iniziale, esistenti,
   const validi: Record<Passo, boolean> = {
     Dove: nomeValido(nome) && luogoValido(luogo),
     Quanto: dislivelloValido(dislivello) && durataValida(durata) && viaggioValido(viaggio),
+    Stagioni: true,
     Link: true,
     Note: true,
   }
@@ -109,6 +112,8 @@ export function ModaleAttivita({ tipoIniziale = 'trekking', iniziale, esistenti,
         durata_ore: tipo === 'trekking' ? pulisciDurata(durata) : null,
         viaggio_minuti: minuti,
         viaggio_manuale: viaggioManuale(minuti, iniziale ?? null),
+        // Le stagioni sono solo delle avventure.
+        stagioni: tipo === 'avventura' ? pulisciStagioni(stagioni) : [],
         ...salvato,
       })
       onChiudi()
@@ -281,6 +286,26 @@ export function ModaleAttivita({ tipoIniziale = 'trekking', iniziale, esistenti,
               <p className="m-0 text-xs text-pericolo">La durata va a mezz'ore: 3 h o 3 h 30, non 3 h 20.</p>
             )}
             <p className="m-0 text-xs text-testo-tenue">Il viaggio scritto a mano non verrà ricalcolato.</p>
+          </Gruppo>
+        )}
+
+        {passi[passo] === 'Stagioni' && (
+          <Gruppo titolo="Stagioni">
+            <p className="m-0 text-sm font-semibold">Quando si può fare</p>
+            <div className="grid grid-cols-2 gap-2">
+              {STAGIONI.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  className={SCELTA_TIPO}
+                  aria-pressed={stagioni.includes(s)}
+                  onClick={() => setStagioni((prima) => (prima.includes(s) ? prima.filter((x) => x !== s) : [...prima, s]))}
+                >
+                  {NOMI_STAGIONI[s]}
+                </button>
+              ))}
+            </div>
+            <p className="m-0 text-xs text-testo-tenue">Una o più. Senza nessuna va bene tutto l'anno, e compare con ogni stagione nel filtro.</p>
           </Gruppo>
         )}
 

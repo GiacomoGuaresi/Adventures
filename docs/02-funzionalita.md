@@ -83,6 +83,7 @@ La posizione di **casa** è un punto fisso salvato nel database ([04](04-sicurez
 - Un trekking a cui **manca il dato** su cui si filtra (niente luogo, niente tempo di viaggio, niente dislivello…) **resta visibile**: i filtri nascondono solo i trekking con un valore fuori dall'intervallo.
 - **Completato**: segnarlo apre il **completamento** (sotto); toglierlo chiede conferma. I completati spariscono dall'elenco; l'interruttore **Mostra completati** li fa ricomparire.
 - **Modifica** di tutti i campi ed **eliminazione** con conferma.
+- **Stagioni delle avventure**: nel form, al posto di "Quanto", il passo **Stagioni** con quattro scelte da accendere (una o più, o nessuna per "tutto l'anno"); nei dettagli si leggono come "Primavera ed estate". Il filtro **Stagione** (Qualsiasi, Primavera, Estate, Autunno, Inverno) parte sulla **stagione corrente** a ogni apertura e lascia passare anche le avventure con tutte le stagioni o senza nessuna; i trekking non ne hanno e passano sempre. Compare negli elenchi delle avventure e sulla mappa, non nell'elenco dei trekking.
 - Nell'elenco delle **avventure** non ci sono le colonne e i filtri di dislivello e durata; quelli accesi sui trekking restano accesi per quando ci si torna.
 - Niente raggruppamenti per zona o tag.
 

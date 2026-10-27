@@ -19,6 +19,7 @@ export function esempio(campi: Partial<Attivita> = {}): Attivita {
     lon: null,
     viaggio_minuti: null,
     viaggio_manuale: false,
+    stagioni: [],
     completato: false,
     completato_il: null,
     fatto_dislivello: null,

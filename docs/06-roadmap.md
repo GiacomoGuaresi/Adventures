@@ -238,6 +238,8 @@ Ogni giro completato deve dare una soddisfazione, come la Foresta in Projects ([
 - [ ] **33 · Sfide e obiettivo annuale**: da definire insieme
 - [ ] **34 · Numeri dallo screenshot di Komoot**: OCR nel browser, caricato solo quando serve
 
+- [x] **35 · Stagioni delle avventure**: colonna `stagioni` (`015_stagioni.sql`, applicato il 2026-10-27), passo Stagioni nel form, filtro Stagione che parte da quella corrente (`src/dominio/stagioni.ts`)
+
 ## Più avanti, se servirà
 - [ ] Posizione GPS: distanza dalla posizione attuale e puntino sulla mappa
 - [ ] Google Places al posto di Photon

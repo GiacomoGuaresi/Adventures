@@ -3,7 +3,7 @@ import { useEffect, useId, useState } from 'react'
 import { FILTRI_VUOTI, type ChiaveFiltro, type Filtri as Valori, quantiFiltri } from '../dominio/filtri'
 import { TESTI, TIPI } from '../dominio/tipo'
 import type { Tipo } from '../dominio/tipi'
-import { PannelloFiltri, PulsanteFiltri } from './Filtri'
+import { PannelloFiltri, PulsanteFiltri, type FiltroStagione } from './Filtri'
 import { MostraCompletati } from './MostraCompletati'
 import { Ricerca } from './Ricerca'
 
@@ -22,6 +22,8 @@ interface Props {
   onTipo: (tipo: Tipo | null) => void
   /** I filtri che hanno senso per il tipo scelto. */
   chiavi: readonly ChiaveFiltro[]
+  /** La stagione, quando sulla mappa ci sono avventure. */
+  stagione?: FiltroStagione
 }
 
 const SCELTA_TIPO =
@@ -45,10 +47,11 @@ export function BarraMappa({
   tipo,
   onTipo,
   chiavi,
+  stagione,
 }: Props) {
   const [aperto, setAperto] = useState(false)
   const id = useId()
-  const quanti = quantiFiltri(filtri) + (mostraCompletati && quantiCompletati > 0 ? 1 : 0) + (tipo === null ? 0 : 1)
+  const quanti = quantiFiltri(filtri) + (mostraCompletati && quantiCompletati > 0 ? 1 : 0) + (tipo === null ? 0 : 1) + (stagione && stagione.valore !== null ? 1 : 0)
 
   useEffect(() => {
     if (!aperto) return
@@ -99,7 +102,7 @@ export function BarraMappa({
               </button>
             ))}
           </div>
-          <PannelloFiltri valori={filtri} onCambia={onFiltri} conDistanza={conDistanza} chiavi={chiavi} />
+          <PannelloFiltri valori={filtri} onCambia={onFiltri} conDistanza={conDistanza} chiavi={chiavi} stagione={stagione} />
           {quantiFiltri(filtri) > 0 && (
             <button
               type="button"

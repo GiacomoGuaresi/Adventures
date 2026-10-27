@@ -15,6 +15,7 @@ import {
 import { ORDINAMENTO_INIZIALE, ordina, tocca, type Ordinamento } from '../dominio/ordinamento'
 import { mancanti } from '../dominio/percorsi'
 import { cerca } from '../dominio/ricerca'
+import { nellaStagione, stagioneCorrente, type Stagione } from '../dominio/stagioni'
 import { TESTI } from '../dominio/tipo'
 import type { Attivita, CampiAttivita, Tipo } from '../dominio/tipi'
 import { BarraMappa } from './BarraMappa'
@@ -91,6 +92,8 @@ export function App() {
   const [ricerca, setRicerca] = useState('')
   const [ordinamento, setOrdinamento] = useState<Ordinamento>(ORDINAMENTO_INIZIALE)
   const [filtri, setFiltri] = useState<ValoriFiltri>(FILTRI_VUOTI)
+  /** La stagione delle avventure: all'apertura quella corrente (docs/02-funzionalita.md). */
+  const [stagione, setStagione] = useState<Stagione | null>(() => stagioneCorrente())
   const chiudiMenu = useCallback(() => setMenuAperto(false), [])
   const { stato, ricarica, crea, aggiorna, segnaCompletato, elimina, calcolaViaggi, luoghiTolti, chiudiLuoghiTolti } =
     useAttivita()
@@ -131,9 +134,14 @@ export function App() {
   /** Quelle del tipo che si guarda: tutte, sulla Mappa senza una scelta. */
   const delTipoVisto = (tutte: readonly Attivita[]) => (tipoVisto ? delTipo(tutte, tipoVisto) : [...tutte])
 
+  /** La stagione conta dove ci sono avventure: non nell'elenco dei trekking né sulla mappa coi soli trekking. */
+  const filtroStagione = tipoVisto === 'trekking' ? undefined : { valore: stagione, onCambia: setStagione }
+
   /** Quelle da mostrare, con le stesse regole per gli elenchi e per la mappa. */
   const daMostrare = (tutte: readonly Attivita[]) =>
-    filtra(cerca(visibili(delTipoVisto(tutte), mostraCompletati), ricerca), filtriVisti, casa)
+    filtra(cerca(visibili(delTipoVisto(tutte), mostraCompletati), ricerca), filtriVisti, casa).filter(
+      (a) => !filtroStagione || nellaStagione(a, stagione),
+    )
 
   /** Per l'avviso dei doppioni contano tutti, completati compresi. */
   const esistenti = stato.fase === 'pronto' ? stato.attivita : []
@@ -277,6 +285,7 @@ export function App() {
               tipo={tipoMappa}
               onTipo={setTipoMappa}
               chiavi={chiavi}
+              stagione={filtroStagione}
             />
           </Suspense>
         )}
@@ -294,6 +303,7 @@ export function App() {
               mostrati={daMostrare(stato.attivita).length}
               totali={delTipoVisto(stato.attivita).length}
               chiavi={chiavi}
+              stagione={filtroStagione}
             />
             <Elenco
               tipo={tipoPagina}
@@ -381,6 +391,7 @@ export function App() {
             lon: daModificare.lon,
             viaggio_minuti: daModificare.viaggio_minuti,
             viaggio_manuale: daModificare.viaggio_manuale,
+            stagioni: daModificare.stagioni,
           }}
           esistenti={esistenti}
           escludi={daModificare.id}

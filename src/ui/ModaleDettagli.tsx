@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react'
-import { Car, Check, Clock, ExternalLink, House, MapPin, Mountain, MountainSnow, Pencil, Ruler, Timer, TrendingUp, type LucideIcon } from 'lucide-react'
+import { Car, Check, Clock, Leaf, ExternalLink, House, MapPin, Mountain, MountainSnow, Pencil, Ruler, Timer, TrendingUp, type LucideIcon } from 'lucide-react'
 import type { Coordinate } from '../dominio/coordinate'
 import { mappaEsterna } from '../dominio/coordinate'
 import { giorno, km, metri, ore } from '../dominio/completamento'
 import { distanzaDaCasa, formattaDistanza } from '../dominio/distanza'
 import { formattaDurata } from '../dominio/durata'
 import { etichettaLink, perApertura } from '../dominio/link'
+import { testoStagioni } from '../dominio/stagioni'
 import { TESTI } from '../dominio/tipo'
 import type { Attivita } from '../dominio/tipi'
 import { formattaViaggio } from '../dominio/viaggio'
@@ -45,7 +46,7 @@ export function ModaleDettagli({ attivita: t, casa, onModifica, onCompletato, on
           [Mountain, 'Dislivello', t.dislivello === null ? '—' : `${t.dislivello} m`],
           [Clock, 'Durata', formattaDurata(t.durata_ore)],
         ] as [LucideIcon, string, string][])
-      : []),
+      : ([[Leaf, 'Stagioni', testoStagioni(t.stagioni)]] as [LucideIcon, string, string][])),
     [Car, 'Viaggio', formattaViaggio(t.viaggio_minuti)],
     ...(casa === null ? [] : [[House, 'Da casa', formattaDistanza(distanzaDaCasa(t, casa))] as [LucideIcon, string, string]]),
   ]

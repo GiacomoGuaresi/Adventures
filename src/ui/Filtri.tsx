@@ -16,6 +16,7 @@ import {
   testoIntervallo,
   testoLimite,
 } from '../dominio/filtri'
+import { NOMI_STAGIONI, STAGIONI, stagioneCorrente, type Stagione } from '../dominio/stagioni'
 import { CampoTempoMinuti } from './CampoTempo'
 import { MostraCompletati } from './MostraCompletati'
 import { Ricerca } from './Ricerca'
@@ -35,6 +36,14 @@ interface PropsBarra {
   totali: number
   /** I filtri che hanno senso in questo elenco: gli altri non compaiono. */
   chiavi: readonly ChiaveFiltro[]
+  /** Il filtro della stagione, solo dove ci sono avventure. */
+  stagione?: FiltroStagione
+}
+
+/** La stagione scelta nel filtro: `null` è "Qualsiasi". Parte dalla stagione corrente. */
+export interface FiltroStagione {
+  valore: Stagione | null
+  onCambia: (stagione: Stagione | null) => void
 }
 
 /**
@@ -55,11 +64,13 @@ export function BarraElenco({
   mostrati,
   totali,
   chiavi,
+  stagione,
 }: PropsBarra) {
   const [aperto, setAperto] = useState(false)
   const id = useId()
   const completatiAccesi = mostraCompletati && quantiCompletati > 0
-  const quanti = quantiFiltri(filtri) + (completatiAccesi ? 1 : 0)
+  const conStagione = stagione !== undefined && stagione.valore !== null
+  const quanti = quantiFiltri(filtri) + (completatiAccesi ? 1 : 0) + (conStagione ? 1 : 0)
   const qualcosa = quanti > 0 || ricerca.trim() !== ''
 
   return (
@@ -81,7 +92,7 @@ export function BarraElenco({
               <X className="size-[18px]" aria-hidden="true" />
             </button>
           </div>
-          <PannelloFiltri valori={filtri} onCambia={onFiltri} conDistanza={conDistanza} chiavi={chiavi} />
+          <PannelloFiltri valori={filtri} onCambia={onFiltri} conDistanza={conDistanza} chiavi={chiavi} stagione={stagione} />
         </div>
       )}
       {qualcosa && (
@@ -97,12 +108,18 @@ export function BarraElenco({
               />
             )
           })}
+          {stagione && stagione.valore !== null && (
+            <Etichetta testo={NOMI_STAGIONI[stagione.valore]} onTogli={() => stagione.onCambia(null)} />
+          )}
           {completatiAccesi && <Etichetta testo="Con i completati" onTogli={() => onMostraCompletati(false)} />}
-          {quantiFiltri(filtri) > 1 && (
+          {quantiFiltri(filtri) + (conStagione ? 1 : 0) > 1 && (
             <button
               type="button"
               className="min-h-9 rounded-full px-2 text-sm text-montagna-scura underline"
-              onClick={() => onFiltri(FILTRI_VUOTI)}
+              onClick={() => {
+                onFiltri(FILTRI_VUOTI)
+                stagione?.onCambia(null)
+              }}
             >
               Azzera
             </button>
@@ -171,6 +188,8 @@ interface PropsPannello {
   conDistanza: boolean
   /** I filtri da mostrare; senza, tutti. */
   chiavi?: readonly ChiaveFiltro[]
+  /** La stagione, in cima: solo dove ci sono avventure. */
+  stagione?: FiltroStagione
 }
 
 /**
@@ -178,9 +197,10 @@ interface PropsPannello {
  * la barra flottante della mappa. Per ogni filtro le scelte rapide; "Altro…"
  * apre i campi per scrivere un intervallo a mano.
  */
-export function PannelloFiltri({ valori, onCambia, conDistanza, chiavi = CHIAVI_FILTRI }: PropsPannello) {
+export function PannelloFiltri({ valori, onCambia, conDistanza, chiavi = CHIAVI_FILTRI, stagione }: PropsPannello) {
   return (
     <div className="flex flex-col gap-4">
+      {stagione && <SceltaStagione {...stagione} />}
       {chiavi.filter((chiave) => chiave !== 'distanza' || conDistanza).map((chiave) => (
         <Filtro
           key={chiave}
@@ -198,6 +218,37 @@ export function PannelloFiltri({ valori, onCambia, conDistanza, chiavi = CHIAVI_
 
 const SCELTA =
   'min-h-11 rounded-full border px-3 text-sm font-semibold aria-pressed:border-montagna aria-pressed:bg-montagna aria-pressed:text-panna'
+
+/**
+ * La stagione delle avventure (docs/02-funzionalita.md): una sola alla volta,
+ * "Qualsiasi" per vederle tutte. Passano anche quelle senza stagioni o con
+ * tutte e quattro; i trekking non ne hanno e passano sempre.
+ */
+function SceltaStagione({ valore, onCambia }: FiltroStagione) {
+  const ora = stagioneCorrente()
+  return (
+    <fieldset className="m-0 min-w-0 border-0 p-0">
+      <legend className="mb-1.5 p-0 text-sm font-semibold">Stagione</legend>
+      <div className="flex flex-wrap gap-1.5">
+        <button type="button" className={`${SCELTA} border-bordo bg-white text-testo hover:bg-fondo`} aria-pressed={valore === null} onClick={() => onCambia(null)}>
+          Qualsiasi
+        </button>
+        {STAGIONI.map((s) => (
+          <button
+            key={s}
+            type="button"
+            className={`${SCELTA} border-bordo bg-white text-testo hover:bg-fondo`}
+            aria-pressed={valore === s}
+            onClick={() => onCambia(valore === s ? null : s)}
+          >
+            {NOMI_STAGIONI[s]}
+            {s === ora && <span className="ml-1 font-normal opacity-75">· ora</span>}
+          </button>
+        ))}
+      </div>
+    </fieldset>
+  )
+}
 
 interface PropsFiltro {
   chiave: ChiaveFiltro

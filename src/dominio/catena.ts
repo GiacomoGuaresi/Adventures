@@ -8,17 +8,11 @@
 import { generatore, seme } from './caso'
 import { dislivelloFatto } from './completamento'
 import { anno, completate } from './cronologia'
+import { stagioneDi, type Stagione } from './stagioni'
 import type { Attivita } from './tipi'
 
-export type Stagione = 'primavera' | 'estate' | 'autunno' | 'inverno'
-
-/** Le stagioni a mesi interi, gennaio primo: dicembre è già inverno. */
-const STAGIONI: readonly Stagione[] = ['inverno', 'inverno', 'primavera', 'primavera', 'primavera', 'estate', 'estate', 'estate', 'autunno', 'autunno', 'autunno', 'inverno']
-
-/** La stagione del giorno `AAAA-MM-GG`; senza data è estate, la stagione dei trekking. */
-export function stagioneDi(data: string | null): Stagione {
-  return data === null ? 'estate' : STAGIONI[Number(data.slice(5, 7)) - 1]
-}
+export type { Stagione } from './stagioni'
+export { stagioneDi } from './stagioni'
 
 /** Quante rocce diverse ci sono: l'interfaccia ne sceglie i colori. */
 export const ROCCE = 5
