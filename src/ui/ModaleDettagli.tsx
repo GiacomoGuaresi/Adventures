@@ -1,7 +1,8 @@
-import { useState, type ReactNode } from 'react'
-import { Car, Check, Clock, ExternalLink, House, MapPin, Mountain, Pencil, type LucideIcon } from 'lucide-react'
+import type { ReactNode } from 'react'
+import { Car, Check, Clock, ExternalLink, House, MapPin, Mountain, MountainSnow, Pencil, Ruler, Timer, TrendingUp, type LucideIcon } from 'lucide-react'
 import type { Coordinate } from '../dominio/coordinate'
 import { mappaEsterna } from '../dominio/coordinate'
+import { giorno, km, metri, ore } from '../dominio/completamento'
 import { distanzaDaCasa, formattaDistanza } from '../dominio/distanza'
 import { formattaDurata } from '../dominio/durata'
 import { etichettaLink, perApertura } from '../dominio/link'
@@ -15,8 +16,8 @@ interface Props {
   attivita: Attivita
   casa: Coordinate | null
   onModifica: () => void
-  /** Segna o toglie il completato; se va storto lancia, e l'errore compare qui. */
-  onCompletato: () => Promise<unknown>
+  /** Segna il completato (apre il flusso col giro) o lo toglie (chiede conferma). */
+  onCompletato: () => void
   onChiudi: () => void
 }
 
@@ -27,23 +28,16 @@ const data = new Intl.DateTimeFormat('it-IT', { day: 'numeric', month: 'long', y
  * (docs/02-funzionalita.md): luogo, numeri (per l'avventura solo quelli del
  * viaggio), link e note, pensati per il telefono. Sul telefono è un foglio che
  * sale dal basso. In fondo "Modifica" apre il form, e si può segnare il
- * completato senza passare dal form.
+ * completato senza passare dal form. Da completato ci sono anche il giorno del
+ * giro e i numeri veri.
  */
 export function ModaleDettagli({ attivita: t, casa, onModifica, onCompletato, onChiudi }: Props) {
-  const [inCorso, setInCorso] = useState(false)
-  const [errore, setErrore] = useState<string | null>(null)
-
-  const cambiaCompletato = async () => {
-    setInCorso(true)
-    setErrore(null)
-    try {
-      await onCompletato()
-    } catch (e) {
-      setErrore((e as Error).message)
-    } finally {
-      setInCorso(false)
-    }
-  }
+  const fatti: [LucideIcon, string, string][] = [
+    ...(t.fatto_dislivello === null ? [] : [[TrendingUp, 'Dislivello fatto', metri(t.fatto_dislivello)] as [LucideIcon, string, string]]),
+    ...(t.fatto_km === null ? [] : [[Ruler, 'Lunghezza', km(t.fatto_km)] as [LucideIcon, string, string]]),
+    ...(t.fatto_quota_max === null ? [] : [[MountainSnow, 'Quota massima', metri(t.fatto_quota_max)] as [LucideIcon, string, string]]),
+    ...(t.fatto_durata_minuti === null ? [] : [[Timer, 'Durata fatta', ore(t.fatto_durata_minuti)] as [LucideIcon, string, string]]),
+  ]
 
   const numeri: [LucideIcon, string, string][] = [
     ...(t.tipo === 'trekking'
@@ -65,10 +59,9 @@ export function ModaleDettagli({ attivita: t, casa, onModifica, onCompletato, on
         <>
           <button
             type="button"
-            className="flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-[11px] border border-bordo px-4 font-semibold text-testo-tenue hover:bg-fondo disabled:opacity-50 sm:flex-none"
+            className="flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-[11px] border border-bordo px-4 font-semibold text-testo-tenue hover:bg-fondo sm:flex-none"
             aria-pressed={t.completato}
-            disabled={inCorso}
-            onClick={() => void cambiaCompletato()}
+            onClick={onCompletato}
           >
             <Check className="size-[18px]" aria-hidden="true" />
             {t.completato ? 'Togli completato' : TESTI[t.tipo].completato}
@@ -90,7 +83,7 @@ export function ModaleDettagli({ attivita: t, casa, onModifica, onCompletato, on
             {t.completato && (
               <span className="inline-flex w-fit items-center gap-1 rounded-full bg-ghiaccio px-2.5 py-1 text-xs font-semibold text-montagna-scura">
                 <Check className="size-[14px]" aria-hidden="true" />
-                Completato
+                {t.completato_il ? `Fatto il ${giorno(t.completato_il)}` : 'Completato'}
               </span>
             )}
             {t.lat !== null && t.lon !== null ? (
@@ -115,6 +108,20 @@ export function ModaleDettagli({ attivita: t, casa, onModifica, onCompletato, on
               )
             )}
           </div>
+        )}
+
+        {fatti.length > 0 && (
+          <dl className="m-0 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {fatti.map(([Icona, etichetta, valore]) => (
+              <div key={etichetta} className="rounded-[11px] bg-ghiaccio px-3 py-2">
+                <dt className="flex items-center gap-1.5 text-xs text-montagna-scura">
+                  <Icona className="size-[14px]" aria-hidden="true" />
+                  {etichetta}
+                </dt>
+                <dd className="m-0 mt-0.5 text-base font-semibold">{valore}</dd>
+              </div>
+            ))}
+          </dl>
         )}
 
         <dl className="m-0 grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -155,11 +162,6 @@ export function ModaleDettagli({ attivita: t, casa, onModifica, onCompletato, on
               openrouteservice.org
             </a>{' '}
             by HeiGIT, dati © OpenStreetMap
-          </p>
-        )}
-        {errore && (
-          <p className="m-0 text-xs text-pericolo" role="alert">
-            {errore}
           </p>
         )}
       </div>

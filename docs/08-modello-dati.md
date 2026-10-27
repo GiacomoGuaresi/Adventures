@@ -21,11 +21,17 @@ Tutto sta nello schema Postgres `adventures`, con nomi in italiano come nelle al
 | `viaggio_manuale` | `boolean` | `true` se il tempo di viaggio è stato scritto a mano: il ricalcolo non lo tocca |
 | `note` | `text` | Markdown, facoltativo |
 | `completato` | `boolean` | default `false` |
+| `completato_il` | `date` | il giorno del giro; vuoto per i completati di prima del completamento |
+| `fatto_dislivello` | `integer` | metri veri, `> 0`, facoltativo; solo trekking |
+| `fatto_km` | `numeric(5,1)` | km veri, `> 0`, facoltativo; solo trekking |
+| `fatto_quota_max` | `integer` | metri, `> 0`, facoltativo; solo trekking |
+| `fatto_durata_minuti` | `integer` | durata vera in minuti, `> 0`, facoltativa; solo trekking |
 | `creato_il` | `timestamptz` | default `now()` |
 | `modificato_il` | `timestamptz` | aggiornato da trigger |
 
 Regole nel database:
-- un'avventura non ha `dislivello` né `durata_ore` (vincolo `attivita_avventura_senza_numeri`);
+- un'avventura non ha `dislivello` né `durata_ore` (vincolo `attivita_avventura_senza_numeri`) né i numeri `fatto_*` (`attivita_avventura_senza_fatto`);
+- data e numeri veri ci sono solo da completato (`attivita_fatto_solo_completato`): "Togli completato" li azzera;
 - se cambiano `lat` o `lon` e `viaggio_manuale` è `false`, un trigger svuota `viaggio_minuti`, così il tempo verrà ricalcolato;
 - se si svuota `viaggio_minuti`, `viaggio_manuale` torna `false`.
 
@@ -33,7 +39,7 @@ Il ricalcolo usa questa condizione: `lat` presente, `viaggio_minuti` vuoto, `via
 
 Se il percorso risulta impossibile, l'app svuota `luogo_nome`, `lat` e `lon`: il trekking esce così dalla condizione di ricalcolo, senza bisogno di colonne in più.
 
-La **distanza in linea d'aria** non si salva: si calcola nel browser.
+La **distanza in linea d'aria** non si salva: si calcola nel browser. Lo stesso vale per catena, timbri, traguardi e statistiche: si ricavano da `completato_il` e dai numeri `fatto_*`.
 
 ## `adventures.impostazioni`
 

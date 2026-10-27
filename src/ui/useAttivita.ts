@@ -3,7 +3,7 @@ import { percorsi, attivita } from '../dati'
 import type { Coordinate } from '../dominio/coordinate'
 import { rimuovi, sostituisci } from '../dominio/elenco'
 import { daCalcolare, mancanti } from '../dominio/percorsi'
-import type { CampiAttivita, Attivita } from '../dominio/tipi'
+import type { CampiAttivita, Attivita, DatiCompletamento } from '../dominio/tipi'
 
 export type StatoElenco =
   | { fase: 'caricamento' }
@@ -57,9 +57,9 @@ export function useAttivita() {
     return cambiato
   }, [])
 
-  /** Segna o toglie il completato: sparisce dall'elenco se non si mostrano i completati. */
-  const segnaCompletato = useCallback(async (id: string, completato: boolean) => {
-    const cambiato = await attivita().segnaCompletato(id, completato)
+  /** Segna (con i dati del giro) o toglie (`null`) il completato: sparisce dall'elenco se non si mostrano i completati. */
+  const segnaCompletato = useCallback(async (id: string, dati: DatiCompletamento | null) => {
+    const cambiato = await attivita().segnaCompletato(id, dati)
     setStato((prima) => (prima.fase === 'pronto' ? { ...prima, attivita: sostituisci(prima.attivita, cambiato) } : prima))
     return cambiato
   }, [])

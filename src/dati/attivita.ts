@@ -3,7 +3,7 @@
 // stanno nel browser, qui si leggono e si scrivono le righe.
 
 import type { SupabaseClient } from '@supabase/supabase-js'
-import type { CampiAttivita, Attivita } from '../dominio/tipi'
+import type { CampiAttivita, Attivita, DatiCompletamento } from '../dominio/tipi'
 import { fallita } from './errore'
 
 export class AttivitaSupabase {
@@ -29,9 +29,23 @@ export class AttivitaSupabase {
     return data as Attivita
   }
 
-  /** Segna o toglie il completato (docs/02-funzionalita.md): è reversibile. */
-  async segnaCompletato(id: string, completato: boolean): Promise<Attivita> {
-    const { data, error } = await this.client.from('attivita').update({ completato }).eq('id', id).select().single()
+  /**
+   * Segna il completato con la data, i numeri veri e la relazione, o lo toglie
+   * (`null`) azzerando tutto quello che il completamento aveva scritto, note a
+   * parte (docs/02-funzionalita.md): è reversibile.
+   */
+  async segnaCompletato(id: string, dati: DatiCompletamento | null): Promise<Attivita> {
+    const campi = dati
+      ? { completato: true, ...dati }
+      : {
+          completato: false,
+          completato_il: null,
+          fatto_dislivello: null,
+          fatto_km: null,
+          fatto_quota_max: null,
+          fatto_durata_minuti: null,
+        }
+    const { data, error } = await this.client.from('attivita').update(campi).eq('id', id).select().single()
     if (error) throw fallita('Completato non cambiato', error)
     return data as Attivita
   }

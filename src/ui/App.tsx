@@ -1,4 +1,4 @@
-import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react'
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Compass, Menu, Plus, X } from 'lucide-react'
 import { percorsi } from '../dati'
 import { delTipo, quantiCompletati, visibili } from '../dominio/elenco'
@@ -25,12 +25,20 @@ import { EtichettaNuovo, NUOVO, useTipoAlterno } from './EtichettaNuovo'
 import { Installa } from './Installa'
 import { BarraElenco } from './Filtri'
 import { MenuLaterale } from './MenuLaterale'
+import { Pallino } from './Pallino'
 import { ModaleAttivita } from './ModaleAttivita'
+import { ModaleCompletamento } from './ModaleCompletamento'
+import { PaginaCatena } from './catena/PaginaCatena'
+import { PaginaPassaporto } from './passaporto/PaginaPassaporto'
+import { PaginaStatistiche } from './PaginaStatistiche'
 import { useInterruttore } from './preferenze'
 import { useCasa } from './useCasa'
 import { indirizzi, tipoDellaRotta, useRotta } from './rotta'
 import { installa, useInstallazione } from './installazione'
 import { useAttivita } from './useAttivita'
+import { VISTE_CATENA, VISTI_TIMBRI, useDaVedere } from './visti'
+import { montagne } from '../dominio/catena'
+import { pagine } from '../dominio/timbri'
 
 // Leaflet pesa: si carica a parte, così l'intestazione compare subito anche
 // con la rete del telefono in montagna, e chi apre l'Elenco non lo scarica.
@@ -46,6 +54,8 @@ export function App() {
   const rotta = useRotta()
   /** La Mappa è la pagina principale e prende tutto lo spazio sotto l'intestazione. */
   const suMappa = rotta === 'mappa'
+  /** Anche la Catena prende tutto lo spazio: si guarda soprattutto dal telefono. */
+  const aTuttaPagina = suMappa || rotta === 'catena'
   /** Il tipo dell'elenco che si guarda: `null` sulla Mappa e su Installa. */
   const tipoPagina = tipoDellaRotta(rotta)
   const [menuAperto, setMenuAperto] = useState(false)
@@ -68,7 +78,14 @@ export function App() {
    */
   const [inDettaglio, setInDettaglio] = useState<string | null>(null)
   const [erroreEliminazione, setErroreEliminazione] = useState<string | null>(null)
-  /** L'errore di un tocco sul completato: l'elenco resta com'era. */
+  /**
+   * Il completamento (docs/02-funzionalita.md): segnare apre il flusso con i
+   * dati del giro e la cerimonia; togliere chiede conferma, perché perde la
+   * data e i numeri veri.
+   */
+  const [daCompletare, setDaCompletare] = useState<string | null>(null)
+  const [daScompletare, setDaScompletare] = useState<Attivita | null>(null)
+  /** L'errore del togli completato: l'elenco resta com'era. */
   const [erroreCompletato, setErroreCompletato] = useState<string | null>(null)
   const [mostraCompletati, setMostraCompletati] = useInterruttore('completati', false)
   const [ricerca, setRicerca] = useState('')
@@ -122,12 +139,34 @@ export function App() {
   const esistenti = stato.fase === 'pronto' ? stato.attivita : []
   const dettaglio = esistenti.find((t) => t.id === inDettaglio) ?? null
 
+  /**
+   * Le cime e i timbri che compariranno alla prossima visita: il pallino rosso
+   * nel menu e sul ☰ (docs/09-interfaccia.md), finché non si apre la pagina.
+   */
+  const idCime = useMemo(() => montagne(esistenti).map((m) => m.id), [esistenti])
+  const idTimbri = useMemo(() => pagine(esistenti).flatMap((p) => p.timbri.map((t) => t.id)), [esistenti])
+  const avvisi = {
+    catena: useDaVedere(VISTE_CATENA, idCime),
+    passaporto: useDaVedere(VISTI_TIMBRI, idTimbri),
+  }
+  const quantiAvvisi = avvisi.catena + avvisi.passaporto
+
   const apriDettagli = (t: Attivita) => setInDettaglio(t.id)
 
-  const cambiaCompletato = async (t: Attivita) => {
+  const completando = esistenti.find((t) => t.id === daCompletare) ?? null
+
+  const cambiaCompletato = (t: Attivita) => {
+    setErroreCompletato(null)
+    if (t.completato) setDaScompletare(t)
+    else setDaCompletare(t.id)
+  }
+
+  const confermaScompletato = async () => {
+    if (!daScompletare) return
     setErroreCompletato(null)
     try {
-      await segnaCompletato(t.id, !t.completato)
+      await segnaCompletato(daScompletare.id, null)
+      setDaScompletare(null)
     } catch (e) {
       setErroreCompletato((e as Error).message)
     }
@@ -151,18 +190,19 @@ export function App() {
 
   return (
     <div
-      className={`sfondo-montagna flex flex-col lg:grid ${suMappa ? 'h-dvh' : 'min-h-dvh'} lg:grid-cols-[256px_minmax(0,1fr)] lg:grid-rows-[auto_1fr]`}
+      className={`sfondo-montagna flex flex-col lg:grid ${aTuttaPagina ? 'h-dvh' : 'min-h-dvh'} lg:grid-cols-[256px_minmax(0,1fr)] lg:grid-rows-[auto_1fr]`}
     >
       <header className="sticky top-0 z-1 flex items-center gap-1 border-b border-montagna-scura bg-montagna pt-[env(safe-area-inset-top)] pr-2 pl-1 text-panna lg:col-span-full lg:min-h-11 lg:pl-3">
         <button
-          className="grid size-11 place-items-center rounded-[11px] active:bg-montagna-scura lg:hidden"
+          className="relative grid size-11 place-items-center rounded-[11px] active:bg-montagna-scura lg:hidden"
           type="button"
-          aria-label="Apri il menu"
+          aria-label={quantiAvvisi > 0 ? `Apri il menu: ${quantiAvvisi} novità da vedere` : 'Apri il menu'}
           aria-expanded={menuAperto}
           aria-controls="menu"
           onClick={() => setMenuAperto(true)}
         >
           <Menu className="size-[22px]" aria-hidden="true" />
+          {quantiAvvisi > 0 && <Pallino numero={quantiAvvisi} className="absolute top-1 right-0.5" />}
         </button>
         <Compass className="size-[22px] shrink-0 text-sole" aria-hidden="true" />
         <h1 className="ml-1 text-lg font-semibold tracking-[0.01em]">Adventures</h1>
@@ -179,6 +219,7 @@ export function App() {
       <MenuLaterale
         aperto={menuAperto}
         corrente={rotta}
+        avvisi={avvisi}
         onChiudi={chiudiMenu}
         tipoNuovo={tipoProposto}
         onNuovo={() => {
@@ -201,7 +242,7 @@ export function App() {
         className={
           // `isolate`: i livelli di Leaflet (z-index fino a 1000) e la barra
           // flottante restano chiusi qui dentro, sotto il menu e l'intestazione.
-          suMappa
+          aTuttaPagina
             ? 'relative isolate min-h-0 flex-1 lg:col-start-2'
             : 'mx-auto w-full max-w-[1200px] flex-1 p-3 pb-[calc(12px+env(safe-area-inset-bottom))] lg:col-start-2'
         }
@@ -216,6 +257,9 @@ export function App() {
           </p>
         )}
         {rotta === 'installa' && <Installa stato={statoInstallazione} />}
+        {rotta === 'catena' && stato.fase === 'pronto' && <PaginaCatena attivita={stato.attivita} onDettagli={apriDettagli} />}
+        {rotta === 'passaporto' && stato.fase === 'pronto' && <PaginaPassaporto attivita={stato.attivita} onDettagli={apriDettagli} />}
+        {rotta === 'statistiche' && stato.fase === 'pronto' && <PaginaStatistiche attivita={stato.attivita} onDettagli={apriDettagli} />}
         {suMappa && stato.fase === 'pronto' && (
           <Suspense fallback={<p className="mt-8 text-center text-testo-tenue">Carico la mappa…</p>}>
             <div className="absolute inset-0">
@@ -251,11 +295,6 @@ export function App() {
               totali={delTipoVisto(stato.attivita).length}
               chiavi={chiavi}
             />
-            {erroreCompletato && (
-              <p className="mb-2 text-sm text-pericolo" role="alert">
-                {erroreCompletato}
-              </p>
-            )}
             <Elenco
               tipo={tipoPagina}
               attivita={ordina(daMostrare(stato.attivita), ordinamento, casa)}
@@ -267,7 +306,7 @@ export function App() {
               onNuovo={apriNuovo}
               onDettagli={apriDettagli}
               nascosti={mostraCompletati ? 0 : quantiCompletati(delTipoVisto(stato.attivita))}
-              onCompletato={(t) => void cambiaCompletato(t)}
+              onCompletato={cambiaCompletato}
               onRinomina={setDaModificare}
               onElimina={(t) => {
                 setErroreEliminazione(null)
@@ -285,14 +324,48 @@ export function App() {
           onChiudi={() => setNuovo(null)}
         />
       )}
-      {dettaglio && !daModificare && !daEliminare && (
+      {dettaglio && !daModificare && !daEliminare && !completando && !daScompletare && (
         <ModaleDettagli
           attivita={dettaglio}
           casa={casa}
           onModifica={() => setDaModificare(dettaglio)}
-          onCompletato={() => segnaCompletato(dettaglio.id, !dettaglio.completato)}
+          onCompletato={() => cambiaCompletato(dettaglio)}
           onChiudi={() => setInDettaglio(null)}
         />
+      )}
+      {completando && (
+        <ModaleCompletamento
+          attivita={completando}
+          tutte={esistenti}
+          onSalva={(dati) => segnaCompletato(completando.id, dati)}
+          onChiudi={() => setDaCompletare(null)}
+          onFine={() => {
+            setDaCompletare(null)
+            setInDettaglio(null)
+          }}
+        />
+      )}
+      {daScompletare && (
+        <Conferma
+          titolo="Togli completato"
+          conferma="Togli completato"
+          onConferma={() => void confermaScompletato()}
+          onAnnulla={() => {
+            setDaScompletare(null)
+            setErroreCompletato(null)
+          }}
+        >
+          <p className="m-0">
+            <strong>{daScompletare.nome}</strong> torna fra quelli da fare
+            {daScompletare.tipo === 'trekking' ? ': la sua cima sparisce dalla catena' : ': il suo timbro sparisce dal passaporto'}, e
+            si perdono la data e i numeri veri del giro. Le note restano.
+          </p>
+          {erroreCompletato && (
+            <p className="mt-2 mb-0 text-xs text-pericolo" role="alert">
+              {erroreCompletato}
+            </p>
+          )}
+        </Conferma>
       )}
       {daModificare && (
         <ModaleAttivita

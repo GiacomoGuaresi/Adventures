@@ -49,3 +49,10 @@
 | 2026-10-12 | Nel menu **due elenchi separati**, Trekking e Avventure, più la Mappa comune | deciso |
 | 2026-10-12 | Icona Lucide `compass` al posto di `mountain-snow`; palette e sfondo restano | deciso |
 | 2026-10-12 | **Accento color sole** (`#f0b556`, scuro `#9a6a12`), l'oro delle altre app di casa: ago dell'icona, bussola dell'intestazione, barretta del menu, icona dell'accesso ([09](09-interfaccia.md)) | deciso |
+| 2026-10-27 | **Premi dei giri fatti**, come la Foresta di Projects: i trekking diventano cime di una **catena**, le avventure **timbri** di un passaporto, e tutti e due sbloccano **traguardi**; poi **statistiche**. Tutto calcolato, niente punti salvati | deciso |
+| 2026-10-27 | Il completato ha una **data** (il giorno del giro) e, per i trekking, i **numeri veri** da Garmin o Komoot scritti a mano: dislivello, km, quota massima, durata in minuti. I previsti della scheda restano | deciso |
+| 2026-10-27 | Un giro **conta una volta sola**: niente tabella delle uscite ripetute, per ora | deciso |
+| 2026-10-27 | L'altezza delle cime segue il **dislivello** (vero, o previsto se manca), non la quota | deciso |
+| 2026-10-27 | Niente GPX; i numeri dallo **screenshot di Komoot** con OCR nel browser più avanti. Niente libro di vetta né mappa che si svela | deciso |
+| 2026-10-27 | **Togli completato** chiede conferma: perde la data e i numeri veri | deciso |
+| 2026-10-27 | **Passaporto e traguardi uniti**: ogni traguardo raggiunto è un sigillo d'oro del passaporto; quelli da raggiungere sono nascosti e si leggono, con l'avanzamento, nel foglio **Da sbloccare** | deciso |

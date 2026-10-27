@@ -81,7 +81,7 @@ La posizione di **casa** è un punto fisso salvato nel database ([04](04-sicurez
   - tempo di viaggio da casa: ≤ 30 min, 1 h, 1 h 30, 2 h.
 - I filtri accesi restano **in vista sotto la barra** come etichette ("Dislivello 500–1000 m ×") da togliere con un tocco, con **Azzera** e quanti trekking passano ("12 di 40"). Nel pannello c'è anche **Mostra completati**.
 - Un trekking a cui **manca il dato** su cui si filtra (niente luogo, niente tempo di viaggio, niente dislivello…) **resta visibile**: i filtri nascondono solo i trekking con un valore fuori dall'intervallo.
-- **Completato**: si segna e si toglie con un tocco. I completati spariscono dall'elenco; l'interruttore **Mostra completati** li fa ricomparire.
+- **Completato**: segnarlo apre il **completamento** (sotto); toglierlo chiede conferma. I completati spariscono dall'elenco; l'interruttore **Mostra completati** li fa ricomparire.
 - **Modifica** di tutti i campi ed **eliminazione** con conferma.
 - Nell'elenco delle **avventure** non ci sono le colonne e i filtri di dislivello e durata; quelli accesi sui trekking restano accesi per quando ci si torna.
 - Niente raggruppamenti per zona o tag.
@@ -95,3 +95,22 @@ La posizione di **casa** è un punto fisso salvato nel database ([04](04-sicurez
 - Toccando un puntino si apre un **popup riassuntivo** (nome, luogo, dislivello, durata, tempo di viaggio, distanza) con il pulsante **Dettagli**.
 - **Dettagli** apre la scheda in **sola lettura** (sul telefono un foglio che sale dal basso): luogo apribile in Google Maps, numeri, link, note, data di aggiunta. Da lì **Modifica** apre il form e **Trekking completato / Togli completato** cambia il completato; chiuso il form si torna ai dettagli aggiornati. La stessa scheda si apre toccando il nome nell'elenco.
 - **Casa** è segnata con un'icona propria.
+
+## Completamento e premi
+
+Ogni giro fatto deve dare una piccola soddisfazione: i trekking diventano **montagne**, le avventure **timbri**, e tutti e due sbloccano **traguardi**. Tutto si calcola dall'elenco: si salvano solo la data e i numeri veri del giro.
+
+- **Completamento**: segnare il completato (dai dettagli o dalla casella dell'elenco) apre un piccolo flusso.
+  1. **Quando**: il giorno del giro, oggi di default, mai nel futuro.
+  2. Solo per i trekking, **i numeri veri** da Garmin o Komoot, tutti facoltativi: dislivello (proposto quello previsto), lunghezza in km, quota massima, durata. Si scrivono a mano.
+  3. **Relazione**, facoltativa: le note della scheda, da sistemare col percorso fatto davvero. **Salta** le lascia come sono.
+  4. **Cerimonia**: la cima nuova sorge nella catena fra le vicine e pianta la bandierina, o il timbro cade sul passaporto; sotto i numeri, al massimo tre confronti ("Il tuo 3° dislivello più alto", "Nuovo record di quota", "+1.240 m: nel 2026 sei a 8.430 m") e i traguardi appena sbloccati, che cadono come sigilli.
+- **Togli completato** chiede conferma e azzera la data e i numeri veri; le note restano.
+- I giri completati prima del completamento non hanno data: stanno all'inizio della catena e in fondo al passaporto come **Prima di Adventures**.
+- **Catena** (`#/catena`): una cima per trekking completato, da sinistra a destra in ordine di giro, con gli anni sotto. L'altezza segue il **dislivello vero** (o il previsto, se manca) con una radice, così anche i giri corti si vedono; la base si allarga con i km; la neve arriva dai 1.200 m. Le cime nuove sorgono la prima volta che si vedono, quelle di oggi brillano. Un tocco su una cima ne mostra i numeri e apre i dettagli.
+- **Passaporto** (`#/passaporto`): una pagina per anno con un timbro per ogni avventura completata (forma, inchiostro e inclinazione nascono dall'avventura) e un **sigillo d'oro** per ogni traguardo raggiunto, di trekking o di avventure, in ordine di giorno. Toccando un timbro si apre il giro che l'ha dato. I traguardi da raggiungere **non si vedono**: il pulsante **Da sbloccare** li elenca in un foglio, con cosa serve e, dove si può contare, a che punto si è ("7.350 m di 8.849 m"), i più vicini prima.
+- **Traguardi**: prima cima, 10 e 25 trekking, 1.000 m, Monte Bianco (4.808 m), Everest (8.849 m), due Everest e 100 km di dislivello in tutto, un giro da 1.500 m, sopra i 3.000 m, da 20 km, 42,2 km in tutto, un trekking per stagione; primo timbro, 5 e 10 avventure, una o tre avventure ad almeno 2 ore d'auto, un trekking e un'avventura nello stesso mese. Il giorno di sblocco è quello del giro che ha superato la soglia.
+- **Statistiche** (`#/statistiche`): di sempre o di un anno, trekking, avventure, dislivello, km, ore, dislivello medio, i record col loro giro, l'ultimo giro, i giri per mese (con l'anno) e quanta parte della lista è fatta.
+- **Sfide e obiettivo annuale** di dislivello: da definire.
+- Più avanti: leggere i numeri dallo **screenshot di Komoot** (OCR nel browser) per non scriverli a mano.
+

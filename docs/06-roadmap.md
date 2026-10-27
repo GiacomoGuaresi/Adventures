@@ -224,6 +224,20 @@ L'app smette di essere solo trekking: prima cambia nome senza cambiare cosa fa, 
   - [x] `013_tipo.sql` applicato in produzione il 2026-10-12: le righe esistenti sono trekking, un'avventura con il dislivello viene rifiutata
   - [ ] Provato sull'app online: una "Fare rafting" creata, vista sul suo elenco e sulla mappa, completata
 
+## Fase 7 · I premi dei giri fatti
+
+Ogni giro completato deve dare una soddisfazione, come la Foresta in Projects ([07](07-decisioni.md), 2026-10-27).
+
+- [ ] **32 · Completamento e premi**: data e numeri veri del giro, cerimonia, catena, passaporto, traguardi, statistiche
+  - [x] `014_completamento.sql`: `completato_il` e i numeri `fatto_*`, con i vincoli
+  - [x] Logica con i test: `completamento.ts`, `cronologia.ts`, `catena.ts`, `statistiche.ts`, `traguardi.ts`, `timbri.ts`, `caso.ts`
+  - [x] Flusso di completamento e cerimonia (`ModaleCompletamento.tsx`); "Togli completato" con conferma; numeri veri nei dettagli
+  - [x] Pagine Catena, Passaporto e Statistiche, con le voci nel menu
+  - [x] `014_completamento.sql` applicato in produzione il 2026-10-27
+  - [ ] Provato sull'app online: un trekking e un'avventura completati, cerimonia vista, "Togli completato"
+- [ ] **33 · Sfide e obiettivo annuale**: da definire insieme
+- [ ] **34 · Numeri dallo screenshot di Komoot**: OCR nel browser, caricato solo quando serve
+
 ## Più avanti, se servirà
 - [ ] Posizione GPS: distanza dalla posizione attuale e puntino sulla mappa
 - [ ] Google Places al posto di Photon

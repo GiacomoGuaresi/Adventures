@@ -41,4 +41,4 @@ Il proprietario e la partner, **allo stesso livello**, con l'account condiviso d
 - Un navigatore o un'app per registrare le tracce: niente GPS e niente posizione del telefono
 - Un catalogo organizzato: due soli tipi (trekking e avventura), niente tag o raggruppamenti per zona (la zona si vede sulla mappa)
 - Un lettore di Komoot o di altri siti: i dati si scrivono a mano, il link si salva e basta
-- Un diario delle uscite né un calendario: ci sono solo le note, e le avventure non hanno una data
+- Un diario delle uscite né un calendario: ci sono solo le note. Una data c'è solo per i giri **completati**, il giorno in cui si sono fatti, e serve ai premi (catena, passaporto, statistiche)

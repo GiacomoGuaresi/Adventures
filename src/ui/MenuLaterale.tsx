@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react'
-import { Download, Map, MountainSnow, Plus, Tent, X, type LucideIcon } from 'lucide-react'
+import { ChartColumn, Download, Map, Mountain, MountainSnow, Plus, Stamp, Tent, X, type LucideIcon } from 'lucide-react'
 import type { Tipo } from '../dominio/tipi'
 import { EtichettaNuovo, NUOVO } from './EtichettaNuovo'
+import { Pallino } from './Pallino'
 import { indirizzi, type Rotta } from './rotta'
 
 /** Da questa larghezza il menu è sempre aperto: la stessa soglia di `lg:`. */
@@ -13,9 +14,18 @@ const sezioni: { rotta: Rotta; etichetta: string; icona: LucideIcon }[] = [
   { rotta: 'avventure', etichetta: 'Avventure', icona: Tent },
 ]
 
+/** I premi dei giri fatti, staccati dalle liste di quelli da fare. */
+const premi: { rotta: Rotta; etichetta: string; icona: LucideIcon }[] = [
+  { rotta: 'catena', etichetta: 'Catena', icona: Mountain },
+  { rotta: 'passaporto', etichetta: 'Passaporto', icona: Stamp },
+  { rotta: 'statistiche', etichetta: 'Statistiche', icona: ChartColumn },
+]
+
 interface Props {
   aperto: boolean
   corrente: Rotta
+  /** Le novità da vedere per pagina: col pallino rosso accanto alla voce. */
+  avvisi?: Partial<Record<Rotta, number>>
   onChiudi: () => void
   /** L'azione "Nuovo trekking" o "Nuova avventura", staccata dalle sezioni: le due scritte si alternano. */
   tipoNuovo: Tipo
@@ -31,7 +41,7 @@ interface Props {
  * la pagina sotto non scorre, e alla chiusura il fuoco torna dov'era. Da
  * desktop è una colonna fissa, sempre visibile.
  */
-export function MenuLaterale({ aperto, corrente, onChiudi, tipoNuovo, onNuovo, onInstalla }: Props) {
+export function MenuLaterale({ aperto, corrente, avvisi = {}, onChiudi, tipoNuovo, onNuovo, onInstalla }: Props) {
   const pannello = useRef<HTMLElement>(null)
 
   // Se la finestra si allarga col menu aperto lo si chiude, così la pagina
@@ -106,6 +116,27 @@ export function MenuLaterale({ aperto, corrente, onChiudi, tipoNuovo, onNuovo, o
                   aria-hidden="true"
                 />
                 {etichetta}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <hr className="mx-1 my-2 border-bordo" />
+        <ul className="flex flex-col gap-0.5">
+          {premi.map(({ rotta, etichetta, icona: Icona }) => (
+            <li key={rotta}>
+              <a
+                href={indirizzi[rotta]}
+                aria-label={avvisi[rotta] ? `${etichetta}: ${avvisi[rotta]} da vedere` : undefined}
+                aria-current={rotta === corrente ? 'page' : undefined}
+                onClick={onChiudi}
+                className="group flex min-h-11 items-center gap-3 rounded-lg px-3 hover:bg-fondo active:bg-bordo aria-[current=page]:bg-ghiaccio aria-[current=page]:font-semibold aria-[current=page]:shadow-[inset_3px_0_0_var(--color-sole-scuro)]"
+              >
+                <Icona
+                  className="size-[18px] text-testo-tenue group-aria-[current=page]:text-montagna-scura"
+                  aria-hidden="true"
+                />
+                {etichetta}
+                {!!avvisi[rotta] && <Pallino numero={avvisi[rotta]} su="bianco" className="ml-auto" />}
               </a>
             </li>
           ))}
