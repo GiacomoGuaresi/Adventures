@@ -6,6 +6,7 @@
  */
 
 import { generatore, seme } from './caso'
+import type { Coordinate } from './coordinate'
 import { anno, completate } from './cronologia'
 import type { Attivita } from './tipi'
 import { traguardi, type IconaTraguardo, type Sblocco } from './traguardi'
@@ -69,8 +70,8 @@ export function sigillo({ traguardo, da }: Sblocco & { da: Attivita }): Timbro {
 }
 
 /** I sigilli dei traguardi raggiunti. */
-export function sigilli(attivita: readonly Attivita[]): Timbro[] {
-  return traguardi(attivita)
+export function sigilli(attivita: readonly Attivita[], casa: Coordinate | null = null): Timbro[] {
+  return traguardi(attivita, casa)
     .filter((s): s is Sblocco & { da: Attivita } => s.da !== null)
     .map(sigillo)
 }
@@ -80,8 +81,8 @@ export function sigilli(attivita: readonly Attivita[]): Timbro[] {
  * data in fondo. Dentro, timbri delle avventure e sigilli dei traguardi in
  * ordine di giorno; a parità il sigillo viene dopo il giro che l'ha dato.
  */
-export function pagine(attivita: readonly Attivita[]): { anno: number | null; timbri: Timbro[] }[] {
-  const tutti = [...completate(attivita, 'avventura').map(timbro), ...sigilli(attivita)].sort((a, b) => {
+export function pagine(attivita: readonly Attivita[], casa: Coordinate | null = null): { anno: number | null; timbri: Timbro[] }[] {
+  const tutti = [...completate(attivita, 'avventura').map(timbro), ...sigilli(attivita, casa)].sort((a, b) => {
     if (a.data !== b.data) return (a.data ?? '') < (b.data ?? '') ? -1 : 1
     return (a.forma === 'sigillo' ? 1 : 0) - (b.forma === 'sigillo' ? 1 : 0)
   })

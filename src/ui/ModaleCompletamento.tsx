@@ -14,6 +14,7 @@ import {
   quotaValida,
   testoKm,
 } from '../dominio/completamento'
+import type { Coordinate } from '../dominio/coordinate'
 import { completate } from '../dominio/cronologia'
 import { dislivelloValido, pulisciDislivello, testoDislivello } from '../dominio/dislivello'
 import { confronti } from '../dominio/statistiche'
@@ -33,6 +34,8 @@ interface Props {
   attivita: Attivita
   /** Tutte, per la cerimonia: dopo il salvataggio arrivano già con il giro completato. */
   tutte: readonly Attivita[]
+  /** Per i traguardi che guardano dove sta il giro rispetto a casa. */
+  casa: Coordinate | null
   onSalva: (dati: DatiCompletamento) => Promise<unknown>
   /** Chiuso prima di salvare: si torna da dove si era partiti. */
   onChiudi: () => void
@@ -52,7 +55,7 @@ const VICINE = 3
  * la cima nuova che sorge nella catena o il timbro che cade sul passaporto,
  * con i confronti e i traguardi appena sbloccati.
  */
-export function ModaleCompletamento({ attivita: a, tutte, onSalva, onChiudi, onFine }: Props) {
+export function ModaleCompletamento({ attivita: a, tutte, casa, onSalva, onChiudi, onFine }: Props) {
   const id = useId()
   const trekking = a.tipo === 'trekking'
   const [fase, setFase] = useState<Fase>('giro')
@@ -94,7 +97,7 @@ export function ModaleCompletamento({ attivita: a, tutte, onSalva, onChiudi, onF
     if (giroValido) setFase('relazione')
   }
 
-  if (fase === 'cerimonia') return <Cerimonia attivita={a} tutte={tutte} onChiudi={onFine} />
+  if (fase === 'cerimonia') return <Cerimonia attivita={a} tutte={tutte} casa={casa} onChiudi={onFine} />
 
   const secondario = 'min-h-11 rounded-[11px] px-4 font-semibold text-testo-tenue hover:bg-fondo disabled:opacity-50'
   const primario = 'min-h-11 rounded-[11px] bg-montagna px-4 font-semibold text-panna hover:bg-montagna-scura disabled:opacity-50'
@@ -207,11 +210,21 @@ export function ModaleCompletamento({ attivita: a, tutte, onSalva, onChiudi, onF
 }
 
 /** La festa del giro appena completato: si apre a salvataggio riuscito. */
-function Cerimonia({ attivita: a, tutte, onChiudi }: { attivita: Attivita; tutte: readonly Attivita[]; onChiudi: () => void }) {
+function Cerimonia({
+  attivita: a,
+  tutte,
+  casa,
+  onChiudi,
+}: {
+  attivita: Attivita
+  tutte: readonly Attivita[]
+  casa: Coordinate | null
+  onChiudi: () => void
+}) {
   const giro = tutte.find((t) => t.id === a.id) ?? a
   const trekking = giro.tipo === 'trekking'
   const frasi = confronti(tutte, giro.id)
-  const nuovi = sbloccatiDa(tutte, giro.id)
+  const nuovi = sbloccatiDa(tutte, giro.id, casa)
 
   // Le cime vicine a quella nuova, in ordine di giro: si rifà la fila solo con loro.
   const vicine = useMemo(() => {

@@ -1,11 +1,14 @@
 import { Lock } from 'lucide-react'
-import { km, metri } from '../../dominio/completamento'
-import type { Sblocco } from '../../dominio/traguardi'
+import { km, metri, ore } from '../../dominio/completamento'
+import type { Avanzamento, Sblocco } from '../../dominio/traguardi'
 import { ICONE_TRAGUARDI } from './icone'
 
-function misura(n: number, unita: '' | 'm' | 'km'): string {
+function misura(n: number, unita: Avanzamento['unita']): string {
   if (unita === 'm') return metri(n)
   if (unita === 'km') return km(n)
+  if (unita === 'h') return `${String(n).replace('.', ',')} h`
+  if (unita === 'min') return ore(n)
+  if (unita === 'm/h') return `${metri(n)}/h`
   return String(n)
 }
 

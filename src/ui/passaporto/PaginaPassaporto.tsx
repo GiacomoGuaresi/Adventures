@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { LockKeyhole, Stamp } from 'lucide-react'
 import { pagine } from '../../dominio/timbri'
 import { traguardi } from '../../dominio/traguardi'
+import type { Coordinate } from '../../dominio/coordinate'
 import type { Attivita } from '../../dominio/tipi'
 import { Modale } from '../Modale'
 import { VISTI_TIMBRI, useNuovi } from '../visti'
@@ -10,6 +11,8 @@ import { DaSbloccare } from './Traguardo'
 
 interface Props {
   attivita: readonly Attivita[]
+  /** Per i traguardi che guardano dove sta il giro rispetto a casa. */
+  casa: Coordinate | null
   onDettagli: (a: Attivita) => void
 }
 
@@ -20,10 +23,10 @@ interface Props {
  * vedono: "Da sbloccare" li elenca in un popup, con a che punto si è. I timbri
  * nuovi cadono sulla pagina; toccandone uno si apre il giro che l'ha dato.
  */
-export function PaginaPassaporto({ attivita, onDettagli }: Props) {
-  const fogli = useMemo(() => pagine(attivita), [attivita])
+export function PaginaPassaporto({ attivita, casa, onDettagli }: Props) {
+  const fogli = useMemo(() => pagine(attivita, casa), [attivita, casa])
   const nuovi = useNuovi(VISTI_TIMBRI, fogli.flatMap((p) => p.timbri.map((t) => t.id)))
-  const bacheca = useMemo(() => traguardi(attivita), [attivita])
+  const bacheca = useMemo(() => traguardi(attivita, casa), [attivita, casa])
   const daSbloccare = bacheca.filter((s) => s.da === null)
   const [elenco, setElenco] = useState(false)
   const timbri = fogli.reduce((n, p) => n + p.timbri.filter((t) => t.forma !== 'sigillo').length, 0)

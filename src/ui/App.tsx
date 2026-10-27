@@ -152,7 +152,7 @@ export function App() {
    * nel menu e sul ☰ (docs/09-interfaccia.md), finché non si apre la pagina.
    */
   const idCime = useMemo(() => montagne(esistenti).map((m) => m.id), [esistenti])
-  const idTimbri = useMemo(() => pagine(esistenti).flatMap((p) => p.timbri.map((t) => t.id)), [esistenti])
+  const idTimbri = useMemo(() => pagine(esistenti, casa).flatMap((p) => p.timbri.map((t) => t.id)), [esistenti, casa])
   const avvisi = {
     catena: useDaVedere(VISTE_CATENA, idCime),
     passaporto: useDaVedere(VISTI_TIMBRI, idTimbri),
@@ -266,7 +266,7 @@ export function App() {
         )}
         {rotta === 'installa' && <Installa stato={statoInstallazione} />}
         {rotta === 'catena' && stato.fase === 'pronto' && <PaginaCatena attivita={stato.attivita} onDettagli={apriDettagli} />}
-        {rotta === 'passaporto' && stato.fase === 'pronto' && <PaginaPassaporto attivita={stato.attivita} onDettagli={apriDettagli} />}
+        {rotta === 'passaporto' && stato.fase === 'pronto' && <PaginaPassaporto attivita={stato.attivita} casa={casa} onDettagli={apriDettagli} />}
         {rotta === 'statistiche' && stato.fase === 'pronto' && <PaginaStatistiche attivita={stato.attivita} onDettagli={apriDettagli} />}
         {suMappa && stato.fase === 'pronto' && (
           <Suspense fallback={<p className="mt-8 text-center text-testo-tenue">Carico la mappa…</p>}>
@@ -347,6 +347,7 @@ export function App() {
         <ModaleCompletamento
           attivita={completando}
           tutte={esistenti}
+          casa={casa}
           onSalva={(dati) => segnaCompletato(completando.id, dati)}
           onChiudi={() => setDaCompletare(null)}
           onFine={() => {

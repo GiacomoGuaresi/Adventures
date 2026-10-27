@@ -112,7 +112,17 @@ Ogni giro fatto deve dare una piccola soddisfazione: i trekking diventano **mont
 - I giri completati prima del completamento non hanno data: stanno all'inizio della catena e in fondo al passaporto come **Prima di Adventures**.
 - **Catena** (`#/catena`): una cima per trekking completato, da sinistra a destra in ordine di giro, con gli anni sotto. L'altezza segue il **dislivello vero** (o il previsto, se manca) con una radice, così anche i giri corti si vedono; la base si allarga con i km; la neve arriva dai 1.200 m. Le cime nuove sorgono la prima volta che si vedono, quelle di oggi brillano. Un tocco su una cima ne mostra i numeri e apre i dettagli.
 - **Passaporto** (`#/passaporto`): una pagina per anno con un timbro per ogni avventura completata (forma, inchiostro e inclinazione nascono dall'avventura) e un **sigillo d'oro** per ogni traguardo raggiunto, di trekking o di avventure, in ordine di giorno. Toccando un timbro si apre il giro che l'ha dato. I traguardi da raggiungere **non si vedono**: il pulsante **Da sbloccare** li elenca in un foglio, con cosa serve e, dove si può contare, a che punto si è ("7.350 m di 8.849 m"), i più vicini prima.
-- **Traguardi**: prima cima, 10 e 25 trekking, 1.000 m, Monte Bianco (4.808 m), Everest (8.849 m), due Everest e 100 km di dislivello in tutto, un giro da 1.500 m, sopra i 3.000 m, da 20 km, 42,2 km in tutto, un trekking per stagione; primo timbro, 5 e 10 avventure, una o tre avventure ad almeno 2 ore d'auto, un trekking e un'avventura nello stesso mese. Il giorno di sblocco è quello del giro che ha superato la soglia.
+- **Traguardi** (75), il giorno di sblocco è quello del giro che ha superato la soglia:
+  - **trekking fatti**: 1, 5, 10, 25, 50, 100;
+  - **dislivello in tutto**: 1.000 m, Gran Paradiso (4.061 m), Cervino (4.478 m), Monte Rosa (4.634 m), Monte Bianco (4.808 m), Aconcagua (6.961 m), Everest (8.849 m), 2, 5 e 10 Everest, 100 km; **in un giro**: 1.000, 1.500 e 2.000 m, o sotto i 300 m;
+  - **quota**: 2.000, 2.500, 3.000 e 4.000 m;
+  - **km**: un giro da 20 e da 30 km; in tutto 21,1, 42,2, 100, 1.000 (Via Francigena) e 3.500 km;
+  - **ore**: un giro da 8 ore; 100 e 1.000 ore in tutto; un trekking a 500 m di salita all'ora, solo coi numeri veri;
+  - **avventure fatte**: 1, 3, 5, 10, 25, 50;
+  - **lontano da casa**: un'avventura a meno di mezz'ora d'auto; un giro ad almeno 1 e 4 ore d'auto; una e tre avventure ad almeno 2 ore; un giro fuori dall'Italia (un contorno a grandi linee in `italia.ts`); 5 posti lontani almeno 20 km fra loro; con la posizione di casa, un giro verso ognuno dei quattro punti cardinali (ad almeno 10 km) e uno almeno 100 km più a nord o più a sud;
+  - **calendario**: un trekking e un'avventura in ogni stagione; un trekking d'inverno, d'inverno sopra i 1.500 m, a Ferragosto; un giro a Capodanno, di martedì, mercoledì o giovedì, sabato e domenica dello stesso weekend; tutti i 12 mesi, in anni diversi o nello stesso; un'avventura fuori dalle sue stagioni;
+  - **costanza**: 3 e 6 mesi di fila, 3 giri in una settimana, un giro dopo 6 mesi di pausa, uno a un anno dal primo (± 7 giorni), 10 e 20 giri in un anno;
+  - **insieme**: un trekking e un'avventura nello stesso mese, due trekking e un'avventura nello stesso mese, tutti e due nello stesso giorno o nello stesso weekend, 10 trekking e 10 avventure.
 - **Statistiche** (`#/statistiche`): di sempre o di un anno, trekking, avventure, dislivello, km, ore, dislivello medio, i record col loro giro, l'ultimo giro, i giri per mese (con l'anno) e quanta parte della lista è fatta.
 - **Sfide e obiettivo annuale** di dislivello: da definire.
 - Più avanti: leggere i numeri dallo **screenshot di Komoot** (OCR nel browser) per non scriverli a mano.

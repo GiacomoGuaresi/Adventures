@@ -24,7 +24,9 @@ describe('pagine', () => {
       esempio({ id: '5', completato: true, completato_il: '2026-02-01' }),
       esempio({ id: '6', tipo: 'avventura' }),
     ])
-    expect(p.map((pg) => [pg.anno, pg.timbri.map((t) => t.id)])).toEqual([
+    // Fra i sigilli si guardano i due dei primi giri: le date ne sbloccano anche altri.
+    const guardati = (id: string) => !id.startsWith('traguardo-') || id === 'traguardo-prima-cima' || id === 'traguardo-prima-avventura'
+    expect(p.map((pg) => [pg.anno, pg.timbri.map((t) => t.id).filter(guardati)])).toEqual([
       [2026, ['4', 'traguardo-prima-cima', '3']],
       [2025, ['1']],
       [null, ['2', 'traguardo-prima-avventura']],
