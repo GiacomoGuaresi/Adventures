@@ -15,7 +15,7 @@ Il repository e il sito sono **pubblici**. I dati devono essere visibili solo a 
 | Secret / service role key | **mai nel repo, né nel frontend, né nelle variabili di Actions** | no |
 | Password del database | solo in locale, per applicare gli script SQL | no |
 
-Photon, OpenStreetMap e OpenTopoMap non richiedono chiavi.
+Photon, OpenStreetMap e OpenTopoMap non richiedono chiavi. Stadia Maps riconosce l'app dal dominio registrato, quindi anche lì nessuna chiave.
 
 ## Posizione di casa
 

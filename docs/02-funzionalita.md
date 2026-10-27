@@ -90,10 +90,12 @@ La posizione di **casa** è un punto fisso salvato nel database ([04](04-sicurez
 ## Mappa
 
 - **Pagina principale** dell'app: la mappa occupa tutta la pagina, con la **stessa ricerca e gli stessi filtri** dell'elenco in una barra flottante sopra la mappa.
-- Mappa base **OpenStreetMap**, con **OpenTopoMap** (curve di livello e sentieri) come alternativa selezionabile.
-- Un **puntino** per ogni trekking e per ogni avventura con le coordinate: **blu** i trekking, **terracotta** le avventure, più chiari i completati. Chi non ha il luogo non compare sulla mappa, ma resta nel suo elenco.
+- Mappa base **Stadia Maps Outdoors** (dati OpenStreetMap, colori tenui, cime con la quota), con **OpenStreetMap** e **OpenTopoMap** (curve di livello e sentieri) come alternative selezionabili.
+- Un **segnaposto** per ogni trekking e per ogni avventura con le coordinate, con la stessa icona del menu: **montagna blu** i trekking, **tenda terracotta** le avventure; i completati sono chiari e hanno una **spunta**, e stanno sotto quelli da fare. Chi non ha il luogo non compare sulla mappa, ma resta nel suo elenco.
+- Da **zoom 13** in su il **nome** sta sotto ogni segnaposto; più lontano si legge passandoci sopra e nel popup.
+- In basso a sinistra una piccola **legenda**: Trekking, Avventura, Completato, Casa.
 - Nel pannello dei filtri la scelta **Tutti / Trekking / Avventure**: serve perché i filtri numerici lasciano passare chi non ha il dato.
-- Toccando un puntino si apre un **popup riassuntivo** (nome, luogo, dislivello, durata, tempo di viaggio, distanza) con il pulsante **Dettagli**.
+- Toccando un segnaposto si apre un **popup riassuntivo** (nome, luogo, dislivello, durata, tempo di viaggio, distanza) con il pulsante **Dettagli**.
 - **Dettagli** apre la scheda in **sola lettura** (sul telefono un foglio che sale dal basso): luogo apribile in Google Maps, numeri, link, note, data di aggiunta. Da lì **Modifica** apre il form e **Trekking completato / Togli completato** cambia il completato; chiuso il form si torna ai dettagli aggiornati. La stessa scheda si apre toccando il nome nell'elenco.
 - **Casa** è segnata con un'icona propria.
 

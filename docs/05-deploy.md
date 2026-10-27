@@ -55,7 +55,8 @@ Per la Management API serve un token personale (Account → Access Tokens), che 
 |---|---|---|
 | Photon (`photon.komoot.io`) | ricerca luoghi | server pubblico senza garanzie: richieste solo mentre si scrive, con un breve ritardo tra una battuta e l'altra |
 | openrouteservice | tempo di viaggio | quota giornaliera del piano gratuito; attribuzione |
-| Tessere OpenStreetMap | mappa base | uso leggero, attribuzione visibile |
+| Tessere Stadia Maps (`outdoors`) | mappa base | piano gratuito per uso personale; **dominio `giacomoguaresi.github.io` registrato** nel pannello di Stadia (autenticazione per dominio, nessuna chiave nel bundle; `localhost` funziona senza); attribuzione visibile |
+| Tessere OpenStreetMap | mappa alternativa | uso leggero, attribuzione visibile |
 | Tessere OpenTopoMap | mappa topografica | attribuzione visibile; server a volte lento |
 
 Se Photon smette di funzionare, il piano B è Google Places ([03](03-architettura.md)).

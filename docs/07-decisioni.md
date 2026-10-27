@@ -57,3 +57,4 @@
 | 2026-10-27 | **Togli completato** chiede conferma: perde la data e i numeri veri | deciso |
 | 2026-10-27 | **Passaporto e traguardi uniti**: ogni traguardo raggiunto è un sigillo d'oro del passaporto; quelli da raggiungere sono nascosti e si leggono, con l'avanzamento, nel foglio **Da sbloccare** | deciso |
 | 2026-10-27 | Le **avventure hanno una o più stagioni** (nessuna = tutto l'anno); il filtro **Stagione** parte da quella corrente e include chi le ha tutte o nessuna. I trekking no | deciso |
+| 2026-10-27 | **Mappa più leggibile**: segnaposto a goccia da 22 px con l'icona del tipo, spunta sui completati, nomi da zoom 13, legenda; sfondo **Stadia Maps Outdoors** (CARTO ora chiede una chiave), OpenStreetMap e OpenTopoMap restano fra le scelte | deciso |

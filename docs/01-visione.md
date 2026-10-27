@@ -28,7 +28,7 @@ Gli stessi di Grocery e Projects:
 
 1. **Semplice e rapido**: un trekking si salva in pochi secondi, da telefono o da PC.
 2. **Generico**: solo il nome è obbligatorio; il resto si inserisce se lo si ha.
-3. **Gratuito**: nessun costo di hosting, database o servizi di mappe (tutti basati su OpenStreetMap).
+3. **Gratuito**: nessun costo di hosting, database o servizi di mappe (tutti basati su OpenStreetMap; Stadia Maps nel piano gratuito).
 4. **Privato**: il codice è pubblico, i dati (compresa la posizione di casa) li vede solo chi accede.
 5. **Zero manutenzione**: nessun server, stesso progetto Supabase delle altre app.
 

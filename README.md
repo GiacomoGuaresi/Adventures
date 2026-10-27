@@ -11,7 +11,7 @@ Piccolo database delle cose da fare fuori casa, **trekking** e **avventure** (ra
 - **Luogo** per nome, con i suggerimenti di Photon, oppure per coordinate
 - **Tempo di viaggio in auto da casa** calcolato con openrouteservice al salvataggio, oppure scritto a mano; i mancanti si ricalcolano dal popup all'apertura. **Distanza in linea d'aria** da casa, calcolata nel browser
 - **Elenco** con ricerca per nome e filtri su dislivello, durata, distanza e tempo di viaggio; i completati si nascondono
-- **Mappa** con un puntino per trekking (blu) e per avventura (terracotta), casa, le tessere di OpenStreetMap o OpenTopoMap e i dettagli in un popup; stessa ricerca e stessi filtri dell'elenco
+- **Mappa** con un segnaposto con l'icona per trekking (montagna blu) e per avventura (tenda terracotta), nomi da vicino, legenda, casa, le tessere di Stadia Maps, OpenStreetMap o OpenTopoMap e i dettagli in un popup; stessa ricerca e stessi filtri dell'elenco
 - **Installabile** sulla schermata Home, come Grocery e Projects
 
 ## Per iniziare
@@ -35,7 +35,7 @@ A ogni push su `main` il workflow [`pubblica.yml`](.github/workflows/pubblica.ym
 
 - **Frontend**: Vite + React + TypeScript + Tailwind, sito statico installabile come PWA
 - **Dati e accesso**: [Supabase](https://supabase.com) (Postgres + Auth), sullo stesso progetto e con lo stesso account di Grocery e Projects
-- **Mappe**: Leaflet con OpenStreetMap e OpenTopoMap, Photon, openrouteservice
+- **Mappe**: Leaflet con Stadia Maps, OpenStreetMap e OpenTopoMap, Photon, openrouteservice
 - **Hosting**: GitHub Pages → `giacomoguaresi.github.io/Adventures/`
 - **Lingua**: italiano · **Costo**: 0 € · **Licenza**: MIT
 

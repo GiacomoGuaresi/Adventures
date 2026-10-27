@@ -189,3 +189,78 @@ select {
 .leaflet-bottom {
   margin-bottom: env(safe-area-inset-bottom);
 }
+
+/* I segnaposto della mappa (Mappa.tsx): una goccia con la punta in basso, l'icona del tipo nel tondo e, per i completati, la spunta in un
+   angolo. */
+.segnaposto {
+  position: relative;
+  display: block;
+  width: 22px;
+  height: 27px;
+}
+.segnaposto-goccia {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 22px;
+  border: 1.75px solid;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 0 0 0.5px rgb(37 50 62 / 0.3), -1px 1px 2px rgb(37 50 62 / 0.3);
+}
+.segnaposto-icona {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+.segnaposto-fatto {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  display: grid;
+  place-items: center;
+  width: 11px;
+  height: 11px;
+  border: 1px solid var(--color-panna);
+  border-radius: 50%;
+}
+.segnaposto-casa {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--color-montagna-scura);
+  border-radius: 50%;
+  background: var(--color-panna);
+  box-shadow: 0 1px 3px rgb(37 50 62 / 0.35);
+}
+
+/* Nella legenda gli stessi segni, rimpiccioliti al centro di un quadratino. */
+.legenda-segno {
+  position: relative;
+  width: 18px;
+  height: 20px;
+}
+.legenda-segno > * {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.75);
+}
+
+/* Il nome sotto il segnaposto, da vicino: panna semitrasparente, senza la
+   freccia di Leaflet, accorciato coi puntini se è lungo. */
+.leaflet-tooltip.etichetta-mappa {
+  max-width: 160px;
+  overflow: hidden;
+  padding: 1px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: rgb(251 248 241 / 0.88);
+  box-shadow: 0 1px 3px rgb(37 50 62 / 0.25);
+  color: var(--color-testo);
+  font: 600 12px/1.4 var(--font-sans);
+  text-overflow: ellipsis;
+}
+.leaflet-tooltip.etichetta-mappa::before {
+  display: none;
+}
