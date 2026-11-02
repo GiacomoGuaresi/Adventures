@@ -8,6 +8,7 @@ Piccolo database delle cose da fare fuori casa, **trekking** e **avventure** (ra
 
 - **Due tipi**: trekking, con dislivello e durata, e avventure, con solo nome, luogo, link e note; un elenco ciascuno e la mappa in comune
 - **Inserimento rapido**: nome (unico obbligatorio), luogo, link, dislivello, durata, tempo di viaggio, note; avviso se il nome esiste già
+- **Da Komoot**: Condividi → Adventures sul telefono Android, o il link incollato nel nome, e il form si riempie con nome, partenza, dislivello, durata, km e difficoltà del giro
 - **Luogo** per nome, con i suggerimenti di Photon, oppure per coordinate
 - **Tempo di viaggio in auto da casa** calcolato con openrouteservice al salvataggio, oppure scritto a mano; i mancanti si ricalcolano dal popup all'apertura. **Distanza in linea d'aria** da casa, calcolata nel browser
 - **Elenco** con ricerca per nome e filtri su dislivello, durata, distanza e tempo di viaggio; i completati si nascondono

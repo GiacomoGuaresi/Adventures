@@ -46,6 +46,27 @@ import { pagine } from '../dominio/timbri'
 const Mappa = lazy(async () => ({ default: (await import('./Mappa')).Mappa }))
 
 /**
+ * Il testo condiviso verso l'app (docs/02-funzionalita.md): con la PWA
+ * installata su Android il menu "Condividi" la apre con titolo, testo e link
+ * nei parametri dell'URL (`share_target` nel manifest, vite.config.ts). Si legge
+ * una volta sola, all'avvio, e si toglie dall'URL, così un refresh non riapre il
+ * form. Se serve la passphrase, aspetta qui che si entri.
+ */
+const condivisa = leggiCondivisione()
+
+function leggiCondivisione(): string | null {
+  if (typeof window === 'undefined') return null
+  const parametri = new URLSearchParams(window.location.search)
+  const testo = ['titolo', 'testo', 'link']
+    .map((nome) => parametri.get(nome)?.trim() ?? '')
+    .filter((parte) => parte !== '')
+    .join(' ')
+  if (parametri.has('titolo') || parametri.has('testo') || parametri.has('link'))
+    window.history.replaceState(null, '', window.location.pathname + window.location.hash)
+  return testo === '' ? null : testo
+}
+
+/**
  * Il guscio dell'app, come Grocery e Projects (docs/09-interfaccia.md):
  * intestazione blu montagna da bordo a bordo con ☰ a sinistra e + a destra,
  * menu laterale, contenuto largo al massimo 1200px. Da 1024px il menu è una
@@ -61,7 +82,9 @@ export function App() {
   const tipoPagina = tipoDellaRotta(rotta)
   const [menuAperto, setMenuAperto] = useState(false)
   /** Il form di un'attività nuova, aperto su un tipo: poi nel form si può cambiare. */
-  const [nuovo, setNuovo] = useState<Tipo | null>(null)
+  const [nuovo, setNuovo] = useState<Tipo | null>(condivisa ? 'trekking' : null)
+  /** Il testo arrivato da "Condividi": vale solo per il primo form, quello che apre. */
+  const [condiviso, setCondiviso] = useState(condivisa)
   /** "Aggiungi la prima" in un elenco vuoto apre il tipo di quell'elenco. */
   const apriNuovo = () => setNuovo(tipoPagina ?? 'trekking')
   /** Il "+" alterna le due scritte e apre il form su quella che si legge in quel momento. */
@@ -329,9 +352,13 @@ export function App() {
       {nuovo && (
         <ModaleAttivita
           tipoIniziale={nuovo}
+          condiviso={condiviso ?? undefined}
           esistenti={esistenti}
           onSalva={conViaggi(crea)}
-          onChiudi={() => setNuovo(null)}
+          onChiudi={() => {
+            setNuovo(null)
+            setCondiviso(null)
+          }}
         />
       )}
       {dettaglio && !daModificare && !daEliminare && !completando && !daScompletare && (

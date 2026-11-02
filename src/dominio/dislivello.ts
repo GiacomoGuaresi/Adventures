@@ -1,6 +1,7 @@
 /**
  * Il dislivello del trekking (docs/02-funzionalita.md): metri di salita, intero
- * positivo e facoltativo. Si scrive a mano, dal link non si legge nulla.
+ * positivo e facoltativo. Si scrive a mano, o arriva da un link di Komoot
+ * (`komoot.ts`).
  */
 
 /** Il numero scritto nel campo; vuoto o storto vuol dire "niente dislivello". */

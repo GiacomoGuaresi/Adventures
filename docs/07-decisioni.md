@@ -39,7 +39,7 @@
 | 2026-09-15 | Colore **blu montagna**, icona Lucide `mountain-snow`, **sfondo doodle** a tema montagna, stessa struttura delle altre app | deciso |
 | 2026-09-15 | Posizione di casa **nel database dietro RLS**, inserita a mano, mai nel bundle né nel repository | deciso |
 | 2026-09-15 | **Mappa** in pagina a sé con gli stessi filtri dell'elenco, **Leaflet** con OpenStreetMap e OpenTopoMap, popup con i dettagli, casa segnata | deciso |
-| 2026-09-15 | Komoot si salva **solo come link**; nessun dato letto dai siti | deciso |
+| 2026-09-15 | ~~Komoot si salva **solo come link**; nessun dato letto dai siti~~ | superata |
 | 2026-09-15 | **Importazione** del file di note rimandata | deciso |
 | 2026-09-15 | Sviluppo **a piccoli incrementi stabili**: ogni step porta una funzione completa dal database all'interfaccia, pubblicata e utilizzabile; le colonne del database arrivano con lo step che le usa | deciso |
 | 2026-10-12 | Le **avventure** (cose da fare fuori casa in coppia, senza data) stanno in questa app e non in Projects né in un'app nuova | deciso |
@@ -58,3 +58,6 @@
 | 2026-10-27 | **Passaporto e traguardi uniti**: ogni traguardo raggiunto è un sigillo d'oro del passaporto; quelli da raggiungere sono nascosti e si leggono, con l'avanzamento, nel foglio **Da sbloccare** | deciso |
 | 2026-10-27 | Le **avventure hanno una o più stagioni** (nessuna = tutto l'anno); il filtro **Stagione** parte da quella corrente e include chi le ha tutte o nessuna. I trekking no | deciso |
 | 2026-10-27 | **Mappa più leggibile**: segnaposto a goccia da 22 px con l'icona del tipo, spunta sui completati, nomi da zoom 13, legenda; sfondo **Stadia Maps Outdoors** (CARTO ora chiede una chiave), OpenStreetMap e OpenTopoMap restano fra le scelte | deciso |
+| 2026-11-02 | **Trekking da un link di Komoot**: Condividi → Adventures su Android (`share_target`, come Grocery) o il link incollato nel nome riempiono il form; supera "Komoot solo come link" del 2026-09-15 | deciso |
+| 2026-11-02 | Komoot si legge dalla **pagina del giro** con una Edge Function (`adventures-komoot`): niente API pubblica, niente CORS. La pagina si costruisce dall'id, mai dal link ricevuto | deciso |
+| 2026-11-02 | Da Komoot: dislivello, durata a mezz'ore, partenza come luogo; **km, difficoltà e quota massima nelle note**, senza colonne nuove; un giro di sola andata lo dice nelle note e la durata non si raddoppia | deciso |

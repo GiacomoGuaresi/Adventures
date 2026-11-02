@@ -32,6 +32,14 @@ export default defineConfig({
           { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },
           { src: 'maskable-icon-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
+        // Come in Grocery: con l'app installata su Android, Adventures compare
+        // nel menu "Condividi". Il link arriva come parametri dell'URL, che App
+        // legge all'avvio per aprire il form (un link di Komoot lo riempie).
+        share_target: {
+          action: '/Adventures/',
+          method: 'GET',
+          params: { title: 'titolo', text: 'testo', url: 'link' },
+        },
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
@@ -40,6 +48,6 @@ export default defineConfig({
   ],
   test: {
     environment: 'node',
-    include: ['src/**/*.test.ts'],
+    include: ['src/**/*.test.ts', 'supabase/functions/**/*.test.ts'],
   },
 })

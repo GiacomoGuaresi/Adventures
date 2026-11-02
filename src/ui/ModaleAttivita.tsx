@@ -1,7 +1,10 @@
-import { useId, useState, type FormEvent, type ReactNode } from 'react'
+import { useEffect, useId, useState, type FormEvent, type ReactNode } from 'react'
 import { ChevronLeft, ChevronRight, Plus, Trash2, X } from 'lucide-react'
+import { komoot } from '../dati'
+import { conLink, daCondivisione } from '../dominio/condivisione'
 import { dislivelloValido, pulisciDislivello, testoDislivello } from '../dominio/dislivello'
 import { durataValida, pulisciDurata, testoDurata } from '../dominio/durata'
+import { daKomoot, linkKomoot, riferimentoKomoot, type CampiKomoot } from '../dominio/komoot'
 import { pulisciLink } from '../dominio/link'
 import { nomeValido, pulisciNome } from '../dominio/nome'
 import { doppione } from '../dominio/ricerca'
@@ -21,6 +24,11 @@ interface Props {
   tipoIniziale?: Tipo
   /** In modifica i campi salvati, tipo compreso; il titolo segue il tipo scelto. */
   iniziale?: CampiAttivita
+  /**
+   * Solo per un'attività nuova: il testo arrivato da "Condividi" (App). Un link
+   * di Komoot va nel nome e si legge subito; gli altri link vanno fra i link.
+   */
+  condiviso?: string
   /** Tutte le attività, per avvisare dei doppioni mentre si scrive. */
   esistenti: readonly Attivita[]
   /** L'attività che si sta modificando: non è doppione di sé stessa. */
@@ -49,16 +57,30 @@ const SCELTA_TIPO =
  * "Indietro" e "Avanti" sempre in vista in fondo. Serve solo il nome; il luogo
  * si scrive per nome o per coordinate, i link uno per campo, le note in
  * Markdown. Un'attività nuova si salva all'ultimo passo; in modifica "Salva"
- * c'è a ogni passo e dall'indicatore si salta dove serve.
+ * c'è a ogni passo e dall'indicatore si salta dove serve. Un link di Komoot
+ * scritto o incollato nel nome riempie il form con i dati del giro.
  */
-export function ModaleAttivita({ tipoIniziale = 'trekking', iniziale, esistenti, escludi, onSalva, onChiudi, onElimina }: Props) {
+export function ModaleAttivita({
+  tipoIniziale = 'trekking',
+  iniziale,
+  condiviso,
+  esistenti,
+  escludi,
+  onSalva,
+  onChiudi,
+  onElimina,
+}: Props) {
   const [tipo, setTipo] = useState<Tipo>(iniziale?.tipo ?? tipoIniziale)
   const testi = TESTI[tipo]
   const passi = PASSI[tipo]
   const ultimo = passi.length - 1
   const [passo, setPasso] = useState(0)
-  const [nome, setNome] = useState(iniziale?.nome ?? '')
-  const [link, setLink] = useState<string[]>(() => (iniziale?.link.length ? [...iniziale.link] : ['']))
+  const [proposta] = useState(() => (condiviso && !iniziale ? daCondivisione(condiviso) : null))
+  const [nome, setNome] = useState(iniziale?.nome ?? proposta?.nome ?? '')
+  const [link, setLink] = useState<string[]>(() => {
+    const salvati = iniziale?.link ?? proposta?.link ?? []
+    return salvati.length ? [...salvati] : ['']
+  })
   const [note, setNote] = useState(iniziale?.note ?? '')
   const [dislivello, setDislivello] = useState(testoDislivello(iniziale?.dislivello ?? null))
   const [durata, setDurata] = useState(testoDurata(iniziale?.durata_ore ?? null))
@@ -68,12 +90,60 @@ export function ModaleAttivita({ tipoIniziale = 'trekking', iniziale, esistenti,
   const [inCorso, setInCorso] = useState(false)
   const [errore, setErrore] = useState<string | null>(null)
   const id = useId()
+  // Il link di Komoot nel nome, senza i parametri: la stringa ferma l'effetto
+  // finché il link non cambia.
+  const rifKomoot = riferimentoKomoot(nome)
+  const daLeggere = rifKomoot ? linkKomoot(rifKomoot) : null
+  const [leggoKomoot, setLeggoKomoot] = useState(false)
+  const [erroreKomoot, setErroreKomoot] = useState<string | null>(null)
+
+  /** I campi che Komoot conosce prendono i suoi valori; le note scritte restano, il riassunto va sotto. */
+  const compila = (campi: CampiKomoot) => {
+    setTipo(campi.tipo)
+    setNome(campi.nome)
+    setLink((prima) => campi.link.reduce(conLink, prima))
+    setDislivello(testoDislivello(campi.dislivello))
+    setDurata(testoDurata(campi.durata_ore))
+    setLuogo(statoLuogoIniziale(campi))
+    if (campi.note) {
+      const riassunto = campi.note
+      setNote((prima) => (prima.trim() === '' ? riassunto : `${prima.trimEnd()}\n\n${riassunto}`))
+    }
+  }
+
+  useEffect(() => {
+    if (!daLeggere) return
+    let annullato = false
+    setLeggoKomoot(true)
+    setErroreKomoot(null)
+    komoot()
+      .leggi(daLeggere)
+      .then((tour) => {
+        if (!annullato) compila(daKomoot(tour))
+      })
+      .catch((errore: Error) => {
+        console.error('Giro di Komoot non letto', errore)
+        if (annullato) return
+        // Il link non si perde: passa fra i link e il nome torna da scrivere.
+        setNome('')
+        setLink((prima) => conLink(prima, daLeggere))
+        setErroreKomoot('Komoot non letto: il link è fra i link, i dati vanno scritti a mano.')
+      })
+      .finally(() => {
+        if (!annullato) setLeggoKomoot(false)
+      })
+    return () => {
+      annullato = true
+    }
+    // `compila` usa solo i setter: basta il link.
+  }, [daLeggere])
+
   // L'avviso compare mentre si scrive e non blocca il salvataggio
   // (docs/02-funzionalita.md).
   const gia = doppione(esistenti, nome, escludi)
   /** Chi ha un campo storto ferma il wizard lì: link e note vanno sempre bene. */
   const validi: Record<Passo, boolean> = {
-    Dove: nomeValido(nome) && luogoValido(luogo),
+    Dove: nomeValido(nome) && luogoValido(luogo) && !leggoKomoot,
     Quanto: dislivelloValido(dislivello) && durataValida(durata) && viaggioValido(viaggio),
     Stagioni: true,
     Link: true,
@@ -238,7 +308,20 @@ export function ModaleAttivita({ tipoIniziale = 'trekking', iniziale, esistenti,
                 value={nome}
                 onChange={(evento) => setNome(evento.target.value)}
               />
-              {gia && (
+              {leggoKomoot && (
+                <p className="m-0 text-xs text-testo-tenue" role="status">
+                  Leggo il giro da Komoot…
+                </p>
+              )}
+              {erroreKomoot && !leggoKomoot && (
+                <p className="m-0 text-xs text-pericolo" role="alert">
+                  {erroreKomoot}
+                </p>
+              )}
+              {!iniziale && nome === '' && !erroreKomoot && (
+                <p className="m-0 text-xs text-testo-tenue">Con un link di Komoot si riempie tutto da solo.</p>
+              )}
+              {gia && !leggoKomoot && (
                 <p className="m-0 text-xs text-testo-tenue">
                   {TESTI[gia.tipo].esisteGia} che si chiama <strong>{gia.nome}</strong>.
                 </p>

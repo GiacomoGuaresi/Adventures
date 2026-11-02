@@ -248,6 +248,13 @@ Ogni giro completato deve dare una soddisfazione, come la Foresta in Projects ([
 
 - [x] **35 · Stagioni delle avventure**: colonna `stagioni` (`015_stagioni.sql`, applicato il 2026-10-27), passo Stagioni nel form, filtro Stagione che parte da quella corrente (`src/dominio/stagioni.ts`)
 
+- [ ] **36 · Trekking da un link di Komoot** ([02](02-funzionalita.md#da-komoot))
+  - [x] Lettura della pagina del giro e riconoscimento dei link (`supabase/functions/adventures-komoot/tour.ts`, con i test); campi del form dal giro (`src/dominio/komoot.ts`) e dal testo condiviso (`src/dominio/condivisione.ts`), con i test
+  - [x] Edge Function `adventures-komoot`, solo con la sessione e solo verso le pagine dei giri (`supabase/functions/`)
+  - [x] Form: un link di Komoot nel nome legge il giro e riempie il form (`ModaleAttivita.tsx`); `share_target` nel manifest e lettura dei parametri all'avvio (`App.tsx`)
+  - [x] Edge Function pubblicata sul progetto Supabase (2026-11-02, `supabase functions deploy adventures-komoot --use-api`)
+  - [ ] Provato sul telefono: app reinstallata (il manifest cambia), Condividi da Komoot → form riempito → salvato
+
 ## Più avanti, se servirà
 - [ ] Posizione GPS: distanza dalla posizione attuale e puntino sulla mappa
 - [ ] Google Places al posto di Photon

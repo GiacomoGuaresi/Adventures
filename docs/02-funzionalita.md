@@ -4,7 +4,7 @@
 
 1. Trovo un trekking interessante sui social, su un sito o su Komoot.
 2. Apro l'app e il **form di inserimento rapido**.
-3. Inserisco i dettagli che ho in quel momento (spesso solo il nome) e salvo.
+3. Inserisco i dettagli che ho in quel momento (spesso solo il nome) e salvo. Da Komoot basta il link: vedi [Da Komoot](#da-komoot).
 
 Poi, quando si decide dove andare, si apre l'**elenco** o la **mappa** e si filtra.
 
@@ -34,7 +34,29 @@ Un wizard in quattro passi, pensato per il telefono: **Dove** (tipo, nome e luog
 | **Note** | no | Markdown con la formattazione di base: grassetto, corsivo, elenchi, link |
 
 - **Doppioni**: mentre si scrive il nome, se esiste già un trekking o un'avventura con un nome simile (senza distinguere maiuscole, minuscole e accenti) compare un avviso con il nome trovato. L'avviso non blocca il salvataggio.
-- **Komoot e altri siti**: i dati non si leggono dal link. Dislivello e durata si scrivono a mano.
+- **Komoot**: un link di un giro scritto o incollato nel **nome** riempie il form, vedi [Da Komoot](#da-komoot). Dagli altri siti non si legge nulla: il link si salva e i dati si scrivono a mano.
+
+## Da Komoot
+
+Sul telefono Android, con l'app installata, da Komoot **Condividi → Adventures** apre il form di un trekking nuovo già riempito. Lo stesso succede scrivendo o incollando il link nel campo **Nome**, anche da PC o da iPhone (dove le PWA non compaiono in "Condividi").
+
+- Valgono i link dei **tour** e degli **smarttour** (`komoot.com`, `.it`, `.de`, anche con la lingua nel percorso), anche dentro il messaggio che l'app di Komoot mette in "Condividi". Dei giri privati serve il link col `share_token`.
+- Mentre il giro si legge compare "Leggo il giro da Komoot…" e "Avanti" resta fermo.
+- Cosa si riempie:
+
+| Campo | Da Komoot |
+|---|---|
+| Tipo | trekking |
+| Nome | il nome del giro, in italiano se Komoot lo traduce |
+| Luogo | il punto di partenza; col nome del comune per gli smarttour, altrimenti come coordinate |
+| Dislivello | la salita, in metri interi |
+| Durata | la stima di Komoot, a mezz'ore (3 h 16 → 3 h 30) |
+| Link | il link del giro senza i parametri di tracciamento, in fondo agli altri |
+| Note | sotto quelle già scritte: "Da Komoot: 11,8 km · ad anello · difficoltà media (T1) · quota massima 739 m"; un giro di sola andata lo dice, perché durata e dislivello sono della sola andata |
+
+- Il tempo di viaggio si calcola al salvataggio come sempre. Tutto si può correggere prima di salvare.
+- Se il giro non si legge (rete, giro privato, pagina cambiata), il link passa fra i link, il nome torna vuoto e compare un messaggio: i dati si scrivono a mano.
+- Da "Condividi" arrivano anche link di altri siti: vanno fra i link del form; un testo senza link diventa il nome.
 
 ## Luogo
 
@@ -125,5 +147,5 @@ Ogni giro fatto deve dare una piccola soddisfazione: i trekking diventano **mont
   - **insieme**: un trekking e un'avventura nello stesso mese, due trekking e un'avventura nello stesso mese, tutti e due nello stesso giorno o nello stesso weekend, 10 trekking e 10 avventure.
 - **Statistiche** (`#/statistiche`): di sempre o di un anno, trekking, avventure, dislivello, km, ore, dislivello medio, i record col loro giro, l'ultimo giro, i giri per mese (con l'anno) e quanta parte della lista è fatta.
 - **Sfide e obiettivo annuale** di dislivello: da definire.
-- Più avanti: leggere i numeri dallo **screenshot di Komoot** (OCR nel browser) per non scriverli a mano.
+- Più avanti: leggere i numeri **veri** del giro dallo **screenshot di Komoot** (OCR nel browser) per non scriverli a mano. I previsti arrivano già dal link ([Da Komoot](#da-komoot)).
 

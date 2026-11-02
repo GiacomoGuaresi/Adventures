@@ -5,6 +5,7 @@ import { createBrowserClient } from '@supabase/ssr'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { AccessoSupabase, type Accesso } from './accesso'
 import { ImpostazioniSupabase } from './impostazioni'
+import { KomootSupabase, type LetturaKomoot } from './komoot'
 import { LinkMappeSupabase, type AperturaLink } from './linkMappe'
 import { PhotonLuoghi, type RicercaLuoghi } from './luoghi'
 import { fetchPaziente } from './orologio'
@@ -13,6 +14,7 @@ import { AttivitaSupabase } from './attivita'
 
 export type { Accesso, EsitoAccesso } from './accesso'
 export type { ImpostazioniSupabase } from './impostazioni'
+export type { LetturaKomoot } from './komoot'
 export type { AperturaLink } from './linkMappe'
 export type { RicercaLuoghi } from './luoghi'
 export type { CalcoloPercorsi } from './percorsi'
@@ -23,6 +25,7 @@ let connessione: {
   attivita: AttivitaSupabase
   impostazioni: ImpostazioniSupabase
   linkMappe: AperturaLink
+  komoot: LetturaKomoot
 } | null = null
 
 /**
@@ -52,6 +55,7 @@ function connetti() {
     attivita: new AttivitaSupabase(client),
     impostazioni: new ImpostazioniSupabase(client),
     linkMappe: new LinkMappeSupabase(client),
+    komoot: new KomootSupabase(client),
   }
   return connessione
 }
@@ -74,6 +78,11 @@ export function impostazioni(): ImpostazioniSupabase {
 /** I link brevi di Google Maps, aperti dalla Edge Function con la sessione. */
 export function linkMappe(): AperturaLink {
   return connetti().linkMappe
+}
+
+/** I giri di Komoot, letti dalla Edge Function con la sessione. */
+export function komoot(): LetturaKomoot {
+  return connetti().komoot
 }
 
 const ricercaLuoghi = new PhotonLuoghi()

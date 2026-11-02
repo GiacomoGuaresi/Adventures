@@ -1,7 +1,7 @@
 /**
  * La durata del trekking (docs/02-funzionalita.md): ore di andata e ritorno, a
  * passi di mezz'ora (3.5 = 3 ore e 30 minuti), facoltativa. Non si calcola: si
- * scrive solo a mano, in ore e minuti.
+ * scrive a mano, in ore e minuti, o arriva da un link di Komoot (`komoot.ts`).
  */
 
 import { pulisciTempo, testoTempo, type TestoTempo } from './tempo'
