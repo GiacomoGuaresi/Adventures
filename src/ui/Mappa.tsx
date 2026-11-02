@@ -2,7 +2,8 @@ import { createElement, useState, type ReactNode } from 'react'
 import { flushSync } from 'react-dom'
 import { createRoot } from 'react-dom/client'
 import { LayersControl, MapContainer, Marker, Popup, TileLayer, Tooltip, ZoomControl, useMap, useMapEvents } from 'react-leaflet'
-import { divIcon, type DivIcon, type LatLngBoundsExpression } from 'leaflet'
+import { divIcon, type DivIcon, type LatLngBoundsExpression, type MarkerCluster } from 'leaflet'
+import MarkerClusterGroup from 'react-leaflet-cluster'
 import { Check, House, Info, MountainSnow, Tent, type LucideIcon } from 'lucide-react'
 import type { Coordinate } from '../dominio/coordinate'
 import { distanzaDaCasa, formattaDistanza } from '../dominio/distanza'
@@ -10,6 +11,7 @@ import { formattaDurata } from '../dominio/durata'
 import type { Attivita, Tipo } from '../dominio/tipi'
 import { formattaViaggio } from '../dominio/viaggio'
 import 'leaflet/dist/leaflet.css'
+import 'react-leaflet-cluster/dist/assets/MarkerCluster.css'
 
 interface Props {
   /** Trekking e avventure già filtrati: chi non ha le coordinate non compare. */
@@ -104,6 +106,40 @@ const ICONA_CASA = divIcon({
   iconAnchor: [12, 12],
 })
 
+/** Il tipo di un segnaposto dalla sua icona: serve ai gruppi per sapere cosa contengono. */
+const TIPO_DELL_ICONA = new Map<DivIcon, Tipo>(
+  (Object.keys(ICONE_SEGNAPOSTO) as Tipo[]).flatMap((tipo) =>
+    Object.values(ICONE_SEGNAPOSTO[tipo]).map((icona): [DivIcon, Tipo] => [icona, tipo]),
+  ),
+)
+
+/**
+ * Entro quanti pixel i segnaposto si raccolgono in un gruppo: solo quelli
+ * sovrapposti o quasi, così da vicino si vedono tutti.
+ */
+const RAGGIO_GRUPPI = 36
+
+/**
+ * Il gruppo di segnaposto vicini: un tondo col numero, blu se sono tutti
+ * trekking, terracotta se sono tutte avventure, diviso a spicchi se ci sono
+ * tutti e due, in proporzione.
+ */
+function iconaGruppo(gruppo: MarkerCluster): DivIcon {
+  const segnaposti = gruppo.getAllChildMarkers()
+  const trekking = segnaposti.filter((m) => TIPO_DELL_ICONA.get(m.options.icon as DivIcon) !== 'avventura').length
+  const quota = Math.round((trekking / segnaposti.length) * 360)
+  const t = COLORI.trekking.pieno
+  const a = COLORI.avventura.pieno
+  const sfondo = quota === 360 ? t : quota === 0 ? a : `conic-gradient(${t} 0 ${quota}deg, ${a} ${quota}deg 360deg)`
+  const lato = segnaposti.length < 10 ? 30 : segnaposti.length < 100 ? 34 : 38
+  return divIcon({
+    className: '',
+    html: `<span class="grappolo" style="width:${lato}px;height:${lato}px;background:${sfondo}"><span>${segnaposti.length}</span></span>`,
+    iconSize: [lato, lato],
+    iconAnchor: [lato / 2, lato / 2],
+  })
+}
+
 /** Da questo zoom in su il nome sta sotto ogni segnaposto. */
 const ZOOM_ETICHETTE = 13
 
@@ -117,6 +153,18 @@ const NORD_ITALIA: LatLngBoundsExpression = [
   [46.7, 13.8],
 ]
 
+const OPENSTREETMAP = {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+  maxZoom: 19,
+}
+
+/**
+ * Dopo quante tessere di Stadia andate male lo sfondo passa a OpenStreetMap:
+ * più di una, perché una tessera persa per strada non basta a cambiare mappa.
+ */
+const ERRORI_STADIA = 3
+
 /** Quanto spazio lascia in alto la barra flottante di ricerca e filtri. */
 const SOTTO_LA_BARRA = 80
 
@@ -125,7 +173,7 @@ const SOTTO_LA_BARRA = 80
  * trekking e per ogni avventura con le coordinate, di colore diverso, con un
  * popup riassuntivo e il pulsante per aprire i dettagli; da vicino il nome sta
  * sotto il segnaposto. Chi non ha il luogo resta nell'elenco ma non compare
- * qui. Casa ha la sua icona; lo sfondo è CARTO Voyager, più calmo di
+ * qui. Casa ha la sua icona; lo sfondo è Stadia Maps Outdoors, più calmo di
  * OpenStreetMap, e si può passare a OpenStreetMap o a OpenTopoMap per vedere
  * curve di livello e sentieri.
  *
@@ -148,18 +196,10 @@ export function Mappa({ attivita, casa, onDettagli }: Props) {
         <ZoomControl position="bottomright" />
         <LayersControl position="bottomright">
           <LayersControl.BaseLayer checked name="Mappa">
-            <TileLayer
-              attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png"
-              maxZoom={20}
-            />
+            <SfondoStadia />
           </LayersControl.BaseLayer>
           <LayersControl.BaseLayer name="OpenStreetMap">
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-              maxZoom={19}
-            />
+            <TileLayer {...OPENSTREETMAP} />
           </LayersControl.BaseLayer>
           <LayersControl.BaseLayer name="Sentieri">
             <TileLayer
@@ -184,33 +224,69 @@ export function Mappa({ attivita, casa, onDettagli }: Props) {
   )
 }
 
-/** I segnaposto, col nome sotto quando lo zoom è abbastanza vicino. */
+/**
+ * Lo sfondo Stadia Maps Outdoors. Stadia riconosce l'app dal dominio
+ * registrato (docs/05-deploy.md) e altrimenti risponde 401: se le tessere
+ * continuano a non arrivare, al loro posto va OpenStreetMap, così la mappa non
+ * resta mai vuota.
+ */
+function SfondoStadia() {
+  const [errori, setErrori] = useState(0)
+
+  if (errori >= ERRORI_STADIA) return <TileLayer key="openstreetmap" {...OPENSTREETMAP} />
+  return (
+    <TileLayer
+      key="stadia"
+      attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      url="https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png"
+      maxZoom={20}
+      eventHandlers={{ tileerror: () => setErrori((n) => n + 1) }}
+    />
+  )
+}
+
+/**
+ * I segnaposto, col nome sotto quando lo zoom è abbastanza vicino. Quelli
+ * sovrapposti o molto vicini si raccolgono in un gruppo col numero: un tocco
+ * avvicina la mappa finché si separano; quelli nello stesso punto, allo zoom
+ * massimo, si aprono a raggiera.
+ */
 function Segnaposti({ attivita, casa, onDettagli }: Props) {
   const mappa = useMap()
   const [zoom, setZoom] = useState(() => mappa.getZoom())
   useMapEvents({ zoomend: () => setZoom(mappa.getZoom()) })
   const etichette = zoom >= ZOOM_ETICHETTE
 
-  return attivita.map((t) => (
-    <Marker
-      key={t.id}
-      position={[t.lat as number, t.lon as number]}
-      icon={ICONE_SEGNAPOSTO[t.tipo][t.completato ? 'fatto' : 'da_fare']}
-      title={t.nome}
-      alt={t.nome}
-      // Quelli da fare stanno sopra i completati.
-      zIndexOffset={t.completato ? 0 : 1000}
+  return (
+    <MarkerClusterGroup
+      maxClusterRadius={RAGGIO_GRUPPI}
+      iconCreateFunction={iconaGruppo}
+      showCoverageOnHover={false}
+      spiderfyOnMaxZoom
+      chunkedLoading
     >
-      {etichette && (
-        <Tooltip permanent direction="bottom" className="etichetta-mappa">
-          {t.nome}
-        </Tooltip>
-      )}
-      <Popup autoPanPaddingTopLeft={[16, SOTTO_LA_BARRA]}>
-        <Anteprima attivita={t} casa={casa} onDettagli={onDettagli} />
-      </Popup>
-    </Marker>
-  ))
+      {attivita.map((t) => (
+        <Marker
+          key={t.id}
+          position={[t.lat as number, t.lon as number]}
+          icon={ICONE_SEGNAPOSTO[t.tipo][t.completato ? 'fatto' : 'da_fare']}
+          title={t.nome}
+          alt={t.nome}
+          // Quelli da fare stanno sopra i completati.
+          zIndexOffset={t.completato ? 0 : 1000}
+        >
+          {etichette && (
+            <Tooltip permanent direction="bottom" className="etichetta-mappa">
+              {t.nome}
+            </Tooltip>
+          )}
+          <Popup autoPanPaddingTopLeft={[16, SOTTO_LA_BARRA]}>
+            <Anteprima attivita={t} casa={casa} onDettagli={onDettagli} />
+          </Popup>
+        </Marker>
+      ))}
+    </MarkerClusterGroup>
+  )
 }
 
 /** La legenda in basso a sinistra: piccola, e non ferma i tocchi sulla mappa. */

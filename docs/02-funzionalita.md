@@ -114,6 +114,7 @@ La posizione di **casa** è un punto fisso salvato nel database ([04](04-sicurez
 - **Pagina principale** dell'app: la mappa occupa tutta la pagina, con la **stessa ricerca e gli stessi filtri** dell'elenco in una barra flottante sopra la mappa.
 - Mappa base **Stadia Maps Outdoors** (dati OpenStreetMap, colori tenui, cime con la quota), con **OpenStreetMap** e **OpenTopoMap** (curve di livello e sentieri) come alternative selezionabili.
 - Un **segnaposto** per ogni trekking e per ogni avventura con le coordinate, con la stessa icona del menu: **montagna blu** i trekking, **tenda terracotta** le avventure; i completati sono chiari e hanno una **spunta**, e stanno sotto quelli da fare. Chi non ha il luogo non compare sulla mappa, ma resta nel suo elenco.
+- **Gruppi**: i segnaposto sovrapposti o molto vicini (entro 36 px) diventano un tondo col **numero**, blu se sono tutti trekking, terracotta se sono tutte avventure, a spicchi in proporzione se ci sono tutti e due. Un tocco avvicina la mappa finché si separano; quelli nello stesso punto si aprono a raggiera allo zoom massimo.
 - Da **zoom 13** in su il **nome** sta sotto ogni segnaposto; più lontano si legge passandoci sopra e nel popup.
 - In basso a sinistra una piccola **legenda**: Trekking, Avventura, Completato, Casa.
 - Nel pannello dei filtri la scelta **Tutti / Trekking / Avventure**: serve perché i filtri numerici lasciano passare chi non ha il dato.

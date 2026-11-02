@@ -61,3 +61,4 @@
 | 2026-11-02 | **Trekking da un link di Komoot**: Condividi → Adventures su Android (`share_target`, come Grocery) o il link incollato nel nome riempiono il form; supera "Komoot solo come link" del 2026-09-15 | deciso |
 | 2026-11-02 | Komoot si legge dalla **pagina del giro** con una Edge Function (`adventures-komoot`): niente API pubblica, niente CORS. La pagina si costruisce dall'id, mai dal link ricevuto | deciso |
 | 2026-11-02 | Da Komoot: dislivello, durata a mezz'ore, partenza come luogo; **km, difficoltà e quota massima nelle note**, senza colonne nuove; un giro di sola andata lo dice nelle note e la durata non si raddoppia | deciso |
+| 2026-11-02 | Sulla mappa i segnaposto **sovrapposti o vicini si raggruppano** (raggio 36 px, `react-leaflet-cluster`): tondo col numero, a spicchi coi colori dei tipi; stesso punto → raggiera allo zoom massimo | deciso |

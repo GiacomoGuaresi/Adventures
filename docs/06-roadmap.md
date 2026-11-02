@@ -244,7 +244,9 @@ Ogni giro completato deve dare una soddisfazione, come la Foresta in Projects ([
   - [x] Segnaposto a goccia con l'icona del menu (montagna, tenda), spunta sui completati, quelli da fare sopra
   - [x] Segnaposto da 22 px, più piccoli dei primi, per non coprire la mappa; nome sotto il segnaposto da zoom 13; legenda in basso a sinistra
   - [x] Sfondo Stadia Maps Outdoors, con OpenStreetMap e Sentieri fra le scelte
-  - [ ] Account gratuito Stadia Maps con il dominio `giacomoguaresi.github.io` registrato, prima del deploy
+  - [x] Account gratuito Stadia Maps con il dominio `giacomoguaresi.github.io` registrato (proprietà `Casa-Adventures`, 2026-11-02)
+  - [x] Ripiego su OpenStreetMap se le tessere di Stadia non arrivano (per esempio il 401 di un dominio non registrato)
+  - [x] Gruppi dei segnaposto sovrapposti o vicini, col numero e il colore dei tipi (`react-leaflet-cluster`)
 
 - [x] **35 · Stagioni delle avventure**: colonna `stagioni` (`015_stagioni.sql`, applicato il 2026-10-27), passo Stagioni nel form, filtro Stagione che parte da quella corrente (`src/dominio/stagioni.ts`)
 

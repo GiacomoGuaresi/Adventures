@@ -1,4 +1,6 @@
 /// <reference types="vite/client" />
+// I gruppi di segnaposto della mappa (Mappa.tsx, react-leaflet-cluster).
+/// <reference types="leaflet.markercluster" />
 
 // Le variabili d'ambiente dell'app: vedi .env.example.
 interface ImportMetaEnv {

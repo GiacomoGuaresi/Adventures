@@ -55,7 +55,7 @@ flowchart LR
 | Stile | Tailwind CSS, come Projects | palette blu montagna, vedi [09](09-interfaccia.md) |
 | Icone | lucide-react | coerenza visiva con le altre app |
 | Markdown | react-markdown | solo la formattazione di base, niente checklist |
-| Mappa | Leaflet + react-leaflet | tessere Stadia Maps Outdoors, OpenStreetMap e OpenTopoMap |
+| Mappa | Leaflet + react-leaflet, react-leaflet-cluster | tessere Stadia Maps Outdoors, OpenStreetMap e OpenTopoMap; gruppi dei segnaposto vicini con Leaflet.markercluster |
 | Ricerca luoghi | Photon | dietro un'interfaccia sostituibile |
 | Tempo di viaggio | openrouteservice (API Directions) | piano gratuito con chiave |
 | Dati e accesso | @supabase/supabase-js + @supabase/ssr | sessione nei cookie con percorso `/`, condivisa con le altre app |

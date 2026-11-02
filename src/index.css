@@ -234,6 +234,21 @@ select {
   box-shadow: 0 1px 3px rgb(37 50 62 / 0.35);
 }
 
+/* Il gruppo di segnaposto vicini (Mappa.tsx): un tondo col numero, col
+   colore dei tipi che contiene; lo sfondo lo dà Mappa.tsx. */
+.grappolo {
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--color-panna);
+  border-radius: 50%;
+  box-shadow: 0 0 0 0.5px rgb(37 50 62 / 0.3), 0 1px 3px rgb(37 50 62 / 0.35);
+}
+.grappolo > span {
+  color: var(--color-panna);
+  font: 700 13px/1 var(--font-sans);
+  text-shadow: 0 0 2px rgb(37 50 62 / 0.6);
+}
+
 /* Nella legenda gli stessi segni, rimpiccioliti al centro di un quadratino. */
 .legenda-segno {
   position: relative;
