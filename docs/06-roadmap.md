@@ -16,7 +16,7 @@ nello step [22](#fase-4--rifinitura), da fare in un giro solo alla fine.
 
 Si passa allo step successivo solo quando il precedente è finito. L'ordine porta prima possibile a un'app che **sostituisce il file di note**, poi aggiunge filtri, luoghi e mappa.
 
-Accanto a uno step è indicata la domanda del [Q&A](../Q&A.md) da chiudere prima di iniziarlo, se ce n'è una.
+Accanto a uno step è indicata la domanda del [Q&A](Q&A.md) da chiudere prima di iniziarlo, se ce n'è una.
 
 ## Fase 0 · Progettazione ✅
 - [x] Documentazione di base, scopo e funzionalità

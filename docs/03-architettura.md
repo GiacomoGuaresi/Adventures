@@ -80,7 +80,7 @@ Come nelle altre app, i test coprono la **logica pura**:
 
 ```
 Adventures/
-├── README.md · Q&A.md · LICENSE
+├── README.md · LICENSE
 ├── docs/
 ├── index.html · vite.config.ts · package.json
 ├── public/                # icone PWA
